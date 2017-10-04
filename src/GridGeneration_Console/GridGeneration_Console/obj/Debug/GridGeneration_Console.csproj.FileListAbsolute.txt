@@ -1,0 +1,1 @@
+C:\Users\Linser\Desktop\INN\NumericalGridGeneration\src\GridGeneration_Console\GridGeneration_Console\bin\Debug\GridGeneration_Console.exe.config

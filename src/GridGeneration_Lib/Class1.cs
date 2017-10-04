@@ -8,5 +8,14 @@ namespace GridGeneration_Lib
 {
     public class Class1
     {
+        bool Validate(int num, int[] index, int[] a, int k) // ToDo
+        {
+            return true;
+        }
+
+        int Numerate(int num, int[] index, int[] a, int[] vnom) //ToDo
+        {
+            return 0;
+        }
     }
 }
