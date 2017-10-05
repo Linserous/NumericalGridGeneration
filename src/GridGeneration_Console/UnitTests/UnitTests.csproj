@@ -66,6 +66,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -76,4 +77,19 @@
     <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(SolutionDir)..\..\tests\sources" mkdir "$(SolutionDir)..\..\tests\sources"
+if not exist "$(SolutionDir)..\..\tests\results" mkdir "$(SolutionDir)..\..\tests\results"
+if not exist "$(SolutionDir)..\..\tests\resultsExcel" mkdir "$(SolutionDir)..\..\tests\resultsExcel"
+if not exist "$(TargetDir)tests\sources" mkdir "$(TargetDir)tests\sources"
+if not exist "$(TargetDir)tests\results" mkdir "$(TargetDir)tests\results"
+if not exist "$(TargetDir)tests\resultsExcel" mkdir "$(TargetDir)tests\resultsExcel"
+xcopy  "$(TargetDir)tests\results\*.rt" "$(SolutionDir)..\..\tests\results" /Y 
+xcopy "$(TargetDir)tests\resultsExcel\*.xlsx" "$(SolutionDir)..\..\tests\resultsExcel"  /Y 
+xcopy "$(SolutionDir)..\..\tests\sources\*" "$(TargetDir)tests\sources" /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

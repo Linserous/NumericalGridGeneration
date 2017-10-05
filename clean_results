@@ -1,0 +1,20 @@
+#!/bin/bash
+
+confirm() {
+    # call with a prompt string or use a default
+    read -r -p "${1:-Are you sure? [y/N]} " response
+    case "$response" in
+        [yY][eE][sS]|[yY]) 
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+echo -e "This files will be deleted:\n"
+find ./src ./tests -name "*.rt" 
+find ./src ./tests -name "*.xlsx"
+echo -e "\nWell... "
+confirm && ( find ./src ./tests -name "*.rt" -exec rm -f {} \; & find ./src ./tests -name "*.xlsx" -exec rm -f {} \; )
+

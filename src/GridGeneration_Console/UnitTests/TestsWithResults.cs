@@ -10,9 +10,9 @@ namespace TestsWithResults
     [TestClass]
     public class ResultsInTable  // TODO: Dinar: refactoring is neeeded
     {
-        string PathToSources = @"../../../../../tests/sources";
-        string PathToResults = @"../../../../../tests/results";
-        string PathToExcelResults = @"../../../../../tests/resultsExcel";
+        string PathToSources = @"tests/sources";
+        string PathToResults = @"tests/results";
+        string PathToExcelResults = @"tests/resultsExcel";
         string result_type = @".rt";
         string excel_type = @".xlsx";
         int Padding = 25;
@@ -42,8 +42,7 @@ namespace TestsWithResults
             int []  index = { };
             int indexSize = 0;
             int[] graphData = { };
-            int gridDimension = 0;
-            return GridGeneration_Lib.GraphRestorer.Validate(index, indexSize, graphData, out gridDimension);
+            return GridGeneration_Lib.GraphRestorer.Validate(index, indexSize, graphData, out int gridDimension);
         }
         int GetNumerate(string file, out int[] graphNumeration)
         {
@@ -68,11 +67,12 @@ namespace TestsWithResults
 
         string GenerateNewName()
         {
-            return DateTime.Now.ToString().Replace(':', '-').Replace('.', '-').Replace(' ', '_') + Environment.UserName;
+            // could produce bad name bacause of system envirement
+            return DateTime.Now.ToString().Replace(':', '-').Replace('.', '-').Replace(' ', '_').Replace("/", "-") + Environment.UserName;
         }
         public ResultsInTable()
         {
-            Directory.CreateDirectory(PathToSources);
+            //Directory.CreateDirectory(PathToSources);
             Directory.CreateDirectory(PathToResults);
             Directory.CreateDirectory(PathToExcelResults);
         }
@@ -80,6 +80,15 @@ namespace TestsWithResults
         [TestMethod]
         public void BaseAlgorithmResultInInExcel()
         {
+            try
+            {
+                new Excel.Application();
+            }
+            catch 
+            {
+                return;
+            }
+
             var excelApp = new Excel.Application();
             excelApp.Workbooks.Add();
             Excel._Worksheet workSheet = excelApp.ActiveSheet;
@@ -122,7 +131,7 @@ namespace TestsWithResults
             workSheet.Columns[4].AutoFit();
             workSheet.Columns[5].AutoFit();
             workSheet.Name = new_file_name;
-            workSheet.SaveAs(Environment.CurrentDirectory+"/" +PathToExcelResults +"/"+ new_file_name);
+            workSheet.SaveAs(Environment.CurrentDirectory.Normalize() +"/" +PathToExcelResults +"/"+ new_file_name);
             
             // Make the object visible.
             excelApp.Visible = true;
@@ -135,7 +144,7 @@ namespace TestsWithResults
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
 
-            string new_file_name = PathToResults +"/" + GenerateNewName() + result_type;
+            string new_file_name = PathToResults + "/" + GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
 
             PrepareResultsHead(result);
