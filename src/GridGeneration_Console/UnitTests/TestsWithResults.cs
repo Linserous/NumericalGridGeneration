@@ -4,20 +4,12 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Threading;
 
-//avoid assembly problem
-namespace System.Runtime.CompilerServices
-{
-    public class ExtensionAttribute : Attribute { }
-}
-
 namespace TestsWithResults
 {
     
     [TestClass]
     public class ResultsInTable  // TODO: Dinar: refactoring is neeeded
     {
-        
-        
         string PathToSources = @"../../../../../tests/sources";
         string PathToResults = @"../../../../../tests/results";
         string PathToExcelResults = @"../../../../../tests/resultsExcel";
@@ -143,7 +135,7 @@ namespace TestsWithResults
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
 
-            string new_file_name = GenerateNewName() + result_type;
+            string new_file_name = PathToResults +"/" + GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
 
             PrepareResultsHead(result);
@@ -165,7 +157,7 @@ namespace TestsWithResults
             }
             result.WriteLine("\tEND OF THE TEST RESULTS");
             result.Close();
-            // GridGeneration_Lib.GraphRestorer;
+            
         }
 
     }
