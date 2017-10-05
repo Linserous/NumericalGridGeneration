@@ -10,12 +10,13 @@ namespace System.Runtime.CompilerServices
     public class ExtensionAttribute : Attribute { }
 }
 
-namespace UnitTests
+namespace TestsWithResults
 {
     
     [TestClass]
     public class ResultsInTable  // TODO: Dinar: refactoring is neeeded
     {
+        
         
         string PathToSources = @"../../../../../tests/sources";
         string PathToResults = @"../../../../../tests/results";
@@ -73,6 +74,17 @@ namespace UnitTests
             return result + "]";
         }
 
+        string GenerateNewName()
+        {
+            return DateTime.Now.ToString().Replace(':', '-').Replace('.', '-').Replace(' ', '_') + Environment.UserName;
+        }
+        public ResultsInTable()
+        {
+            Directory.CreateDirectory(PathToSources);
+            Directory.CreateDirectory(PathToResults);
+            Directory.CreateDirectory(PathToExcelResults);
+        }
+
         [TestMethod]
         public void BaseAlgorithmResultInInExcel()
         {
@@ -86,11 +98,10 @@ namespace UnitTests
             workSheet.Cells[1, 4] = "Time";
             workSheet.Cells[1, 5] = "Result";
             //workSheet.Cells[1, 6] = "Memory";
-
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
 
-            string new_file_name = DateTime.Now.ToLongTimeString().Replace(':', '-') + Environment.UserName+ excel_type;
+            string new_file_name = GenerateNewName() + excel_type;
 
             for (int i = 0; i < files.Length; ++i)
             {
@@ -132,7 +143,7 @@ namespace UnitTests
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
 
-            string new_file_name = PathToResults + "/" + DateTime.Now.ToLongTimeString().Replace(':','-') + Environment.UserName + result_type;
+            string new_file_name = GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
 
             PrepareResultsHead(result);
