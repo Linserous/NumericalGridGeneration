@@ -6,7 +6,6 @@ using System.Threading;
 
 namespace TestsWithResults
 {
-    
     [TestClass]
     public class ResultsInTable  // TODO: Dinar: refactoring is neeeded
     {
@@ -40,7 +39,7 @@ namespace TestsWithResults
         bool GetValid(string file)
         {
             //TODO: Dinar: implement correct version
-            int []  index = { };
+            long []  index = { };
             int indexSize = 0;
             int[] graphData = { };
             return MeshRecovery_Lib.MeshRecovery.Validate(index, indexSize, graphData, out int gridDimension);
@@ -48,7 +47,7 @@ namespace TestsWithResults
         int GetNumerate(string file, out int[] graphNumeration)
         {
             //TODO: Dinar: implement correct version
-            int[] index = { };
+            long [] index = { };
             int indexSize = 0;
             int[] graphData = { };
             //int[] graphNumeration = { };
@@ -130,7 +129,7 @@ namespace TestsWithResults
                 workSheet.Columns[i+1].AutoFit();
             }
             workSheet.Name = new_file_name;
-            workSheet.SaveAs(Environment.CurrentDirectory.Normalize() +"/" +PathToExcelResults +"/"+ new_file_name);
+            workSheet.SaveAs(Environment.CurrentDirectory+"/"+PathToExcelResults +"/"+ new_file_name);
             
             // Make the object visible.
             excelApp.Visible = true;
@@ -143,7 +142,7 @@ namespace TestsWithResults
         {
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
-
+            
             string new_file_name = PathToResults + "/" + GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
 
@@ -164,6 +163,7 @@ namespace TestsWithResults
                 //TODO: Dinar: check memory usage ? 
                 WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedMilliseconds.ToString(), IntArrayToList(graphNumeration));
             }
+
             result.WriteLine("\tEND OF THE TEST RESULTS");
             result.Close();
             

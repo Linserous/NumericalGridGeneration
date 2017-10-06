@@ -16,7 +16,7 @@ namespace MeshRecovery_Lib
         /// <param name="adjncy">Adjacency list</param>
         /// <param name="meshDimension">Dimension of a regular grid that corresponds to the input graph</param>
         /// <returns>true if graph corresponds to a regular grid, otherwise false</returns>
-        public static bool Validate(int[] xadj, int size, int[] adjncy, out int meshDimension)
+        public static bool Validate(long[] xadj, int size, int[] adjncy, out int meshDimension)
         {
             // TODO: Implement
             meshDimension = 0;
@@ -35,7 +35,7 @@ namespace MeshRecovery_Lib
         /// 0 - success
         /// -1 - error
         /// </returns>
-        public static int Numerate(int[] xadj, int size, int[] adjncy, out int[] graphNumeration)
+        public static int Numerate(long[] xadj, int size, int[] adjncy, out int[] graphNumeration)
         {
             // TODO: Implement
             // TODO: graphNumeration may be 1-3 dimensional array

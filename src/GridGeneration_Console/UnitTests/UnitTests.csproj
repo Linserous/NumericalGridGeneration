@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="TestsWithResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FunctionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GridGeneration_Lib\MeshRecovery_Lib.csproj">
@@ -78,7 +79,11 @@
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(TargetDir)tests" MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\..\tests"</PreBuildEvent>
+    <PreBuildEvent>if not exist "$(SolutionDir)..\..\tests\sources" mkdir "$(SolutionDir)..\..\tests\sources"
+if not exist "$(SolutionDir)..\..\tests\resultsExcel" mkdir "$(SolutionDir)..\..\tests\resultsExcel"
+if not exist "$(SolutionDir)..\..\tests\results" mkdir "$(SolutionDir)..\..\tests\results"
+if not exist "$(SolutionDir)..\..\tests\answers" mkdir "$(SolutionDir)..\..\tests\answers"
+if not exist "$(TargetDir)tests" MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\..\tests"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
