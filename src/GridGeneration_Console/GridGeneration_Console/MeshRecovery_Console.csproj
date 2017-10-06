@@ -48,9 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\GridGeneration_Lib\GridGeneration_Lib.csproj">
+    <ProjectReference Include="..\..\GridGeneration_Lib\MeshRecovery_Lib.csproj">
       <Project>{499351e8-a053-4b90-ad39-454e9dea3e26}</Project>
-      <Name>GridGeneration_Lib</Name>
+      <Name>MeshRecovery_Lib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

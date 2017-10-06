@@ -43,7 +43,7 @@ namespace TestsWithResults
             int []  index = { };
             int indexSize = 0;
             int[] graphData = { };
-            return GridGeneration_Lib.GraphRestorer.Validate(index, indexSize, graphData, out int gridDimension);
+            return MeshRecovery_Lib.MeshRecovery.Validate(index, indexSize, graphData, out int gridDimension);
         }
         int GetNumerate(string file, out int[] graphNumeration)
         {
@@ -52,7 +52,7 @@ namespace TestsWithResults
             int indexSize = 0;
             int[] graphData = { };
             //int[] graphNumeration = { };
-            return GridGeneration_Lib.GraphRestorer.Numerate(index,indexSize,graphData, out graphNumeration);
+            return MeshRecovery_Lib.MeshRecovery.Numerate(index,indexSize,graphData, out graphNumeration);
         }
 
         string IntArrayToList(int[] arr)

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GridGeneration_Lib;
+using MeshRecovery_Lib;
 
-namespace GridGeneration_Console
+namespace MeshRecovery_Console
 {
     class Program
     {
