@@ -78,8 +78,7 @@
   </Target>
   <Import Project="..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>RD /S /Q "$(TargetDir)tests\sources"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(SolutionDir)..\..\tests\sources" mkdir "$(SolutionDir)..\..\tests\sources"

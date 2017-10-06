@@ -15,6 +15,7 @@ namespace TestsWithResults
         string PathToExcelResults = @"tests/resultsExcel";
         string result_type = @".rt";
         string excel_type = @".xlsx";
+        string[] head_columns = { "Name of file", "Valid", "Numerable", "Time", "Result" };
         int Padding = 25;
 
         void WriteRow(StreamWriter file, params string[] strings)
@@ -24,7 +25,7 @@ namespace TestsWithResults
         void PrepareResultsHead(StreamWriter file)
         {
             file.WriteLine("\tTest result fot Graph Restorer functions ( " + DateTime.Now.ToLongTimeString() + " ).");
-            WriteRow(file, "Name of file", "Valid", "Numerable", "Time", "Result"); //, "Memory" );
+            WriteRow(file, head_columns); //, "Memory" );
         }
         string PrepareRow(params string[] strings)
         {
@@ -70,19 +71,27 @@ namespace TestsWithResults
             // could produce bad name bacause of system envirement
             return DateTime.Now.ToString().Replace(':', '-').Replace('.', '-').Replace(' ', '_').Replace("/", "-") + Environment.UserName;
         }
+
+        void WriteRowExcel(Excel._Worksheet sheet, int line, params string[] str)
+        {
+            for (int i = 0; i < str.Length; ++i)
+                sheet.Cells[line, i + 1] = str[i];
+        }
+
         public ResultsInTable()
         {
-            //Directory.CreateDirectory(PathToSources);
-            Directory.CreateDirectory(PathToResults);
-            Directory.CreateDirectory(PathToExcelResults);
+
         }
+
 
         [TestMethod]
         public void BaseAlgorithmResultInInExcel()
         {
             try
             {
-                new Excel.Application();
+                var temp =  new Excel.Application();
+                //don`t forget closing that test app 
+                temp.Quit();
             }
             catch 
             {
@@ -93,11 +102,7 @@ namespace TestsWithResults
             excelApp.Workbooks.Add();
             Excel._Worksheet workSheet = excelApp.ActiveSheet;
 
-            workSheet.Cells[1, 1] = "Name of file";
-            workSheet.Cells[1, 2] = "Valid";
-            workSheet.Cells[1, 3] = "Numerable";
-            workSheet.Cells[1, 4] = "Time";
-            workSheet.Cells[1, 5] = "Result";
+            WriteRowExcel(workSheet, 1, head_columns);
             //workSheet.Cells[1, 6] = "Memory";
             string[] files = Directory.GetFiles(PathToSources);
             if (files.Length == 0) return;
@@ -118,23 +123,18 @@ namespace TestsWithResults
                 //TODO: Dinar: check possible values 
                 if (graphNumeration == null) graphNumeration = new int[] { 0, 0 };
                 //TODO: Dinar: check memory usage ? 
-                workSheet.Cells[i + 2, 1] = current_file_name;
-                workSheet.Cells[i + 2, 2] = valid;
-                workSheet.Cells[i + 2, 3] = numerate;
-                workSheet.Cells[i + 2, 4] = timer.Elapsed.ToString();
-                workSheet.Cells[i + 2, 5] = IntArrayToList(graphNumeration);
+                WriteRowExcel(workSheet, i+2, current_file_name, valid.ToString(), numerate.ToString(), timer.Elapsed.ToString(), IntArrayToList(graphNumeration));
             }
-            
-            workSheet.Columns[1].AutoFit();
-            workSheet.Columns[2].AutoFit();
-            workSheet.Columns[3].AutoFit();
-            workSheet.Columns[4].AutoFit();
-            workSheet.Columns[5].AutoFit();
+            for (int i = 0; i < head_columns.Length; ++i)
+            {
+                workSheet.Columns[i+1].AutoFit();
+            }
             workSheet.Name = new_file_name;
             workSheet.SaveAs(Environment.CurrentDirectory.Normalize() +"/" +PathToExcelResults +"/"+ new_file_name);
             
             // Make the object visible.
             excelApp.Visible = true;
+            
         }
 
    
