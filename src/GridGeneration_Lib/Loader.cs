@@ -115,28 +115,28 @@ namespace Graph
         /// </summary>
         /// <param name="g">—охран€емый граф</param>
         /// <param name="filename">ѕуть с названием файла</param>
-        public static void SaveGraphToMETISFormat(Graph g, string filename)
-        {
-            using (StreamWriter sw = new StreamWriter(filename))
-            {
-                //сохран€ю число вершин и число ƒ”√ (число ненулей в матрице смежности без учета симметрии) в первую строку
-                //sw.Write(string.Format("{0}\t{1}\t011", g.Size, g.ArcsCount));
-                sw.Write(string.Format("{0}\t{1}", g.Size, g.ArcsCount / 2));
-                //сохран€ю вершины и их св€зи
-                for (int i = 0; i < g.Size; i++)
-                {
-                    //[є вершины] [флаг 1 (вершина присутствует)] [степень вершины]
-                    //sw.Write(string.Format("\n{0}\t", i, 1, g.Weight[i]));
-                    sw.Write(string.Format("\n"));
-                    foreach (IArc j in g.Inc(i))
-                    {
-                        sw.Write(string.Format(" {0}", j.NodeB + 1));
-                        //sw.Write(string.Format(" {0} {1}", j.NodeB + 1, j.Weight));
-                    }
-                }
-                sw.Close();
-            }
-        }
+        //public static void SaveGraphToMETISFormat(Graph g, string filename)
+        //{
+        //    using (StreamWriter sw = new StreamWriter(filename))
+        //    {
+        //        //сохран€ю число вершин и число ƒ”√ (число ненулей в матрице смежности без учета симметрии) в первую строку
+        //        //sw.Write(string.Format("{0}\t{1}\t011", g.Size, g.ArcsCount));
+        //        sw.Write(string.Format("{0}\t{1}", g.Size, g.ArcsCount / 2));
+        //        //сохран€ю вершины и их св€зи
+        //        for (int i = 0; i < g.Size; i++)
+        //        {
+        //            //[є вершины] [флаг 1 (вершина присутствует)] [степень вершины]
+        //            //sw.Write(string.Format("\n{0}\t", i, 1, g.Weight[i]));
+        //            sw.Write(string.Format("\n"));
+        //            foreach (IArc j in g.Inc(i))
+        //            {
+        //                sw.Write(string.Format(" {0}", j.NodeB + 1));
+        //                //sw.Write(string.Format(" {0} {1}", j.NodeB + 1, j.Weight));
+        //            }
+        //        }
+        //        sw.Close();
+        //    }
+        //}
 
         #endregion
 
@@ -214,17 +214,17 @@ namespace Graph
             return xyz;
         }
 
-        public static void SaveGeometryToXYZFormat(XYZ[] xyz, string filename)
-        {
-            using (StreamWriter sw = new StreamWriter(filename))
-            {
-                sw.WriteLine("3");
-                sw.WriteLine(xyz.Length);
-                for (int i = 0; i < xyz.Length; i++)
-                    sw.WriteLine(string.Format("{0}\t{1}\t{2}\t{3}", i, xyz[i].X, xyz[i].Y, xyz[i].Z));
-                sw.Close();
-            }
-        }
+        //public static void SaveGeometryToXYZFormat(XYZ[] xyz, string filename)
+        //{
+        //    using (StreamWriter sw = new StreamWriter(filename))
+        //    {
+        //        sw.WriteLine("3");
+        //        sw.WriteLine(xyz.Length);
+        //        for (int i = 0; i < xyz.Length; i++)
+        //            sw.WriteLine(string.Format("{0}\t{1}\t{2}\t{3}", i, xyz[i].X, xyz[i].Y, xyz[i].Z));
+        //        sw.Close();
+        //    }
+        //}
 
 
         #endregion
