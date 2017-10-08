@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GridGeneration_Lib
+namespace MeshRecovery_Lib
 {
     public class Graph
     {

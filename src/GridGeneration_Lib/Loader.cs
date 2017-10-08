@@ -88,12 +88,12 @@ namespace MeshRecovery_Lib
             }
         }
 
-        public static GridGeneration_Lib.Graph LoadGraphFromMETISFormat(string filename)
+        public static Graph LoadGraphFromMETISFormat(string filename)
         {
             long[] xadj;
             int[] adjncy;
             LoadGraphFromMETISFormat(filename, out xadj, out adjncy);
-            return new GridGeneration_Lib.Graph(xadj, adjncy);
+            return new Graph(xadj, adjncy);
         }
 
         /// <summary>
