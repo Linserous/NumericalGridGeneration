@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FunctionsTest.cs" />
     <Compile Include="TraversalTest.cs" />
+    <Compile Include="TestForGraph.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\GridGeneration_Lib\MeshRecovery_Lib.csproj">
