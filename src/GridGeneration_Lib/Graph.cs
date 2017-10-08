@@ -17,24 +17,26 @@ namespace GridGeneration_Lib
             this.adjncy = adjncy;
         }
 
-        public long GetAdjVertexes(int v, int[] buff)
+        public long GetAdjVertices(int v, out int[] buff)
         {
+            buff = null;
+            buff = new int[xadj[v+1]-xadj[v]];
             for (long i = xadj[v]; i < xadj[v + 1]; ++i)
                 buff[i - xadj[v]] = adjncy[i];
             return xadj[v + 1] - xadj[v];
         }
 
-        public long GetAdjVertexesCount(int v)
+        public long GetAdjVerticesCount(int v)
         {
             return xadj[v + 1] - xadj[v];
         }
 
         public int GetEdgeCount()
         {
-	        return adjncy.Length;
+	        return adjncy.Length/2;
         }
 
-        public int GetVertexCount()
+        public int GetVerticesCount()
         {
 	        return xadj.Length;
         }
