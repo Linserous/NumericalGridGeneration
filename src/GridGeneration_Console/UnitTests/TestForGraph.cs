@@ -8,7 +8,7 @@ namespace UnitTests
     public class TestForGraph
     {
         [TestMethod]
-        public void TestMethod1()
+        public void CommonTest()
         {
             long[] xadj = {0, 2, 5, 8, 11,13,16,18};
             int[] adjncy = { 1, 3,
@@ -22,10 +22,12 @@ namespace UnitTests
             graph.GetAdjVertices(2, out int[] buff);
             
             long count = graph.GetAdjVerticesCount(2);
-            bool result = (buff.Length == count);
-            Assert.IsTrue(result);
-            Assert.IsTrue(graph.GetVerticesCount() == 7);
-            Assert.IsTrue(graph.GetEdgeCount() == 9);
+
+            CollectionAssert.AreEqual(buff, new int[]{ 1, 3, 5});
+
+            Assert.AreEqual(buff.Length, count);
+            Assert.AreEqual(graph.GetVerticesCount(), 7);
+            Assert.AreEqual(graph.GetEdgeCount(), 9);
         }
     }
 }
