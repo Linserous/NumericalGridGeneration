@@ -5,20 +5,6 @@ using System.IO;
 
 namespace MeshRecovery_Lib
 {
-    public class Graph
-    {
-        private int[] adjncy;
-        private long[] xadj;
-
-        public Graph(long[] xadj, int[] adjncy)
-        {
-            this.xadj = xadj;
-            this.adjncy = adjncy;
-        }
-    }
-
-    
-
     public class Loader
     {
         #region Graph METIS Format
@@ -102,12 +88,12 @@ namespace MeshRecovery_Lib
             }
         }
 
-        public static Graph LoadGraphFromMETISFormat(string filename)
+        public static GridGeneration_Lib.Graph LoadGraphFromMETISFormat(string filename)
         {
             long[] xadj;
             int[] adjncy;
             LoadGraphFromMETISFormat(filename, out xadj, out adjncy);
-            return new Graph(xadj, adjncy);
+            return new GridGeneration_Lib.Graph(xadj, adjncy);
         }
 
         /// <summary>
