@@ -38,7 +38,7 @@ namespace GridGeneration_Lib
 
         public int GetVerticesCount()
         {
-	        return xadj.Length;
+	        return xadj.Length - 1;
         }
     }
 }
