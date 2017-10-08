@@ -22,7 +22,7 @@ namespace MeshRecovery_Lib
             // TODO: Implement for 2,3 dimensions
             meshDimension = 0;
 
-            GridGeneration_Lib.Graph graph = new GridGeneration_Lib.Graph(xadj, adjncy);
+            Graph graph = new Graph(xadj, adjncy);
             // fast check of valid 
             if (graph.GetVerticesCount() != size - 1)
             {
@@ -51,7 +51,7 @@ namespace MeshRecovery_Lib
         /// 2 - two dimension
         /// 3 - three dimension 
         /// </returns>
-        private static int GetDimension(GridGeneration_Lib.Graph  graph)
+        private static int GetDimension(Graph  graph)
         {
             int V = graph.GetVerticesCount();
             int E = graph.GetEdgeCount();
@@ -86,7 +86,7 @@ namespace MeshRecovery_Lib
             // TODO: Implement
             // TODO: graphNumeration may be 1-3 dimensional array
              
-            GridGeneration_Lib.Graph graph = new GridGeneration_Lib.Graph(xadj, adjncy);
+            Graph graph = new Graph(xadj, adjncy);
 
             graphNumeration = null;
             int V = graph.GetVerticesCount();
@@ -112,7 +112,7 @@ namespace MeshRecovery_Lib
         /// true - correct structure
         /// false - not correct structure
         /// </returns>
-        private static bool OneDimensionValidate(GridGeneration_Lib.Graph graph)
+        private static bool OneDimensionValidate(Graph graph)
         {
             //I was sure that one dimension graphs are good boys, but then..
             // 0--0
@@ -158,7 +158,7 @@ namespace MeshRecovery_Lib
         /// 0 - success
         /// -1 - error
         /// </returns>
-        private static int OneDimensionNumerate(GridGeneration_Lib.Graph graph, out int[] graphNumeration)
+        private static int OneDimensionNumerate(Graph graph, out int[] graphNumeration)
         { 
             int V = graph.GetVerticesCount();
             graphNumeration = new int[V];

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GridGeneration_Lib;
+using MeshRecovery_Lib;
 
 namespace UnitTests
 {
