@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Threading;
+using MeshRecovery_Lib;
 
 namespace TestsWithResults
 {
@@ -16,6 +17,11 @@ namespace TestsWithResults
         string excel_type = @".xlsx";
         string[] head_columns = { "Name of file", "Valid", "Numerable", "Time", "Result" };
         int Padding = 25;
+
+        public ResultsInTable()
+        {
+            MeshRecovery.Equals(null, null);
+        }
 
         void WriteRow(StreamWriter file, params string[] strings)
         {
@@ -36,14 +42,6 @@ namespace TestsWithResults
             return result+"|";
         }
         
-        bool GetValid(string file)
-        {
-            //TODO: Dinar: implement correct version
-            long []  index = { };
-            int indexSize = 0;
-            int[] graphData = { };
-            return MeshRecovery_Lib.MeshRecovery.Validate(index, indexSize, graphData, out int gridDimension);
-        }
         int GetNumerate(string file, out int[] graphNumeration)
         {
             //TODO: Dinar: implement correct version
@@ -77,12 +75,6 @@ namespace TestsWithResults
                 sheet.Cells[line, i + 1] = str[i];
         }
 
-        public ResultsInTable()
-        {
-
-        }
-
-
         [TestMethod]
         public void BaseAlgorithmResultInInExcel()
         {
@@ -108,21 +100,24 @@ namespace TestsWithResults
 
             string new_file_name = GenerateNewName() + excel_type;
 
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+
             for (int i = 0; i < files.Length; ++i)
             {
-                string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
-                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                int meshDimension = 0;
+                long[] xadj;
+                int[] adjncy;
                 bool valid = false;
-                int numerate = -1;
-                int[] graphNumeration;
+                int numerate = 0;
+                string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
+                Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 timer.Start();
-                valid = GetValid(files[i]);
-                numerate = GetNumerate(files[i], out graphNumeration);
+                valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
+                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out int[] graphNumeration);
                 timer.Stop();
-                //TODO: Dinar: check possible values 
-                if (graphNumeration == null) graphNumeration = new int[] { 0, 0 };
                 //TODO: Dinar: check memory usage ? 
-                WriteRowExcel(workSheet, i+2, current_file_name, valid.ToString(), numerate.ToString(), timer.Elapsed.ToString(), IntArrayToList(graphNumeration));
+                WriteRowExcel(workSheet, i+2, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
+                timer.Reset();
             }
             for (int i = 0; i < head_columns.Length; ++i)
             {
@@ -145,23 +140,26 @@ namespace TestsWithResults
             
             string new_file_name = PathToResults + "/" + GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
-
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             PrepareResultsHead(result);
             for (int i = 0; i < files.Length; ++i)
             {
                 string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
-                System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+
+                int meshDimension = 0;
+                long[] xadj;
+                int[] adjncy;
                 bool valid = false;
-                int numerate = -1;
-                int[] graphNumeration;
+                int numerate = 0;
+                Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 timer.Start();
-                valid = GetValid(files[i]);
-                numerate = GetNumerate(files[i], out graphNumeration);
+                valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
+                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out int[] graphNumeration);
                 timer.Stop();
-                //TODO: Dinar: check possible values 
-                if (graphNumeration == null) graphNumeration = new int[] { 0, 0 };
                 //TODO: Dinar: check memory usage ? 
-                WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedMilliseconds.ToString(), IntArrayToList(graphNumeration));
+                //TODO: Dinar: check memory usage ? 
+                WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
+                timer.Reset();
             }
 
             result.WriteLine("\tEND OF THE TEST RESULTS");
