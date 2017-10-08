@@ -109,11 +109,12 @@ namespace TestsWithResults
                 int[] adjncy;
                 bool valid = false;
                 int numerate = 0;
+                int[] graphNumeration;
                 string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
                 Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 timer.Start();
                 valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
-                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out int[] graphNumeration);
+                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
                 WriteRowExcel(workSheet, i+2, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
@@ -151,10 +152,11 @@ namespace TestsWithResults
                 int[] adjncy;
                 bool valid = false;
                 int numerate = 0;
+                int[] graphNumeration;
                 Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 timer.Start();
                 valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
-                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out int[] graphNumeration);
+                numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
                 //TODO: Dinar: check memory usage ? 

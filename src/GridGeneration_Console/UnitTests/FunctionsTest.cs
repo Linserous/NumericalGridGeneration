@@ -29,10 +29,13 @@ namespace UnitTests
 
             for (int i = 0; i < files.Length; ++i)
             {
+                long[] xadj;
+                int[] adjncy;
+                int[] graphNumeration;
                 string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
-                Loader.LoadGraphFromMETISFormat(files[i], out long[] xadj, out int[] adjncy);
+                Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 bool valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out int meshDimension);
-                int numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out int[] graphNumeration);
+                int numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out  graphNumeration);
 
                 StreamReader read;
                 try

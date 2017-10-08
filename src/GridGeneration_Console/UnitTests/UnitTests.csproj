@@ -85,7 +85,8 @@
 if not exist "$(SolutionDir)..\..\tests\resultsExcel" mkdir "$(SolutionDir)..\..\tests\resultsExcel"
 if not exist "$(SolutionDir)..\..\tests\results" mkdir "$(SolutionDir)..\..\tests\results"
 if not exist "$(SolutionDir)..\..\tests\answers" mkdir "$(SolutionDir)..\..\tests\answers"
-if not exist "$(TargetDir)tests" MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\..\tests"</PreBuildEvent>
+rmdir "$(TargetDir)tests" 
+MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\..\tests"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

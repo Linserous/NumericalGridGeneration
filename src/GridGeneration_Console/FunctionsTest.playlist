@@ -1,1 +1,1 @@
-<Playlist Version="1.0"><Add Test="UnitTests.FunctionsTest.TestMethod1" /><Add Test="UnitTests.FunctionsTest.CheckAllFiles" /><Add Test="UnitTests.FunctionsTest.CheckAllFilesWithBaseAlgorithm" /></Playlist>
+<Playlist Version="1.0"><Add Test="UnitTests.FunctionsTest.TestMethod1" /><Add Test="UnitTests.FunctionsTest.CheckAllFiles" /><Add Test="UnitTests.FunctionsTest.CheckAllFilesWithBaseAlgorithm" /><Add Test="UnitTests.TraversalTest.CheckTraversal" /><Add Test="UnitTests.TestForGraph.CommonTest" /></Playlist>
