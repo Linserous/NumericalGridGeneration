@@ -25,11 +25,17 @@ namespace MeshRecovery_Lib
         }
         public Direction DIRECTION { set; get; }
 
+        private delegate void AlgorithmFunc(int vertex);
+        private AlgorithmFunc[] algorithmFuncs;
+        private EventHandler<int>[] eventHandlers;
+        
         public Traversal(Graph graph)
         {
             this.graph = graph;
             DIRECTION = Direction.DFS;
             statuses = new HandleStatus[graph.GetVerticesCount()];
+            algorithmFuncs = new AlgorithmFunc[2] { DFS, BFS };
+            eventHandlers = new EventHandler<int>[3] { NewVertex, VertexInProgress, CompletedVertex };
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -37,26 +43,17 @@ namespace MeshRecovery_Lib
         public EventHandler<int> VertexInProgress;
         public EventHandler<int> CompletedVertex;
 
-        public void run()
+        public void Run()
         {
             for(int i = 0; i < statuses.Count(); ++i)
             {
                 statuses[i] = HandleStatus.NEW;
             }
-            handleVertexNotify(0);
-
-            switch (DIRECTION)
-            {
-                case Direction.DFS:
-                    dfs();
-                    break;
-                case Direction.BFS:
-                    bfs();
-                    break;
-            }
+            HandleVertexNotify(0);
+            algorithmFuncs[Convert.ToInt32(DIRECTION)](0);
         }
 
-        private void dfs(int vertex = 0)
+        private void DFS(int vertex)
         {
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
@@ -64,21 +61,21 @@ namespace MeshRecovery_Lib
             graph.GetAdjVertices(vertex, out vertices);
             foreach (var v in vertices)
             {
-                handleVertexNotify(v);
+                HandleVertexNotify(v);
                 if (statuses[v] == HandleStatus.NEW)
                 {
-                    dfs(v);
+                    DFS(v);
                 }
             }
             statuses[vertex] = HandleStatus.COMPLETED;
         }
 
-        private void bfs()
+        private void BFS(int vetrex)
         {
             Queue<int> queue = new Queue<int>();
-            queue.Enqueue(0);
+            queue.Enqueue(vetrex);
 
-            statuses[0] = HandleStatus.IN_PROGRESS;
+            statuses[vetrex] = HandleStatus.IN_PROGRESS;
 
             while (queue.Count() != 0)
             {
@@ -87,7 +84,7 @@ namespace MeshRecovery_Lib
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
                 {
-                    handleVertexNotify(el);
+                    HandleVertexNotify(el);
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
@@ -98,20 +95,9 @@ namespace MeshRecovery_Lib
             }
         }
 
-        private void handleVertexNotify(int vertex)
+        private void HandleVertexNotify(int vertex)
         {
-            switch (statuses[vertex])
-            {
-                case HandleStatus.NEW:
-                   if (NewVertex != null) NewVertex(this, vertex);
-                    break;
-                case HandleStatus.IN_PROGRESS:
-                    if (VertexInProgress != null) VertexInProgress(this, vertex);
-                    break;
-                case HandleStatus.COMPLETED:
-                    if (CompletedVertex != null) CompletedVertex(this, vertex);
-                    break;
-            }
+            eventHandlers[Convert.ToInt32(statuses[vertex])]?.Invoke(this, vertex);
         }
     }
 }
