@@ -17,9 +17,9 @@ namespace MeshRecovery_Lib
         }
         private HandleStatus[] statuses;
 
-        // If you want add new direction and algorithm 
-        // you could add enum element before 'LAST'
-        // and create method with same name and with parameter 'int'
+        // If you want to add a new direction and algorithm
+        // you can add an enumeration element to 'LAST'
+        // and create a method with the same name and with the 'int' param
         public enum Direction
         {
             DFS = 0,
