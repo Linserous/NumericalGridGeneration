@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace MeshRecovery_Lib
+namespace Console_Core
 {
     public class Loader
     {
