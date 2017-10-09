@@ -41,7 +41,6 @@ namespace UnitTests
                 try
                 {
                     read = new StreamReader(PathToAnswers + "/" + current_file_name.Replace(".graph", ".num"));
-                    //Assert.AreEqual(GraphNumerationToString(graphNumeration), read.ReadToEnd());
                     StringAssert.Contains(read.ReadToEnd().Replace('\n', ' '), GraphNumerationToString(graphNumeration));
                     read.Close();
                 }

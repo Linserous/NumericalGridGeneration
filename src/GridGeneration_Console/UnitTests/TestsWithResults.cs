@@ -4,6 +4,7 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Threading;
 using MeshRecovery_Lib;
+using System.Collections.Generic;
 
 namespace TestsWithResults
 {
@@ -16,12 +17,7 @@ namespace TestsWithResults
         string result_type = @".rt";
         string excel_type = @".xlsx";
         string[] head_columns = { "Name of file", "Valid", "Numerable", "Time", "Result" };
-        int Padding = 25;
-
-        public ResultsInTable()
-        {
-            MeshRecovery.Equals(null, null);
-        }
+        int Padding = 20;
 
         void WriteRow(StreamWriter file, params string[] strings)
         {
@@ -29,12 +25,17 @@ namespace TestsWithResults
         }
         void PrepareResultsHead(StreamWriter file)
         {
-            file.WriteLine("\tTest result fot Graph Restorer functions ( " + DateTime.Now.ToLongTimeString() + " ).");
+            file.WriteLine("\tTest result for Mesh Recovery functions ( " + DateTime.Now.ToLongTimeString() + " ).");
             WriteRow(file, head_columns); //, "Memory" );
         }
         string PrepareRow(params string[] strings)
         {
             string result="";
+            for (int i = 0; i < strings.Length; ++i)
+            {
+                if (strings[i].Length > Padding) Padding = strings[i].Length;
+            }
+
             for (int i = 0; i<strings.Length; ++i)
             {
                 result += "|"+strings[i].PadLeft(Padding) +"\t";
@@ -136,14 +137,14 @@ namespace TestsWithResults
         [TestMethod]
         public void BaseAlrorithmResultInRT()
         {
-            string[] files = Directory.GetFiles(PathToSources);
-            if (files.Length == 0) return;
-            
+            List<string> files = new List<string>( Directory.GetFiles(PathToSources));
+            if (files.Count == 0) return;
+            files.Sort ( Comparer<string>.Create((y,x) => x.Length-y.Length ) );
             string new_file_name = PathToResults + "/" + GenerateNewName() + result_type;
             StreamWriter result = new StreamWriter(new_file_name);
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             PrepareResultsHead(result);
-            for (int i = 0; i < files.Length; ++i)
+            for (int i = 0; i < files.Count; ++i)
             {
                 string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
 
