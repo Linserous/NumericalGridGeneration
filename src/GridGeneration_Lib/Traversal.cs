@@ -37,26 +37,26 @@ namespace MeshRecovery_Lib
         public EventHandler<int> VertexInProgress;
         public EventHandler<int> CompletedVertex;
 
-        public void run()
+        public void Run()
         {
             for(int i = 0; i < statuses.Count(); ++i)
             {
                 statuses[i] = HandleStatus.NEW;
             }
-            handleVertexNotify(0);
+            HandleVertexNotify(0);
 
             switch (DIRECTION)
             {
                 case Direction.DFS:
-                    dfs();
+                    DFS();
                     break;
                 case Direction.BFS:
-                    bfs();
+                    BFS();
                     break;
             }
         }
 
-        private void dfs(int vertex = 0)
+        private void DFS(int vertex = 0)
         {
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
@@ -64,16 +64,16 @@ namespace MeshRecovery_Lib
             graph.GetAdjVertices(vertex, out vertices);
             foreach (var v in vertices)
             {
-                handleVertexNotify(v);
+                HandleVertexNotify(v);
                 if (statuses[v] == HandleStatus.NEW)
                 {
-                    dfs(v);
+                    DFS(v);
                 }
             }
             statuses[vertex] = HandleStatus.COMPLETED;
         }
 
-        private void bfs()
+        private void BFS()
         {
             Queue<int> queue = new Queue<int>();
             queue.Enqueue(0);
@@ -87,7 +87,7 @@ namespace MeshRecovery_Lib
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
                 {
-                    handleVertexNotify(el);
+                    HandleVertexNotify(el);
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
@@ -98,7 +98,7 @@ namespace MeshRecovery_Lib
             }
         }
 
-        private void handleVertexNotify(int vertex)
+        private void HandleVertexNotify(int vertex)
         {
             switch (statuses[vertex])
             {
