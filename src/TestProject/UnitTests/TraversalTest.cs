@@ -19,12 +19,12 @@ namespace UnitTests
 
             List<int> vertices = new List<int>();
             t.NewVertex += (sender, e) => vertices.Add(e);
-            t.run();
+            t.Run();
             CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 3, 2 });
 
             vertices.Clear();
             t.DIRECTION = Traversal.Direction.BFS;
-            t.run();
+            t.Run();
             CollectionAssert.AreEqual(vertices, new List <int>{ 0, 1, 2, 3 });
         }
     }
