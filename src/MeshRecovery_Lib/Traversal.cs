@@ -17,6 +17,9 @@ namespace MeshRecovery_Lib
         }
         private HandleStatus[] statuses;
 
+        // if yon want add new direction and algorithm 
+        // you could add enum element before 'LAST'
+        // and create method with same name and with parameter 'int'
         public enum Direction
         {
             DFS = 0,
@@ -32,7 +35,7 @@ namespace MeshRecovery_Lib
             this.graph = graph;
             DIRECTION = Direction.DFS;
             statuses = new HandleStatus[graph.GetVerticesCount()];
-            algorithmFuncs = new MethodInfo[Convert.ToInt32(Direction.LAST)];// { DFS, BFS };
+            algorithmFuncs = new MethodInfo[Convert.ToInt32(Direction.LAST)];
             for (Direction d = Direction.DFS; d < Direction.LAST; ++d)
             {
                 var name = Enum.GetName(typeof(Direction), d);
