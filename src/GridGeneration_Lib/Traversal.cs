@@ -9,14 +9,14 @@ namespace MeshRecovery_Lib
     public class Traversal
     {
         private Graph graph;
-    
-        private enum Color
+
+        private enum HandleStatus
         {
-            WHITE = 0,
-            GRAY,
-            BLACK
+            NEW = 0,
+            IN_PROGRESS,
+            COMPLETED
         }
-        private Color[] vColors;
+        private HandleStatus[] statuses;
 
         public enum Direction
         {
@@ -29,51 +29,56 @@ namespace MeshRecovery_Lib
         {
             this.graph = graph;
             DIRECTION = Direction.DFS;
-            vColors = new Color[graph.GetVerticesCount()];
+            statuses = new HandleStatus[graph.GetVerticesCount()];
         }
-        
-        //delegate, which triggers when new vertex was handled
-        public delegate void TraverseCallback(int vertex);
 
-        public void run(TraverseCallback call)
+        //events, which trigger when vertex is handled with correspond HandleStatus
+        public EventHandler<int> NewVertex;
+        public EventHandler<int> VertexInProgress;
+        public EventHandler<int> CompletedVertex;
+
+        public void run()
         {
-            for(int i = 0; i < vColors.Count(); ++i)
+            for(int i = 0; i < statuses.Count(); ++i)
             {
-                vColors[i] = Color.WHITE;
+                statuses[i] = HandleStatus.NEW;
             }
-            switch(DIRECTION)
+            handleStatusNotify(0);
+
+            switch (DIRECTION)
             {
                 case Direction.DFS:
-                    dfs(0, call);
+                    dfs();
                     break;
                 case Direction.BFS:
-                    bfs(0, call);
+                    bfs();
                     break;
             }
         }
 
-        private void dfs(int vertex, TraverseCallback call)
+        private void dfs(int vertex = 0)
         {
-            call(vertex);
-            vColors[vertex] = Color.GRAY;
+            statuses[vertex] = HandleStatus.IN_PROGRESS;
+
             int[] vertices;
             graph.GetAdjVertices(vertex, out vertices);
             foreach (var v in vertices)
             {
-                if (vColors[v] == Color.WHITE)
+                handleStatusNotify(v);
+                if (statuses[v] == HandleStatus.NEW)
                 {
-                    dfs(v, call);
+                    dfs(v);
                 }
             }
-            vColors[vertex] = Color.BLACK;
+            statuses[vertex] = HandleStatus.COMPLETED;
         }
 
-        private void bfs(int vertex, TraverseCallback call)
+        private void bfs()
         {
             Queue<int> queue = new Queue<int>();
-            call(vertex);
-            queue.Enqueue(vertex);
-            vColors[vertex] = Color.GRAY;
+            queue.Enqueue(0);
+
+            statuses[0] = HandleStatus.IN_PROGRESS;
 
             while (queue.Count() != 0)
             {
@@ -82,14 +87,30 @@ namespace MeshRecovery_Lib
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
                 {
-                    if (vColors[el] == Color.WHITE)
+                    handleStatusNotify(el);
+                    if (statuses[el] == HandleStatus.NEW)
                     {
-                        call(el);
-                        vColors[el] = Color.GRAY;
+                        statuses[el] = HandleStatus.IN_PROGRESS;
                         queue.Enqueue(el);
                     }
                 }
-                vColors[v] = Color.BLACK;
+                statuses[v] = HandleStatus.COMPLETED;
+            }
+        }
+
+        private void handleStatusNotify(int vertex)
+        {
+            switch (statuses[vertex])
+            {
+                case HandleStatus.NEW:
+                   if (NewVertex != null) NewVertex(this, vertex);
+                    break;
+                case HandleStatus.IN_PROGRESS:
+                    if (VertexInProgress != null) VertexInProgress(this, vertex);
+                    break;
+                case HandleStatus.COMPLETED:
+                    if (CompletedVertex != null) CompletedVertex(this, vertex);
+                    break;
             }
         }
     }

@@ -17,14 +17,15 @@ namespace UnitTests
             Graph g = new Graph(xadj, adjncy);
             Traversal t = new Traversal(g);
 
-            List<int> vertices1 = new List<int>();
-            t.run(v => vertices1.Add(v));
-            CollectionAssert.AreEqual(vertices1, new List<int> { 0, 1, 3, 2 });
+            List<int> vertices = new List<int>();
+            t.NewVertex += (sender, e) => vertices.Add(e);
+            t.run();
+            CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 3, 2 });
 
-            List<int> vertices2 = new List<int>();
+            vertices.Clear();
             t.DIRECTION = Traversal.Direction.BFS;
-            t.run(v => vertices2.Add(v));
-            CollectionAssert.AreEqual(vertices2, new List <int>{ 0, 1, 2, 3 });
+            t.run();
+            CollectionAssert.AreEqual(vertices, new List <int>{ 0, 1, 2, 3 });
         }
     }
 }
