@@ -1,0 +1,15 @@
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\UnitTests.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\UnitTests.pdb
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\GridGeneration_Lib.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\GridGeneration_Lib.pdb
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\obj\Debug\UnitTests.csprojResolveAssemblyReference.cache
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\obj\Debug\UnitTests.csproj.CoreCompileInputs.cache
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\obj\Debug\UnitTests.dll
+C:\university\numericalGridGeneration\NumericalGridGeneration\src\GridGeneration_Console\UnitTests\obj\Debug\UnitTests.pdb
