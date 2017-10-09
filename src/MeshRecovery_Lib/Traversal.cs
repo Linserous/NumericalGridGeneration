@@ -27,7 +27,6 @@ namespace MeshRecovery_Lib
 
         private delegate void AlgorithmFunc(int vertex);
         private AlgorithmFunc[] algorithmFuncs;
-        private EventHandler<int>[] eventHandlers;
         
         public Traversal(Graph graph)
         {
@@ -35,7 +34,6 @@ namespace MeshRecovery_Lib
             DIRECTION = Direction.DFS;
             statuses = new HandleStatus[graph.GetVerticesCount()];
             algorithmFuncs = new AlgorithmFunc[2] { DFS, BFS };
-            eventHandlers = new EventHandler<int>[3] { NewVertex, VertexInProgress, CompletedVertex };
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -97,7 +95,18 @@ namespace MeshRecovery_Lib
 
         private void HandleVertexNotify(int vertex)
         {
-            eventHandlers[Convert.ToInt32(statuses[vertex])]?.Invoke(this, vertex);
+            switch(statuses[vertex])
+            {
+                case HandleStatus.NEW:
+                    NewVertex?.Invoke(this, vertex);
+                    break;
+                case HandleStatus.IN_PROGRESS:
+                    VertexInProgress?.Invoke(this, vertex);
+                    break;
+                case HandleStatus.COMPLETED:
+                    CompletedVertex?.Invoke(this, vertex);
+                    break;
+            }
         }
     }
 }
