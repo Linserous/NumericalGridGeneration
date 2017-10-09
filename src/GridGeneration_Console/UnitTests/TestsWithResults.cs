@@ -125,7 +125,7 @@ namespace TestsWithResults
             {
                 workSheet.Columns[i+1].AutoFit();
             }
-            workSheet.Name = new_file_name;
+            workSheet.Name = "Results";
             workSheet.SaveAs(Environment.CurrentDirectory+"/"+PathToExcelResults +"/"+ new_file_name);
             
             // Make the object visible.
