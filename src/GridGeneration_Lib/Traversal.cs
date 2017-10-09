@@ -43,7 +43,7 @@ namespace MeshRecovery_Lib
             {
                 statuses[i] = HandleStatus.NEW;
             }
-            handleStatusNotify(0);
+            handleVertexNotify(0);
 
             switch (DIRECTION)
             {
@@ -64,7 +64,7 @@ namespace MeshRecovery_Lib
             graph.GetAdjVertices(vertex, out vertices);
             foreach (var v in vertices)
             {
-                handleStatusNotify(v);
+                handleVertexNotify(v);
                 if (statuses[v] == HandleStatus.NEW)
                 {
                     dfs(v);
@@ -87,7 +87,7 @@ namespace MeshRecovery_Lib
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
                 {
-                    handleStatusNotify(el);
+                    handleVertexNotify(el);
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
@@ -98,7 +98,7 @@ namespace MeshRecovery_Lib
             }
         }
 
-        private void handleStatusNotify(int vertex)
+        private void handleVertexNotify(int vertex)
         {
             switch (statuses[vertex])
             {
