@@ -20,6 +20,7 @@ namespace MeshRecovery_Lib
         public long GetAdjVertices(int v, out int[] buff)
         {
             buff = null;
+            if (v >= xadj.Length - 1 || v < 0) return -1;
             buff = new int[xadj[v+1]-xadj[v]];
             for (long i = xadj[v]; i < xadj[v + 1]; ++i)
                 buff[i - xadj[v]] = adjncy[i];
@@ -28,6 +29,7 @@ namespace MeshRecovery_Lib
 
         public long GetAdjVerticesCount(int v)
         {
+            if (v >= xadj.Length - 1 || v < 0) return -1;
             return xadj[v + 1] - xadj[v];
         }
 
