@@ -1,7 +1,0 @@
-	Test result for Mesh Recovery functions ( 20:10:00 ).
-|        Name of file	|               Valid	|           Numerable	|                Time	|              Result	|
-|      line_mix.graph	|                True	|                   0	|                5610	|         [3,2,1,4,5]	|
-|         line2.graph	|                True	|                   0	|                   6	|               [1,2]	|
-|         line3.graph	|                True	|                   0	|                   7	|             [1,2,3]	|
-|         line4.graph	|                True	|                   0	|                   7	|           [1,2,3,4]	|
-	END OF THE TEST RESULTS
