@@ -5,3 +5,6 @@ packages
 obj
 bin
 .vs
+*.user
+*.htm
+Backup

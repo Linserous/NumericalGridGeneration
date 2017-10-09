@@ -76,17 +76,17 @@
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
-  <Import Project="..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" />
+  <Import Project="..\..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.2.0-beta3\build\net45\MSTest.TestAdapter.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(SolutionDir)..\..\tests\sources" mkdir "$(SolutionDir)..\..\tests\sources"
-if not exist "$(SolutionDir)..\..\tests\resultsExcel" mkdir "$(SolutionDir)..\..\tests\resultsExcel"
-if not exist "$(SolutionDir)..\..\tests\results" mkdir "$(SolutionDir)..\..\tests\results"
-if not exist "$(SolutionDir)..\..\tests\answers" mkdir "$(SolutionDir)..\..\tests\answers"
+    <PreBuildEvent>if not exist "$(SolutionDir)..\tests\sources" mkdir "$(SolutionDir)..\tests\sources"
+if not exist "$(SolutionDir)..\tests\resultsExcel" mkdir "$(SolutionDir)..\tests\resultsExcel"
+if not exist "$(SolutionDir)..\tests\results" mkdir "$(SolutionDir)..\tests\results"
+if not exist "$(SolutionDir)..\tests\answers" mkdir "$(SolutionDir)..\tests\answers"
 rmdir "$(TargetDir)tests" 
-MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\..\tests"</PreBuildEvent>
+MKLINK /D /J "$(TargetDir)tests\"  "$(SolutionDir)..\tests"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
