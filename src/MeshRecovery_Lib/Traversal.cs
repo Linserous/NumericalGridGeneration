@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace MeshRecovery_Lib
 {
@@ -21,19 +20,24 @@ namespace MeshRecovery_Lib
         public enum Direction
         {
             DFS = 0,
-            BFS
+            BFS,
+            LAST
         }
         public Direction DIRECTION { set; get; }
 
-        private delegate void AlgorithmFunc(int vertex);
-        private AlgorithmFunc[] algorithmFuncs;
-        
+        private MethodInfo[] algorithmFuncs;
+
         public Traversal(Graph graph)
         {
             this.graph = graph;
             DIRECTION = Direction.DFS;
             statuses = new HandleStatus[graph.GetVerticesCount()];
-            algorithmFuncs = new AlgorithmFunc[2] { DFS, BFS };
+            algorithmFuncs = new MethodInfo[Convert.ToInt32(Direction.LAST)];// { DFS, BFS };
+            for (Direction d = Direction.DFS; d < Direction.LAST; ++d)
+            {
+                var name = Enum.GetName(typeof(Direction), d);
+                algorithmFuncs[Convert.ToInt32(d)] = this.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
+            }
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -43,12 +47,12 @@ namespace MeshRecovery_Lib
 
         public void Run()
         {
-            for(int i = 0; i < statuses.Count(); ++i)
+            for (int i = 0; i < statuses.Count(); ++i)
             {
                 statuses[i] = HandleStatus.NEW;
             }
             HandleVertexNotify(0);
-            algorithmFuncs[Convert.ToInt32(DIRECTION)](0);
+            algorithmFuncs[Convert.ToInt32(DIRECTION)].Invoke(this, new object[] { 0 });
         }
 
         private void DFS(int vertex)
@@ -95,7 +99,7 @@ namespace MeshRecovery_Lib
 
         private void HandleVertexNotify(int vertex)
         {
-            switch(statuses[vertex])
+            switch (statuses[vertex])
             {
                 case HandleStatus.NEW:
                     NewVertex?.Invoke(this, vertex);
