@@ -43,9 +43,9 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      </Reference>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-       <Private>False</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.2.0-beta3\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
@@ -61,6 +61,10 @@
     <Compile Include="TestForGraph.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MeshRecovery_Console\MeshRecovery_Console.csproj">
+      <Project>{6794e87e-3e07-4ae0-8105-a8889f7861a3}</Project>
+      <Name>MeshRecovery_Console</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MeshRecovery_Lib\MeshRecovery_Lib.csproj">
       <Project>{499351e8-a053-4b90-ad39-454e9dea3e26}</Project>
       <Name>MeshRecovery_Lib</Name>
