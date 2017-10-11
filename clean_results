@@ -13,8 +13,8 @@ confirm() {
     esac
 }
 echo -e "This files will be deleted:\n"
-find ./src ./tests -name "*.rt" 
-find ./src ./tests -name "*.xlsx"
+find ./tests -name "*.txt" 
+find ./tests -name "*.xlsx"
 echo -e "\nWell... "
-confirm && ( find ./src ./tests -name "*.rt" -exec rm -f {} \; & find ./src ./tests -name "*.xlsx" -exec rm -f {} \; )
+confirm && ( find ./tests -name "*.txt" -exec rm -f {} \; & find ./tests -name "*.xlsx" -exec rm -f {} \; )
 

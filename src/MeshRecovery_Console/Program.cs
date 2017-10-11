@@ -24,7 +24,7 @@ namespace MeshRecovery_Console
             Console.WriteLine("Validate отработала. Затрачено: " + timer.Elapsed);
             timer.Reset();
             timer.Start();
-            int[] graphNumeration;
+            int[][] graphNumeration;
             MeshRecovery.Numerate(xadj, adjncy.Length, adjncy, out graphNumeration);
             timer.Stop();
             Console.WriteLine("Numerate отработала. Затрачено: " + timer.Elapsed);

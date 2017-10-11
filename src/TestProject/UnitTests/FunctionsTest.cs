@@ -10,14 +10,23 @@ namespace UnitTests
     {
         string PathToSources = @"tests/sources";
         string PathToAnswers = @"tests/answers";
-
-        string GraphNumerationToString(int[] graphNumeration)
+        string Fail = @"Fail";
+        string GraphNumerationToString(int[][] graphNumeration)
         {
-            if (graphNumeration == null) return "";
+            if (graphNumeration == null) return Fail;
 
-            string result = graphNumeration[0].ToString();
-            for (int i = 1; i < graphNumeration.Length; ++i)
-                result += " "+graphNumeration[i].ToString();
+            string result="";
+
+            for (int i = 0; i < graphNumeration.Length; ++i)
+            {
+                result += "[";
+                for (int j = 0; j < graphNumeration[i].Length; ++j)
+                {
+                    result += graphNumeration[i][j].ToString();
+                    if ((j > 0) && (j< graphNumeration[i].Length -1)) result += ",";
+                }
+                result += "]";
+            }
             return result;
         }
 
@@ -31,7 +40,7 @@ namespace UnitTests
             {
                 long[] xadj;
                 int[] adjncy;
-                int[] graphNumeration;
+                int[][] graphNumeration;
                 string current_file_name = files[i].Remove(0, (PathToSources + "\\").Length);
                 Loader.LoadGraphFromMETISFormat(files[i], out xadj, out adjncy);
                 bool valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out int meshDimension);

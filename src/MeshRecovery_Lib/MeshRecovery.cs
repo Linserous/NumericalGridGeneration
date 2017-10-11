@@ -81,7 +81,7 @@ namespace MeshRecovery_Lib
         /// 0 - success
         /// -1 - error
         /// </returns>
-        public static int Numerate(long[] xadj, int size, int[] adjncy, out int[] graphNumeration)
+        public static int Numerate(long[] xadj, int size, int[] adjncy, out int[][] graphNumeration)
         {
             // TODO: Implement
             // TODO: graphNumeration may be 1-3 dimensional array
@@ -136,7 +136,17 @@ namespace MeshRecovery_Lib
             int next_vertex = buff[0]; 
             while(true)
             {
-                if (graph.GetAdjVerticesCount(next_vertex) == 1) return true;
+                if (graph.GetAdjVerticesCount(next_vertex) == 1)
+                {
+                    union[next_vertex] = next_vertex;
+                    for (int j = 0; j <union.Length; ++j)
+                        if (union[j] == -1)
+                        {
+                            return false;
+                        }
+                    return true;
+                }
+
                 union[next_vertex] = next_vertex;
                 long adjcount = graph.GetAdjVertices(next_vertex, out buff);
 
@@ -158,10 +168,11 @@ namespace MeshRecovery_Lib
         /// 0 - success
         /// -1 - error
         /// </returns>
-        private static int OneDimensionNumerate(Graph graph, out int[] graphNumeration)
+        private static int OneDimensionNumerate(Graph graph, out int[][] graphNumeration)
         { 
             int V = graph.GetVerticesCount();
-            graphNumeration = new int[V];
+            int origV = V;
+            graphNumeration = new int[V][];
             int i;
             int start = -1;
             for (i = 0; i < V; ++i)
@@ -174,7 +185,7 @@ namespace MeshRecovery_Lib
             }
             i = 1;
             int prev_vertex = start;
-            graphNumeration[start] = i;
+            graphNumeration[start] = new int[] { i };
             int[] buff;
             graph.GetAdjVertices(prev_vertex, out buff);
             int next_vertex = buff[0];
@@ -183,11 +194,17 @@ namespace MeshRecovery_Lib
                 
                 if (graph.GetAdjVerticesCount(next_vertex) == 1)
                 {
-                    graphNumeration[next_vertex] = ++i ;
-                    return 0;
+                    graphNumeration[next_vertex] = new int[] { ++i };
+                    for (int j = 0; j < graphNumeration.Length; ++j)
+                        if (graphNumeration[j]==null)
+                        {
+                            graphNumeration = null;
+                            return -1;
+                        }
+                    return 0;                    
                 }
 
-                graphNumeration[next_vertex] = ++i;
+                graphNumeration[next_vertex] = new int[] { ++i };
                 long adjcount = graph.GetAdjVertices(next_vertex, out buff);
 
                 for (int j = 0; j < adjcount; ++j)
