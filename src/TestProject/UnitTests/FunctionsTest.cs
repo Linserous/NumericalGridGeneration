@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using MeshRecovery_Lib;
+using System.Collections.Generic;
 
 namespace UnitTests
 {
@@ -19,6 +20,7 @@ namespace UnitTests
 
             for (int i = 0; i < graphNumeration.Length; ++i)
             {
+                if (graphNumeration[i] == null) return Fail;
                 result += "[";
                 for (int j = 0; j < graphNumeration[i].Length; ++j)
                 {
@@ -35,7 +37,7 @@ namespace UnitTests
         {
             string[] files = Directory.GetFiles(PathToSources);
             Assert.AreNotEqual(files.Length, 0);
-
+            List<Exception> exceptions =new List<Exception>(); 
             for (int i = 0; i < files.Length; ++i)
             {
                 long[] xadj;
@@ -50,17 +52,21 @@ namespace UnitTests
                 try
                 {
                     read = new StreamReader(PathToAnswers + "/" + current_file_name.Replace(".graph", ".num"));
-                    StringAssert.Contains(read.ReadToEnd().Replace('\n', ' '), GraphNumerationToString(graphNumeration));
+                    StringAssert.Contains(read.ReadToEnd().Replace('\n', ' '), GraphNumerationToString(graphNumeration));                    
                     read.Close();
                 }
                 catch (Exception e)
                 {
-                    if (e.GetType().FullName == "System.IO.FileNotFoundException")
-                    {
-                        Assert.Inconclusive("There is no asnwer for " + current_file_name);
-                    }
-                    else throw e;
+                    exceptions.Add(e);
                 }
+            }
+
+            if (exceptions.Count>0)
+            {
+                string output = "List of exceptions: ";
+                foreach (Exception e in exceptions)
+                    output += e.Message+"\n|";
+                Assert.Fail(output);
             }
             
         }

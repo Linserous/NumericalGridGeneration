@@ -60,6 +60,7 @@ namespace MeshRecovery_Test
 
             for (int i = 0; i < arr.Length; ++i)
             {
+                if (arr[i] == null) return "Fail";
                 result += "[";
                 for (int j = 0; j < arr[i].Length; ++j)
                 {

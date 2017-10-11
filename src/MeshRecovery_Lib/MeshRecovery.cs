@@ -119,44 +119,28 @@ namespace MeshRecovery_Lib
             //  \/   0--0
             //  0
             // 
+
+            Traversal traversal = new Traversal(graph);
+
             int V = graph.GetVerticesCount();
-            int[] union = new int[V]; // minor TODO: change to bool
-            int i;
-            int start=-1;
-            for ( i = 0; i < V; ++i)
+            bool[] union = new bool[V]; 
+
+            for (int i = 0; i < V; ++i)
             {
-                if (graph.GetAdjVerticesCount(i) == 1) start = i;
-                union[i] = -1;
+                union[i] = false;
             }
-            i = 0;
-            int prev_vertex=start;
-            union[start] = start;
-            int[] buff;
-            graph.GetAdjVertices(prev_vertex, out buff);
-            int next_vertex = buff[0]; 
-            while(true)
+
+            traversal.NewVertex += (sender, e) =>
             {
-                if (graph.GetAdjVerticesCount(next_vertex) == 1)
-                {
-                    union[next_vertex] = next_vertex;
-                    for (int j = 0; j <union.Length; ++j)
-                        if (union[j] == -1)
-                        {
-                            return false;
-                        }
-                    return true;
-                }
+                union[e] = true;
+            };
+            traversal.Run();
 
-                union[next_vertex] = next_vertex;
-                long adjcount = graph.GetAdjVertices(next_vertex, out buff);
-
-                int temp = next_vertex;
-                for (int j = 0; j < adjcount; ++j)
-                    if (buff[j] != prev_vertex) next_vertex = buff[j];
-                
-                if (union[next_vertex] != -1) return false;
-                prev_vertex = temp;
-            }            
+            for (int i = 0; i < V; ++i)
+            {
+                if (union[i] == false) return false;
+            }
+            return true;    
         }
         /// <summary>
         /// Method restores geometry information for graph
@@ -169,49 +153,41 @@ namespace MeshRecovery_Lib
         /// -1 - error
         /// </returns>
         private static int OneDimensionNumerate(Graph graph, out int[][] graphNumeration)
-        { 
+        {
+            Traversal traversal = new Traversal(graph);
+
             int V = graph.GetVerticesCount();
-            int origV = V;
+            int[] found = new int[V];
+            bool start = false;
+            int found_index = 0;
             graphNumeration = new int[V][];
-            int i;
-            int start = -1;
-            for (i = 0; i < V; ++i)
+            traversal.NewVertex += (sender, e) =>
             {
-                if (graph.GetAdjVerticesCount(i) == 1)
+                if ((graph.GetAdjVerticesCount(e)==1)&&(!start))
                 {
-                    start = i;
-                    break;
+                    start = true;
+                    found[found_index] = e ;
+                    for (int i = 0; i < found_index/2; ++i)
+                    {
+                        int tmp = found[i];
+                        found[i] = found[found_index - i];
+                        found[found_index - i ] = tmp;
+                    }
+                    ++found_index;
                 }
-            }
-            i = 1;
-            int prev_vertex = start;
-            graphNumeration[start] = new int[] { i };
-            int[] buff;
-            graph.GetAdjVertices(prev_vertex, out buff);
-            int next_vertex = buff[0];
-            while (V>0)
+                else
+                found[found_index++] = e;
+            };
+            traversal.Run();
+            for (int i = 0; i < V; ++i)
             {
-                
-                if (graph.GetAdjVerticesCount(next_vertex) == 1)
-                {
-                    graphNumeration[next_vertex] = new int[] { ++i };
-                    for (int j = 0; j < graphNumeration.Length; ++j)
-                        if (graphNumeration[j]==null)
-                        {
-                            graphNumeration = null;
-                            return -1;
-                        }
-                    return 0;                    
-                }
-
-                graphNumeration[next_vertex] = new int[] { ++i };
-                long adjcount = graph.GetAdjVertices(next_vertex, out buff);
-
-                for (int j = 0; j < adjcount; ++j)
-                    if (buff[j] != prev_vertex) next_vertex = buff[j];
-                --V;
+                graphNumeration[found[i]] = new int[] { i + 1 };
             }
-            return -1;
+
+            if (found_index != V) 
+                return -1;
+            else
+                return 0;
         }
 
     }
