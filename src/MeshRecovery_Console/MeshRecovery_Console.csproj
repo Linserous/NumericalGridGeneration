@@ -7,8 +7,8 @@
     <ProjectGuid>{6794E87E-3E07-4AE0-8105-A8889F7861A3}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GridGeneration_Console</RootNamespace>
-    <AssemblyName>GridGeneration_Console</AssemblyName>
+    <RootNamespace>MeshRecovery_Console</RootNamespace>
+    <AssemblyName>MeshRecovery_Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
