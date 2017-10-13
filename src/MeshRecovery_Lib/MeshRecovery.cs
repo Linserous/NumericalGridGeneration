@@ -176,7 +176,7 @@ namespace MeshRecovery_Lib
                     ++found_index;
                 }
                 else
-                found[found_index++] = e;
+                    found[found_index++] = e;
             };
             traversal.Run();
             for (int i = 0; i < V; ++i)

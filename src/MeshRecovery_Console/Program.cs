@@ -13,22 +13,28 @@ namespace MeshRecovery_Console
     {
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                Console.WriteLine("No path to source file");
+                return;
+            }
+
             long[] xadj = null;
             int[] adjncy = null;
-            Loader.LoadGraphFromMETISFormat(@"E:\NumericalGridGeneration\tests\sources\line2.graph", out xadj, out adjncy);
+            Loader.LoadGraphFromMETISFormat(args[1], out xadj, out adjncy);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             int meshDemention;
             MeshRecovery.Validate(xadj, adjncy.Length, adjncy, out meshDemention);
             timer.Stop();
-            Console.WriteLine("Validate отработала. Затрачено: " + timer.Elapsed);
+            Console.WriteLine("Function Validate finished work. Elapsed: " + timer.Elapsed);
             timer.Reset();
             timer.Start();
             int[][] graphNumeration;
             MeshRecovery.Numerate(xadj, adjncy.Length, adjncy, out graphNumeration);
             timer.Stop();
-            Console.WriteLine("Numerate отработала. Затрачено: " + timer.Elapsed);
-            Console.ReadKey();
+            Console.WriteLine("Function Numerate finished work. Elapsed: " + timer.Elapsed);
+            //Save graphNumeration to file (discuss format)
         }
     }
 }
