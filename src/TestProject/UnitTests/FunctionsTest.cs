@@ -88,22 +88,21 @@ namespace UnitTests
                     //checking created graph numeration 
                     if (valid&&(numerate>-1))
                     {
+                        for (int k = 0; k < graphNumeration.Length - 1; ++k)
+                        {
+                            for (int l = k + 1; l < graphNumeration.Length; ++l)
+                            {
+                                int res = CompareVertex(graphNumeration[l], graphNumeration[k], meshDimension);
+                                if (res == -1)
+                                    Assert.Fail("There are equal numerate in for numerate: " + GraphNumerationToString(graphNumeration));
+                            }
+                        }
                         Graph graph = new Graph(xadj, adjncy);
                         Traversal traversal = new Traversal(graph);
                         traversal.NewVertex += (sender, e) =>
                         {
                             int[] adj;
                             long adj_count = graph.GetAdjVertices(e, out adj);
-                            int flag = 0;
-                            for (int k=0;k<adj_count-1;++k)
-                            {
-                                for (int l=k+1;l<adj_count;++l)
-                                {
-                                    int res = CompareVertex(graphNumeration[adj[l]], graphNumeration[adj[k]], meshDimension);
-                                    if (res == -1)
-                                        Assert.Fail("The function CompareVertex return " + res.ToString() + " for numerate: " + GraphNumerationToString(graphNumeration));
-                                }
-                            }
                             for (int k = 0; k < adj_count ; ++k)
                             {
                                 int res = CompareVertex(graphNumeration[e], graphNumeration[adj[k]], meshDimension);
@@ -124,8 +123,9 @@ namespace UnitTests
             {
                 string output = "List of exceptions: ";
                 foreach (var e in exceptions)
-                    output += "\nThere is problem with file: "+e.Value+". The reason: "+e.Key.Message+"|";
+                    output += Environment.NewLine+ "There is problem with file: "+e.Value+". The reason: "+e.Key.Message+"|";
                 Assert.Fail(output);
+                
             }
             
         }
