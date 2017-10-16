@@ -29,7 +29,7 @@ namespace MeshRecovery_Lib
                 return false;
             }
 
-            switch (GetDimension(graph))
+            switch (meshDimension = GetDimension(graph))
             {
                 case 1: return OneDimensionValidate(graph); 
                 //TODO: implement this part
