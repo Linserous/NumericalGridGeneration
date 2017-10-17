@@ -7,4 +7,6 @@ bin
 .vs
 *.user
 *.htm
+# rules for MeshRecovery_Visualizer
+src/MeshRecovery_Visualizer/src/lib/sigma.js-1.2.1
 Backup
