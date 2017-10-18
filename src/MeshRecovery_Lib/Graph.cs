@@ -42,5 +42,52 @@ namespace MeshRecovery_Lib
         {
 	        return xadj.Length - 1;
         }
+
+        public bool CoherentGraphCheck()
+        {
+            int size = GetVerticesCount();
+            int[] vertexState = new int[size];
+            bool red = false;
+            int k = 0;
+            int finalCount = 0;
+            for (int i = 0; i < size; i++)
+                vertexState[i] = 1;
+            vertexState[0] = 2;
+            do
+            {
+                red = true;
+
+                for (int i = 0; i < size; i++)
+                    if (vertexState[i] == 2)
+                    {
+                        vertexState[i] = 3;
+                        k = i;
+                        break;
+                    }
+
+                for (long i = xadj[k]; i < xadj[k + 1]; i++)
+                {
+                    if (vertexState[adjncy[i]] == 1)
+                    {
+                        vertexState[adjncy[i]] = 2;
+                    }
+                }
+
+                for (int i = 0; i < size; i++)
+                {
+                    if (vertexState[i] == 2)
+                        red = false;
+                }
+            } while (red == false);
+
+            for (int i = 0; i < size; i++)
+                if (vertexState[i] == 1)
+                    finalCount++;
+
+            if (finalCount == 0)
+                return true;
+            else
+                return false;
+        }
     }
 }
