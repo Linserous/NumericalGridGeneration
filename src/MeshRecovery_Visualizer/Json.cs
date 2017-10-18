@@ -10,20 +10,14 @@ namespace MeshRecovery_Visualizer
     {
         public class Node
         {
-            public Node(string id, string label, double size, double x, double y)
+            public Node(string id, string label)
             {
                 this.id = id;
                 this.label = label;
-                this.size = size;
-                this.x = x;
-                this.y = y;
             }
 
             public string id { set; get; }
             public string label { set; get; }
-            public double size { set; get; }
-            public double x { set; get; }
-            public double y { set; get; }
         }
 
         public class Edge

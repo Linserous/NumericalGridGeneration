@@ -2,8 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using System.Web.Script.Serialization;
-using System.Collections.Generic;
+using MeshRecovery_Lib;
+//using System.Web.Script.Serialization;
+//using System.Collections.Generic;
 
 namespace MeshRecovery_Visualizer
 {
@@ -21,25 +22,23 @@ namespace MeshRecovery_Visualizer
 
         void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
         {
-            //test graph drawing with simplw graph
-           var nodes = new List<Json.Node>();
-            for (var i = 0; i < 5; ++i)
-            {
-                nodes.Add(new Json.Node(Convert.ToString(i + 1), Convert.ToString(i + 1), 10.0, 30 + i * 2, 30 - i * 2));
-            }
-            var edges = new List<Json.Edge>();
-            for (var i = 0; i < 4; ++i)
-            {
-                edges.Add(new Json.Edge(Convert.ToString(i + 1), Convert.ToString(i + 1), Convert.ToString(i + 2)));
-            }
-            var graph = new Json.Graph(nodes, edges);
-            var result = new JavaScriptSerializer().Serialize(graph);
-            LoadGraph(result);
+            JS_Init();
+            
+            //TODO: add file operations to import file and load data using Loader.js
+            long[] xadj = { 0, 2, 4, 6, 8 };
+            int[] adjncy = { 1, 2, 0, 3, 1, 3, 0, 2 };
+
+            JS_LoadGraph(GraphToJson.Run(xadj, adjncy));
         }
 
-        private void LoadGraph(object graphJson)
+        private void JS_LoadGraph(object graphJson)
         {
             WebBrowser.InvokeScript("loadGraph", new object[] { graphJson });
+        }
+
+        private void JS_Init()
+        {
+            WebBrowser.InvokeScript("init");
         }
     }
 }

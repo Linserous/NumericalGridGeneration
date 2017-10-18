@@ -65,7 +65,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphToJson.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="Loader.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -99,6 +101,11 @@
     <Content Include="src\index.html" />
     <Content Include="src\js\main.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MeshRecovery_Lib\MeshRecovery_Lib.csproj">
+      <Project>{499351e8-a053-4b90-ad39-454e9dea3e26}</Project>
+      <Name>MeshRecovery_Lib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
