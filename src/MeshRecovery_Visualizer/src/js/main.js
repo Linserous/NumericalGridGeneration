@@ -34,7 +34,8 @@ function GraphView() {
       graph: { nodes: [], edges: [] },
       container: 'graph-container',
       settings: {
-        defaultNodeColor: '#006699'
+        defaultNodeColor: '#006699',
+        skipErrors: true
       }
     });
   }
@@ -63,6 +64,14 @@ function GraphView() {
 
     // Initialize the dragNodes plugin
     var dragListener = new sigma.plugins.dragNodes(_sigma, _sigma.renderers[0]);
+    // Start the layout algorithm
+    _sigma.startForceAtlas2({
+      linLogMode: false,
+      slowDown: 1,
+      worker: false,
+      barnesHutOptimize: false
+    });
+    setTimeout( function() { _sigma.killForceAtlas2(); }, 500);
   };
 
   this.template = function () {
