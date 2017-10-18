@@ -65,7 +65,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphToJson.cs" />
+    <Compile Include="JSInvoker.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="MainWindow.xaml.cs">

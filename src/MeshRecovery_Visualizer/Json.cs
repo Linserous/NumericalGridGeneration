@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace MeshRecovery_Visualizer
 {
     namespace Json
     {
-        public class Node
+        class Node
         {
             public Node(string id, string label)
             {
@@ -20,7 +18,7 @@ namespace MeshRecovery_Visualizer
             public string label { set; get; }
         }
 
-        public class Edge
+        class Edge
         {
             public Edge(string id, string target, string source)
             {
@@ -34,7 +32,7 @@ namespace MeshRecovery_Visualizer
             public string source { set; get; }
         }
 
-        public class Graph
+        class Graph
         {
             public Graph(List<Node> nodes, List<Edge> edges)
             {
@@ -43,6 +41,28 @@ namespace MeshRecovery_Visualizer
             }
             public List<Node> nodes { get; set; }
             public List<Edge> edges { get; set; }
+        }
+
+        public class Graph2Json
+        {
+            static public string Run(long[] xadj, int[] adjncy)
+            {
+                var nodes = new List<Json.Node>();
+                for (var i = 0; i < xadj.Length - 1; ++i)
+                {
+                    nodes.Add(new Json.Node(Convert.ToString(i), "v_" + Convert.ToString(i)));
+                }
+                var edges = new List<Json.Edge>();
+                for (var i = 0; i < xadj.Length - 1; ++i)
+                {
+                    for (long j = xadj[i]; j < xadj[i + 1]; ++j)
+                    {
+                        edges.Add(new Json.Edge(Convert.ToString(i + j), Convert.ToString(i), Convert.ToString(adjncy[j])));
+                    }
+                }
+                var graph = new Json.Graph(nodes, edges);
+                return new JavaScriptSerializer().Serialize(graph);
+            }
         }
     }
 }
