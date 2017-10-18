@@ -24,6 +24,12 @@ function loadGraph(jsonStr) {
   graphView.loadGraph(jsonStr);
 }
 
+function notify(message, type) {
+  var handlers = ['confirm', 'alert', 'alert'];
+  if (type >= handlers.length) return;
+  window[handlers[type]](message);
+}
+
 function GraphView() {
   // private
   var _sigma = null;
@@ -71,7 +77,7 @@ function GraphView() {
       worker: false,
       barnesHutOptimize: false
     });
-    setTimeout( function() { _sigma.killForceAtlas2(); }, 500);
+    setTimeout(function () { _sigma.killForceAtlas2(); }, 500);
   };
 
   this.template = function () {

@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Navigation;
+using System;
 
 namespace MeshRecovery_Visualizer
 {
@@ -7,6 +8,12 @@ namespace MeshRecovery_Visualizer
     {
         private WebBrowser browser;
 
+        public enum MessageType
+        {
+            Info = 0,
+            Warning,
+            Error
+        }
         public JSInvoker(WebBrowser browser)
         {
             this.browser = browser;
@@ -26,7 +33,12 @@ namespace MeshRecovery_Visualizer
 
         public void LoadGraph(object graphJson)
         {
-            browser.InvokeScript("loadGraph", new object[] { graphJson });
+            browser.InvokeScript("loadGraph", graphJson);
+        }
+
+        public void Notify(string message, MessageType type)
+        {
+            browser.InvokeScript("notify", message, Convert.ToInt32(type));
         }
     }
  

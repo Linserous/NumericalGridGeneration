@@ -45,12 +45,27 @@ namespace MeshRecovery_Visualizer
 
         public class Graph2Json
         {
-            static public string Run(long[] xadj, int[] adjncy)
+            static int NodeThreshold = 7000;
+            static int AdjThreshold = 20000;
+
+            public enum ErrorCode
             {
+                OK = 0,
+                ThresholdExcess = 1
+            }
+
+            static public ErrorCode Run(out string result, long[] xadj, int[] adjncy)
+            {
+                result = "";
+                if (xadj.Length > NodeThreshold && adjncy.Length > AdjThreshold)
+                {
+                    return ErrorCode.ThresholdExcess;
+                }
+
                 var nodes = new List<Json.Node>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
                 {
-                    nodes.Add(new Json.Node(Convert.ToString(i), "v_" + Convert.ToString(i)));
+                    nodes.Add(new Json.Node(Convert.ToString(i), Convert.ToString(i)));
                 }
                 var edges = new List<Json.Edge>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
@@ -61,7 +76,11 @@ namespace MeshRecovery_Visualizer
                     }
                 }
                 var graph = new Json.Graph(nodes, edges);
-                return new JavaScriptSerializer().Serialize(graph);
+                var jSerializer = new JavaScriptSerializer();
+                jSerializer.MaxJsonLength = Int32.MaxValue;
+                result = jSerializer.Serialize(graph);
+
+                return ErrorCode.OK;
             }
         }
     }

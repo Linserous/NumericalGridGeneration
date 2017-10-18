@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Win32;
@@ -31,8 +30,19 @@ namespace MeshRecovery_Visualizer
             {
                 long[] xadj;
                 int[] adjncy;
-                Loader.LoadGraphFromMETISFormat(openFileDialog.FileName,out xadj, out adjncy);
-                js.LoadGraph(Json.Graph2Json.Run(xadj, adjncy));
+                Loader.LoadGraphFromMETISFormat(openFileDialog.FileName, out xadj, out adjncy);
+
+                string json;
+                var errorCode = Json.Graph2Json.Run(out json, xadj, adjncy);
+
+                if (errorCode == Json.Graph2Json.ErrorCode.ThresholdExcess)
+                {
+                    js.Notify("The graph is very large for rendering.", JSInvoker.MessageType.Warning);
+                }
+                else
+                {
+                    js.LoadGraph(json);
+                }
             }
         }
 
