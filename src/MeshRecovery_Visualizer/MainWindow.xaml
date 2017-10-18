@@ -7,6 +7,6 @@
         mc:Ignorable="d"
        Title="Graph Visualizer" MinHeight="700" MinWidth="700">
     <Grid>
-        <WebBrowser x:Name="WebBrowser"></WebBrowser>
+        <WebBrowser x:Name="WebBrowser" LoadCompleted="WebBrowser_LoadCompleted"></WebBrowser>
     </Grid>
 </Window>

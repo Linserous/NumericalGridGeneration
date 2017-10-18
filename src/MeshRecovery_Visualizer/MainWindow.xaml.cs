@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
+using System.Web.Script.Serialization;
+using System.Collections.Generic;
 
 namespace MeshRecovery_Visualizer
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -29,6 +17,29 @@ namespace MeshRecovery_Visualizer
             var assembly = System.Reflection.Assembly.GetEntryAssembly();
             var location = System.IO.Path.GetDirectoryName(assembly.Location);
             WebBrowser.Navigate(System.IO.Path.Combine(location, "../../src/index.html"));
+        }
+
+        void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            //test graph drawing with simplw graph
+           var nodes = new List<Json.Node>();
+            for (var i = 0; i < 5; ++i)
+            {
+                nodes.Add(new Json.Node(Convert.ToString(i + 1), Convert.ToString(i + 1), 10.0, 30 + i * 2, 30 - i * 2));
+            }
+            var edges = new List<Json.Edge>();
+            for (var i = 0; i < 4; ++i)
+            {
+                edges.Add(new Json.Edge(Convert.ToString(i + 1), Convert.ToString(i + 1), Convert.ToString(i + 2)));
+            }
+            var graph = new Json.Graph(nodes, edges);
+            var result = new JavaScriptSerializer().Serialize(graph);
+            LoadGraph(result);
+        }
+
+        private void LoadGraph(object graphJson)
+        {
+            WebBrowser.InvokeScript("loadGraph", new object[] { graphJson });
         }
     }
 }
