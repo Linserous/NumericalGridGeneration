@@ -44,6 +44,9 @@ function GraphView() {
         skipErrors: true
       }
     });
+
+    // Initialize the dragNodes plugin
+    var dragListener = new sigma.plugins.dragNodes(_sigma, _sigma.renderers[0]);
   }
 
   function _preprocess(graph) {
@@ -53,6 +56,18 @@ function GraphView() {
       el.size = 15;
     }, this);
     return graph;
+  }
+
+  function _layout() {
+    // Start the layout algorithm
+    _sigma.startForceAtlas2({
+      linLogMode: false,
+      slowDown: 1,
+      worker: false,
+      barnesHutOptimize: false
+    });
+
+    setTimeout(function () { _sigma.killForceAtlas2(); }, 500);
   }
 
   // public
@@ -66,21 +81,13 @@ function GraphView() {
 
     var graph = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
     _sigma.graph.read(_preprocess(graph));
-    _sigma.refresh();
 
-    // Initialize the dragNodes plugin
-    var dragListener = new sigma.plugins.dragNodes(_sigma, _sigma.renderers[0]);
-    // Start the layout algorithm
-    _sigma.startForceAtlas2({
-      linLogMode: false,
-      slowDown: 1,
-      worker: false,
-      barnesHutOptimize: false
-    });
-    setTimeout(function () { _sigma.killForceAtlas2(); }, 500);
+    _sigma.refresh();
+    _layout();
   };
 
   this.template = function () {
     return _isTemplate;
   }
 };
+
