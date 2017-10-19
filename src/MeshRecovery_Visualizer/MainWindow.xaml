@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MeshRecovery_Visualizer"
         mc:Ignorable="d"
-       Title="Graph Visualizer" MinHeight="700" MinWidth="700">
+        Title="Graph Visualizer" MinHeight="700" MinWidth="700"
+        Icon='pack://application:,,/icon/graph.ico'>
     <Window.CommandBindings>
         <CommandBinding Command="Open" Executed="OpenFile_OnClick"/>
         <CommandBinding Command="Close" Executed="Close_OnClick"/>

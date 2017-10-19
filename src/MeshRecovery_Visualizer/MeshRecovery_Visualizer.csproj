@@ -97,6 +97,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="icon\graph.ico" />
     <Content Include="src\css\main.css" />
     <Content Include="src\index.html" />
     <Content Include="src\js\main.js" />
