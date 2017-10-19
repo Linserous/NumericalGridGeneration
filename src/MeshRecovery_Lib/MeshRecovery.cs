@@ -23,22 +23,47 @@ namespace MeshRecovery_Lib
             meshDimension = 0;
 
             Graph graph = new Graph(xadj, adjncy);
+
             // fast check of valid 
             if (graph.GetVerticesCount() != size - 1)
             {
                 return false;
             }
 
-            switch (meshDimension = GetDimension(graph))
+            if (IsConnected(graph))
             {
-                case 1: return OneDimensionValidate(graph); 
-                //TODO: implement this part
-                case 2: break;
-                case 3: break;
-                default: return false;
+                switch (meshDimension = GetDimension(graph))
+                {
+                    case 1: return OneDimensionValidate(graph);
+                    //TODO: implement this part
+                    case 2: return true;
+                    case 3: return true;
+                    default: return false;
+                }
             }
-              
+
             return false;
+        }
+        /// <summary>
+        /// Methon checks if graph is connected
+        /// </summary>
+        /// <param name="graph">It's a graph</param>
+        /// <returns>
+        /// true - graph is connected
+        /// false - graph is not connected
+        /// </returns>
+        private static bool IsConnected(Graph graph)
+        {
+            Traversal t = new Traversal(graph);
+
+            List<int> vertices = new List<int>();
+            t.NewVertex += (sender, e) => vertices.Add(e);
+            t.Run();
+
+            if (vertices.Count() == graph.GetVerticesCount())
+                return true;
+            else
+                return false;
         }
         /// <summary>
         /// Method retuns the dimension of the graph
@@ -55,19 +80,29 @@ namespace MeshRecovery_Lib
         {
             int V = graph.GetVerticesCount();
             int E = graph.GetEdgeCount();
-            
+            long max_adj = 0;
+
             if (V - E + 1 == 2) // should be one dimension graph ( chain )
             {
 
                 return 1;
             }
-            else
+
+            for (int i = 0; i < V; i++)
+                if (max_adj < graph.GetAdjVerticesCount(i))
+                    max_adj = graph.GetAdjVerticesCount(i);
+
+            if (max_adj <= 4)
             {
-                //TODO: this is not a chain... 
+                return 2;
+            }
+
+            if (max_adj <= 6)
+            {
+                return 3;
             }
 
             return 0;
-
         }
         /// <summary>
         /// Method restores geometry information for each graph node
