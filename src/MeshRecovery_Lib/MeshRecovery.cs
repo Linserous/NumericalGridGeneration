@@ -23,6 +23,14 @@ namespace MeshRecovery_Lib
             meshDimension = 0;
 
             Graph graph = new Graph(xadj, adjncy);
+            Traversal t = new Traversal(graph);
+
+            List<int> vertices = new List<int>();
+            t.NewVertex += (sender, e) => vertices.Add(e);
+            t.Run();
+            if (vertices.Count() == graph.GetVerticesCount())
+                return true;
+
             // fast check of valid 
             if (graph.GetVerticesCount() != size - 1)
             {

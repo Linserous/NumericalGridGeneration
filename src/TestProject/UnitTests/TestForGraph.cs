@@ -19,7 +19,8 @@ namespace UnitTests
                 2, 4, 6,
                 1, 5 };
             Graph graph = new Graph(xadj, adjncy);
-            graph.GetAdjVertices(2, out int[] buff);
+            int[] buff;
+            graph.GetAdjVertices(2, out buff);
             
             long count = graph.GetAdjVerticesCount(2);
 
@@ -41,7 +42,9 @@ namespace UnitTests
                 2, 4, 6,
                 1, 5 };
             Graph graph = new Graph(xadj, adjncy);
-            Assert.IsTrue(graph.CoherentGraphCheck());
+            int dim;
+            MeshRecovery.Validate(xadj, 8, adjncy, out dim);
+            Assert.IsTrue(MeshRecovery.Validate(xadj, 8, adjncy, out dim));
         }
     }
 }

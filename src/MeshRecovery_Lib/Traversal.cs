@@ -105,13 +105,16 @@ namespace MeshRecovery_Lib
             switch (statuses[vertex])
             {
                 case HandleStatus.NEW:
-                    NewVertex?.Invoke(this, vertex);
+                    if (NewVertex != null)
+                        NewVertex.Invoke(this, vertex);
                     break;
                 case HandleStatus.IN_PROGRESS:
-                    VertexInProgress?.Invoke(this, vertex);
+                    if (VertexInProgress != null)
+                        VertexInProgress.Invoke(this, vertex);
                     break;
                 case HandleStatus.COMPLETED:
-                    CompletedVertex?.Invoke(this, vertex);
+                    if (CompletedVertex != null)
+                        CompletedVertex.Invoke(this, vertex);
                     break;
             }
         }
