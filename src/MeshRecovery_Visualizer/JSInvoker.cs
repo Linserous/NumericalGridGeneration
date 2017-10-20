@@ -43,7 +43,6 @@ namespace MeshRecovery_Visualizer
 
         public bool IsRendered()
         {
-            var res = browser.InvokeScript("isRendered");
             return Convert.ToBoolean(browser.InvokeScript("isRendered"));
         }
 
