@@ -24,6 +24,14 @@ function loadGraph(jsonStr) {
   graphView.loadGraph(jsonStr);
 }
 
+function render(isRender) {
+  graphView.render(isRender);
+}
+
+function isRendered() {
+  return graphView.isRendered();
+}
+
 function notify(message, type) {
   var handlers = ['confirm', 'alert', 'alert'];
   if (type >= handlers.length) return;
@@ -58,18 +66,6 @@ function GraphView() {
     return graph;
   }
 
-  function _layout() {
-    // Start the layout algorithm
-    _sigma.startForceAtlas2({
-      linLogMode: false,
-      slowDown: 1,
-      worker: false,
-      barnesHutOptimize: false
-    });
-
-    setTimeout(function () { _sigma.killForceAtlas2(); }, 500);
-  }
-
   // public
   this.init = function () {
     _isTemplate = false;
@@ -83,11 +79,33 @@ function GraphView() {
     _sigma.graph.read(_preprocess(graph));
 
     _sigma.refresh();
-    _layout();
+    render(true);
+    setTimeout(function () { render(false); }, 500);
   };
 
   this.template = function () {
     return _isTemplate;
+  }
+
+  this.render = function (isRender) {
+    if (_sigma === null) return;
+
+    if (isRender) {
+      if (_sigma.isForceAtlas2Running()) _sigma.killForceAtlas2();
+      // Start the layout algorithm
+      _sigma.startForceAtlas2({
+        linLogMode: false,
+        slowDown: 1,
+        worker: false,
+        barnesHutOptimize: false
+      });
+    } else if (_sigma.isForceAtlas2Running()) {
+      _sigma.killForceAtlas2();
+    }
+  }
+
+  this.isRendered = function () {
+    return _sigma.isForceAtlas2Running();
   }
 };
 

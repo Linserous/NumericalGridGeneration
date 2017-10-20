@@ -36,6 +36,17 @@ namespace MeshRecovery_Visualizer
             browser.InvokeScript("loadGraph", graphJson);
         }
 
+        public void Render(bool isRender)
+        {
+            browser.InvokeScript("render", isRender);
+        }
+
+        public bool IsRendered()
+        {
+            var res = browser.InvokeScript("isRendered");
+            return Convert.ToBoolean(browser.InvokeScript("isRendered"));
+        }
+
         public void Notify(string message, MessageType type)
         {
             browser.InvokeScript("notify", message, Convert.ToInt32(type));

@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Win32;
 
-
 namespace MeshRecovery_Visualizer
 {
     public partial class MainWindow : Window
@@ -51,5 +50,17 @@ namespace MeshRecovery_Visualizer
             Close();
         }
         #endregion
+
+        #region  Buttons handlers
+        private void StartRender_OnClick(object sender, RoutedEventArgs e)
+        {
+            js.Render(true);
+        }
+        private void StopRender_OnClick(object sender, RoutedEventArgs e)
+        {
+            js.Render(false);
+        }
+        #endregion
+
     }
 }

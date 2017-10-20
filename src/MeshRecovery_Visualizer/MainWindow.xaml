@@ -19,6 +19,17 @@
                 <MenuItem Command="Close" Header="Close"/>
             </MenuItem>
         </Menu>
+        <ToolBarTray DockPanel.Dock="Top" VerticalAlignment="Top">
+            <ToolBar x:Name="toolbar">
+                <Button Name="StartRender" ToolTip="Start ForceAtlas2 algorithm." Click="StartRender_OnClick" Width="45">
+                    Render
+                </Button>
+                <Separator/>
+                <Button Name="StopRender" ToolTip="Kill ForceAtlas2 algorithm." Click="StopRender_OnClick" Width="45">
+                    Stop
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
         <Grid>
             <WebBrowser x:Name="WebBrowser" LoadCompleted="WebBrowser_LoadCompleted"></WebBrowser>
         </Grid>
