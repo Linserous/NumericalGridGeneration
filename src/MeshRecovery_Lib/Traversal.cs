@@ -5,9 +5,31 @@ using System.Reflection;
 
 namespace MeshRecovery_Lib
 {
-    public class Traversal
+    public interface IFS
+    {
+        void insert(ref List<int> list, int element);
+    }
+
+    public class DFS : IFS
+    {
+        public void insert(ref List<int> list, int element)
+        {
+            list.Insert(0, element);
+        }
+    }
+
+    public class BFS : IFS
+    {
+        public void insert(ref List<int> list, int element)
+        {
+            list.Add(element);
+        }
+    }
+
+    public class Traversal<T> where T : IFS, new()
     {
         private Graph graph;
+        private IFS fs = null;
 
         private enum HandleStatus
         {
@@ -17,30 +39,11 @@ namespace MeshRecovery_Lib
         }
         private HandleStatus[] statuses;
 
-        // If you want to add a new direction and algorithm
-        // you can add an enumeration element to 'LAST'
-        // and create a method with the same name and with the 'int' param
-        public enum Direction
-        {
-            DFS = 0,
-            BFS,
-            LAST
-        }
-        public Direction DIRECTION { set; get; }
-
-        private MethodInfo[] algorithmFuncs;
-
         public Traversal(Graph graph)
         {
             this.graph = graph;
-            DIRECTION = Direction.DFS;
+            fs = new T();
             statuses = new HandleStatus[graph.GetVerticesCount()];
-            algorithmFuncs = new MethodInfo[Convert.ToInt32(Direction.LAST)];
-            for (Direction d = Direction.DFS; d < Direction.LAST; ++d)
-            {
-                var name = Enum.GetName(typeof(Direction), d);
-                algorithmFuncs[Convert.ToInt32(d)] = this.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance);
-            }
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -48,43 +51,27 @@ namespace MeshRecovery_Lib
         public EventHandler<int> VertexInProgress;
         public EventHandler<int> CompletedVertex;
 
-        public void Run()
+        public void Run(int vertex = 0)
         {
             for (int i = 0; i < statuses.Count(); ++i)
             {
                 statuses[i] = HandleStatus.NEW;
             }
             HandleVertexNotify(0);
-            algorithmFuncs[Convert.ToInt32(DIRECTION)].Invoke(this, new object[] { 0 });
+            Traverse(vertex);
         }
 
-        private void DFS(int vertex)
+        private void Traverse(int vertex)
         {
+            List<int> list = new List<int>();
+            list.Add(vertex);
+
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
-            int[] vertices;
-            graph.GetAdjVertices(vertex, out vertices);
-            foreach (var v in vertices)
+            while (list.Count() != 0)
             {
-                HandleVertexNotify(v);
-                if (statuses[v] == HandleStatus.NEW)
-                {
-                    DFS(v);
-                }
-            }
-            statuses[vertex] = HandleStatus.COMPLETED;
-        }
-
-        private void BFS(int vetrex)
-        {
-            Queue<int> queue = new Queue<int>();
-            queue.Enqueue(vetrex);
-
-            statuses[vetrex] = HandleStatus.IN_PROGRESS;
-
-            while (queue.Count() != 0)
-            {
-                var v = queue.Dequeue();
+                var v = list.First();
+                list.RemoveAt(0);
                 int[] vertices;
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
@@ -93,7 +80,7 @@ namespace MeshRecovery_Lib
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
-                        queue.Enqueue(el);
+                        fs.insert(ref list, el);
                     }
                 }
                 statuses[v] = HandleStatus.COMPLETED;
@@ -115,5 +102,10 @@ namespace MeshRecovery_Lib
                     break;
             }
         }
+    }
+
+    public class Traversal : Traversal<DFS>
+    {
+        public Traversal(Graph graph) : base(graph) { }
     }
 }

@@ -11,21 +11,34 @@ namespace UnitTests
         [TestMethod]
         public void CheckTraversal()
         {
-            long[] xadj = { 0, 2, 4, 6, 8 };
-            int[] adjncy = { 1, 2, 0, 3, 1, 3, 0, 2 };
+            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
+            int[] adjncy = { 1, 7, 3,
+                            0, 2, 6,
+                            1, 5, 3,
+                            2, 4, 0,
+                            5, 3, 7,
+                            4, 2, 6,
+                            7, 1, 5,
+                            0, 4, 6 };
 
             Graph g = new Graph(xadj, adjncy);
-            Traversal t = new Traversal(g);
+
+            // Traversal(g) is equvalent to the Traversal<DFS>(g)
+            var tInDepth = new Traversal(g);
 
             List<int> vertices = new List<int>();
-            t.NewVertex += (sender, e) => vertices.Add(e);
-            t.Run();
-            CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 3, 2 });
+
+            // Subscribe to the NewVertex event to get the path to the graph
+            tInDepth.NewVertex += (sender, e) => vertices.Add(e);
+            tInDepth.Run();
+            CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7, 3, 2, 4, 5, 6 });
 
             vertices.Clear();
-            t.DIRECTION = Traversal.Direction.BFS;
-            t.Run();
-            CollectionAssert.AreEqual(vertices, new List <int>{ 0, 1, 2, 3 });
+
+            var tInBreadth = new Traversal<BFS>(g);
+            tInBreadth.NewVertex += (sender, e) => vertices.Add(e);
+            tInBreadth.Run();
+            CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7, 3, 2, 6, 4, 5 });
         }
     }
 }
