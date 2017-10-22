@@ -57,14 +57,9 @@ namespace MeshRecovery_Lib
             {
                 statuses[i] = HandleStatus.NEW;
             }
-            HandleVertexNotify(0);
-            Traverse(vertex);
-        }
+            HandleVertexNotify(vertex);
 
-        private void Traverse(int vertex)
-        {
-            List<int> list = new List<int>();
-            list.Add(vertex);
+            List<int> list = new List<int>() { vertex };
 
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
