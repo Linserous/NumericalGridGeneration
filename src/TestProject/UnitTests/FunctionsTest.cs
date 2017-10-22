@@ -126,8 +126,7 @@ namespace UnitTests
                     output += Environment.NewLine+ "There is problem with file: "+e.Value+". The reason: "+e.Key.Message+"|";
                 Assert.Fail(output);
                 
-            }
-            
+            }        
         }
     }
 }
