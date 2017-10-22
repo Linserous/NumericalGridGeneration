@@ -21,7 +21,7 @@ namespace MeshRecovery_Console
 
             long[] xadj = null;
             int[] adjncy = null;
-            Loader.LoadGraphFromMETISFormat(args[0], out xadj, out adjncy);
+            Loader.LoadGraphFromMETISFormat(args[1], out xadj, out adjncy);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             int meshDemention;
