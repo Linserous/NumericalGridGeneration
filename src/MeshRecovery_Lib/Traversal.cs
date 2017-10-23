@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace MeshRecovery_Lib
 {
-
+    using TraversalHelpers;
     public interface IFS
     {
         IContainer GetContainer();
