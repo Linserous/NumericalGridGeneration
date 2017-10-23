@@ -118,7 +118,7 @@ namespace MeshRecovery_Lib
         }
     }
 
-    public class Traversal : Traversal<BFS>
+    public class Traversal : Traversal<DFS>
     {
         public Traversal(Graph graph) : base(graph) { }
     }

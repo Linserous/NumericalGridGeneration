@@ -23,15 +23,15 @@ namespace UnitTests
             Graph g = new Graph(xadj, adjncy);
 
             List<int> vertices = new List<int>();
-
-            var tInDepth = new Traversal<DFS>(g);
+            // Traversal(g) is equvalent to the  Traversal<DFS>(g)
+            var tInDepth = new Traversal(g);
             // Subscribe to the NewVertex event to get the path to the graph
             tInDepth.NewVertex += (sender, e) => vertices.Add(e);
             tInDepth.Run();
             CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7, 3, 2, 4, 5, 6 });
 
             vertices.Clear();
-            // Traversal<BFS>(g) is equvalent to the  Traversal(g)
+
             var tInBreadth = new Traversal<BFS>(g);
             tInBreadth.NewVertex += (sender, e) => vertices.Add(e);
             tInBreadth.Run();
