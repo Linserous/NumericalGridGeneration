@@ -5,24 +5,39 @@ using System.Reflection;
 
 namespace MeshRecovery_Lib
 {
+
     public interface IFS
     {
-        void insert(ref List<int> list, int element);
+        IContainer GetContainer();
     }
 
-    public class DFS : IFS
+    public class DFS: IFS
     {
-        public void insert(ref List<int> list, int element)
+        private DFSContainer container;
+
+        public DFS()
         {
-            list.Insert(0, element);
+            container = new DFSContainer();
+        }
+
+        public IContainer GetContainer()
+        {
+            return container;
         }
     }
 
     public class BFS : IFS
     {
-        public void insert(ref List<int> list, int element)
+        private BFSContainer container;
+
+        public BFS()
         {
-            list.Add(element);
+            container = new BFSContainer();
+        }
+
+        public IContainer GetContainer()
+        {
+            return container;
         }
     }
 
@@ -59,14 +74,18 @@ namespace MeshRecovery_Lib
             }
             HandleVertexNotify(vertex);
 
-            List<int> list = new List<int>() { vertex };
+            var container = fs.GetContainer();
+
+            container.Clear();
+            container.Add(vertex);
 
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
-            while (list.Count() != 0)
+            while (container.Count() != 0)
             {
-                var v = list.First();
-                list.RemoveAt(0);
+                var v = container.Get();
+                container.Remove();
+
                 int[] vertices;
                 graph.GetAdjVertices(v, out vertices);
                 foreach (var el in vertices)
@@ -75,7 +94,7 @@ namespace MeshRecovery_Lib
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
-                        fs.insert(ref list, el);
+                        container.Add(el);
                     }
                 }
                 statuses[v] = HandleStatus.COMPLETED;

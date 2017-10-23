@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Container.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="MeshRecovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
