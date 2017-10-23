@@ -13,7 +13,7 @@ namespace UnitTests
             long[] xadj;
             int[] adjncy;
             int[][] graphNumeration;
-            Loader.LoadGraphFromMETISFormat(@"tests\sources_big_graphs\fe_rotor.graph", out xadj, out adjncy);
+            Loader.LoadGraphFromMETISFormat(@"tests\sources_big_graphs\grid_100x150x80.graph", out xadj, out adjncy);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             bool valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out int meshDimension);

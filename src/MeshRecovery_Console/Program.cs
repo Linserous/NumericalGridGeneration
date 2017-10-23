@@ -25,13 +25,13 @@ namespace MeshRecovery_Console
             Stopwatch timer = new Stopwatch();
             timer.Start();
             int meshDemention;
-            MeshRecovery.Validate(xadj, adjncy.Length, adjncy, out meshDemention);
+            MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDemention);
             timer.Stop();
             Console.WriteLine("Function Validate finished work. Elapsed: " + timer.Elapsed);
             timer.Reset();
             timer.Start();
             int[][] graphNumeration;
-            MeshRecovery.Numerate(xadj, adjncy.Length, adjncy, out graphNumeration);
+            MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
             timer.Stop();
             Console.WriteLine("Function Numerate finished work. Elapsed: " + timer.Elapsed);
             //Save graphNumeration to file (discuss format)
