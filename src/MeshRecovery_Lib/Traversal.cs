@@ -6,18 +6,20 @@ using System.Reflection;
 namespace MeshRecovery_Lib
 {
     using TraversalHelpers;
+
     public interface IFS
     {
+        void Init(Graph graph);
         IContainer GetContainer();
     }
 
-    public class DFS: IFS
+    public class DFS : IFS
     {
         private DFSContainer container;
 
-        public DFS()
+        public void Init(Graph graph)
         {
-            container = new DFSContainer();
+            container = new DFSContainer(graph.GetVerticesCount());
         }
 
         public IContainer GetContainer()
@@ -30,9 +32,9 @@ namespace MeshRecovery_Lib
     {
         private BFSContainer container;
 
-        public BFS()
+        public void Init(Graph graph)
         {
-            container = new BFSContainer();
+            container = new BFSContainer(graph.GetVerticesCount());
         }
 
         public IContainer GetContainer()
@@ -40,7 +42,6 @@ namespace MeshRecovery_Lib
             return container;
         }
     }
-
     public class Traversal<T> where T : IFS, new()
     {
         private Graph graph;
@@ -58,6 +59,7 @@ namespace MeshRecovery_Lib
         {
             this.graph = graph;
             fs = new T();
+            fs.Init(graph);
             statuses = new HandleStatus[graph.GetVerticesCount()];
         }
 

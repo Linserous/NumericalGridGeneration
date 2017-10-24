@@ -21,9 +21,9 @@ namespace MeshRecovery_Lib
         {
             private Stack<int> stack;
 
-            public DFSContainer()
+            public DFSContainer(int count = 0)
             {
-                stack = new Stack<int>();
+                stack = new Stack<int>(count);
             }
 
             public void Add(int element)
@@ -55,9 +55,9 @@ namespace MeshRecovery_Lib
         {
             private Queue<int> queue;
 
-            public BFSContainer()
+            public BFSContainer(int count)
             {
-                queue = new Queue<int>();
+                queue = new Queue<int>(count);
             }
 
             public void Add(int element)
