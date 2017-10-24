@@ -21,7 +21,7 @@ namespace MeshRecovery_Lib
         {
             private Stack<int> stack;
 
-            public DFSContainer(int count = 0)
+            public DFSContainer(int count)
             {
                 stack = new Stack<int>(count);
             }
