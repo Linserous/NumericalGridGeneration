@@ -30,43 +30,17 @@ namespace MeshRecovery_Lib
                 return false;
             }
 
-            if (IsConnected(graph))
+            switch (meshDimension = GetDimension(graph))
             {
-                switch (meshDimension = GetDimension(graph))
-                {
-                    case 1: return OneDimensionValidate(graph);
-                    //TODO: implement this part
-                    case 2: return true;
-                    case 3: return true;
-                    default: return false;
-                }
+                case 1: return OneDimensionValidate(graph);
+                //TODO: implement this part
+                case 2: return true;
+                case 3: return true;
+                default: return false;
             }
-
-            return false;
         }
         /// <summary>
-        /// Methon checks if graph is connected
-        /// </summary>
-        /// <param name="graph">It's a graph</param>
-        /// <returns>
-        /// true - graph is connected
-        /// false - graph is not connected
-        /// </returns>
-        private static bool IsConnected(Graph graph)
-        {
-            Traversal t = new Traversal(graph);
-
-            List<int> vertices = new List<int>();
-            t.NewVertex += (sender, e) => vertices.Add(e);
-            t.Run();
-
-            if (vertices.Count() == graph.GetVerticesCount())
-                return true;
-            else
-                return false;
-        }
-        /// <summary>
-        /// Method retuns the dimension of the graph
+        /// Method retuns the dimension of the graph and checks if graph is conected
         /// </summary>
         /// <param name="graph">It`s a graph</param>
         /// <returns>
@@ -76,21 +50,31 @@ namespace MeshRecovery_Lib
         /// 2 - two dimension
         /// 3 - three dimension 
         /// </returns>
-        private static int GetDimension(Graph  graph)
+        private static int GetDimension(Graph graph)
         {
             int V = graph.GetVerticesCount();
             int E = graph.GetEdgeCount();
             long max_adj = 0;
+
+            Traversal t = new Traversal(graph);
+
+            List<long> vertices = new List<long>();
+            t.NewVertex += (sender, e) =>
+            {
+                if (max_adj < graph.GetAdjVerticesCount(e))
+                    max_adj = graph.GetAdjVerticesCount(e);
+                vertices.Add(e);
+            };
+            t.Run();
+
+            if (vertices.Count() != graph.GetVerticesCount())
+                return 0;
 
             if (V - E + 1 == 2) // should be one dimension graph ( chain )
             {
 
                 return 1;
             }
-
-            for (int i = 0; i < V; i++)
-                if (max_adj < graph.GetAdjVerticesCount(i))
-                    max_adj = graph.GetAdjVerticesCount(i);
 
             if (max_adj <= 4)
             {
@@ -103,6 +87,7 @@ namespace MeshRecovery_Lib
             }
 
             return 0;
+
         }
         /// <summary>
         /// Method restores geometry information for each graph node
