@@ -33,11 +33,10 @@ namespace MeshRecovery_Visualizer
 
                 int[][] graphNumeration = null;
                 int meshDimension;
-                if (MeshRecovery_Lib.MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension))
-                {
-                    MeshRecovery_Lib.MeshRecovery.Numerate(xadj, meshDimension, adjncy, out graphNumeration);
-                }
-                else
+                bool canBeNumbered;
+                canBeNumbered = MeshRecovery_Lib.MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
+                canBeNumbered &= MeshRecovery_Lib.MeshRecovery.Numerate(xadj, meshDimension, adjncy, out graphNumeration) == 0;
+                if (!canBeNumbered)
                 {
                     js.Notify("The graph can not be numbered :(", JSInvoker.MessageType.Warning);
                 }
