@@ -387,6 +387,8 @@ namespace MeshRecovery_Lib
                         {
                             int x = res_graphNumeration[v1][0] + res_graphNumeration[v2][0] - res_graphNumeration[opposite_vertex][0];
                             int y = res_graphNumeration[v1][1] + res_graphNumeration[v2][1] - res_graphNumeration[opposite_vertex][1];
+                            if ((x == res_graphNumeration[opposite_vertex][0])&& y == res_graphNumeration[opposite_vertex][1])
+                                result =- 1;
                             res_graphNumeration[e] = new int[] { x, y };
                         }
                         else
