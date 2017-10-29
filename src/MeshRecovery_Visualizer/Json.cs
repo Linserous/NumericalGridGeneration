@@ -67,9 +67,9 @@ namespace MeshRecovery_Visualizer
                 for (var i = 0; i < xadj.Length - 1; ++i)
                 {
                     var index = Convert.ToString(i);
-                    nodes.Add(new Json.Node(index, graphNumeration == null ?
-                       index :
-                       index + ": (" + string.Join(",", graphNumeration[i]) + ")"));
+                    nodes.Add(new Json.Node(index, graphNumeration[i] == null ?
+                       index+":fail" :
+                       index + ": (" + string.Join(",", graphNumeration[i] ) + ")"));
                 }
                 var edges = new List<Json.Edge>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
