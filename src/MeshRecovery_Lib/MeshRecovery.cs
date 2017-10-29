@@ -329,15 +329,31 @@ namespace MeshRecovery_Lib
                             }
                             else
                             {
+                                if (index_guess>0)
                                 res_graphNumeration[history_guess[index_guess - 1][0]] = new int[] { res_graphNumeration[history_guess[index_guess - 1][0]][0] - history_guess[index_guess - 1][1], res_graphNumeration[history_guess[index_guess - 1][0]][1] + history_guess[index_guess - 1][2] };
+
                             }
                         }
 
-                        int x = Math.Max( Math.Abs(res_graphNumeration[v1][0]), Math.Abs(res_graphNumeration[v2][0]));
-                        int y = Math.Max(Math.Abs(res_graphNumeration[v1][1]), Math.Abs(res_graphNumeration[v2][1]));
-                        if (res_graphNumeration[v1][0] + res_graphNumeration[v2][0] < 0) x = x * -1;
-                        if (res_graphNumeration[v1][1] + res_graphNumeration[v2][1] < 0) y = y * -1;
-                        res_graphNumeration[e] = new int[] { x, y };
+                        int[] bufv1;
+                        int[] bufv2;
+                        long couunt_bufv1=graph.GetAdjVertices(v1, out bufv1);
+                        long couunt_bufv2 = graph.GetAdjVertices(v2, out bufv2);
+                        int opposite_vertex = -1;
+                        for (int i = 0; i < couunt_bufv1; ++i)
+                            for (int j = 0; j < couunt_bufv2; ++j)
+                                if (bufv1[i] == bufv2[j] && bufv1[i] != e)
+                                    opposite_vertex = bufv1[i];
+                        if ((opposite_vertex != -1)&&(res_graphNumeration[opposite_vertex]!=null))
+                        {
+                            int x = res_graphNumeration[v1][0] + res_graphNumeration[v2][0] - res_graphNumeration[opposite_vertex][0];
+                            int y = res_graphNumeration[v1][1] + res_graphNumeration[v2][1] - res_graphNumeration[opposite_vertex][1];
+                            res_graphNumeration[e] = new int[] { x, y };
+                        }
+                        else
+                        {
+
+                        }
                     }
                     //here we give up
                     //but we will do it again!!
