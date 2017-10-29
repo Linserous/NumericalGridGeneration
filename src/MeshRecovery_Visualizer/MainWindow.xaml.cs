@@ -31,8 +31,19 @@ namespace MeshRecovery_Visualizer
                 int[] adjncy;
                 Loader.LoadGraphFromMETISFormat(openFileDialog.FileName, out xadj, out adjncy);
 
+                int[][] graphNumeration = null;
+                int meshDimension;
+                if (MeshRecovery_Lib.MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension))
+                {
+                    MeshRecovery_Lib.MeshRecovery.Numerate(xadj, meshDimension, adjncy, out graphNumeration);
+                }
+                else
+                {
+                    js.Notify("The graph can not be numbered :(", JSInvoker.MessageType.Warning);
+                }
+
                 string json;
-                var errorCode = Json.Graph2Json.Run(out json, xadj, adjncy);
+                var errorCode = Json.Graph2Json.Run(out json, xadj, adjncy, graphNumeration);
 
                 if (errorCode == Json.Graph2Json.ErrorCode.ThresholdExcess)
                 {

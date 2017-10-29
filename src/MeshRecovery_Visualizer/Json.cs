@@ -47,20 +47,6 @@ namespace MeshRecovery_Visualizer
         {
             static int NodeThreshold = 7000;
             static int AdjThreshold = 20000;
-            static private string GraphNumerationToString(int[] graphNumeration)
-            {
-                if (graphNumeration == null) return "Fail";
-
-                string result = "";
-                result += graphNumeration[0].ToString();
-                for (int i = 1; i < graphNumeration.Length; ++i)
-                {
-                    //result += "[";
-                    result += ","+graphNumeration[i].ToString();
-                    //result += "]";
-                }
-                return result;
-            }
 
             public enum ErrorCode
             {
@@ -68,14 +54,9 @@ namespace MeshRecovery_Visualizer
                 ThresholdExcess = 1
             }
 
-            static public ErrorCode Run(out string result, long[] xadj, int[] adjncy)
+            static public ErrorCode Run(out string result, long[] xadj, int[] adjncy, int[][] graphNumeration)
             {
                 result = "";
-
-                int[][] graphNumeration;
-                int meshDimension;
-                MeshRecovery_Lib.MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
-                MeshRecovery_Lib.MeshRecovery.Numerate(xadj, meshDimension, adjncy, out graphNumeration);
 
                 if (xadj.Length > NodeThreshold && adjncy.Length > AdjThreshold)
                 {
@@ -85,7 +66,10 @@ namespace MeshRecovery_Visualizer
                 var nodes = new List<Json.Node>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
                 {
-                    nodes.Add(new Json.Node(Convert.ToString(i), graphNumeration == null ? Convert.ToString(i) : Convert.ToString(i) +":"+GraphNumerationToString(graphNumeration[i])));
+                    var index = Convert.ToString(i);
+                    nodes.Add(new Json.Node(index, graphNumeration == null ?
+                       index :
+                       index + ": (" + string.Join(",", graphNumeration[i]) + ")"));
                 }
                 var edges = new List<Json.Edge>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
@@ -95,7 +79,7 @@ namespace MeshRecovery_Visualizer
                         edges.Add(new Json.Edge(Convert.ToString(i + j), Convert.ToString(i), Convert.ToString(adjncy[j])));
                     }
                 }
-                
+
                 var graph = new Json.Graph(nodes, edges);
                 var jSerializer = new JavaScriptSerializer();
                 jSerializer.MaxJsonLength = Int32.MaxValue;
