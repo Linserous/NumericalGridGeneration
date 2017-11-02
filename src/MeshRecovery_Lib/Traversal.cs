@@ -46,6 +46,8 @@ namespace MeshRecovery_Lib
     {
         private Graph graph;
         private IFS fs = null;
+        List<int> traversedVertices = null;
+        bool stopped = false;
 
         private enum HandleStatus
         {
@@ -61,6 +63,7 @@ namespace MeshRecovery_Lib
             fs = new T();
             fs.Init(graph);
             statuses = new HandleStatus[graph.GetVerticesCount()];
+            traversedVertices = new List<int>();
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -70,6 +73,8 @@ namespace MeshRecovery_Lib
 
         public void Run(int vertex = 0)
         {
+            stopped = false;
+
             for (int i = 0; i < statuses.Count(); ++i)
             {
                 statuses[i] = HandleStatus.NEW;
@@ -81,11 +86,14 @@ namespace MeshRecovery_Lib
             container.Clear();
             container.Add(vertex);
 
+            traversedVertices.Clear();
+            traversedVertices.Add(vertex);
+
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
             while (container.Count() != 0)
             {
-                var v = container.Get();
+                var v = container.Peek();
                 container.Remove();
 
                 int[] vertices;
@@ -93,14 +101,28 @@ namespace MeshRecovery_Lib
                 foreach (var el in vertices)
                 {
                     HandleVertexNotify(el);
+
+                    if (stopped) return;
+
                     if (statuses[el] == HandleStatus.NEW)
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
                         container.Add(el);
+                        traversedVertices.Add(el);
                     }
                 }
                 statuses[v] = HandleStatus.COMPLETED;
             }
+        }
+
+        public void Stop()
+        {
+            stopped = true;
+        }
+
+        public List<int> GetTraversedVertices()
+        {
+            return traversedVertices;
         }
 
         private void HandleVertexNotify(int vertex)

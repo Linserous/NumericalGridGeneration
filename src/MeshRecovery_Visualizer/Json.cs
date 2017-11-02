@@ -69,7 +69,9 @@ namespace MeshRecovery_Visualizer
                     var index = Convert.ToString(i);
                     var label = index;
                     if (graphNumeration != null)
+                    {
                         label += graphNumeration[i] == null ? ":fail" : ": (" + string.Join(",", graphNumeration[i]) + ")";
+                    }
                     nodes.Add(new Json.Node(index, label));
                 }
                 var edges = new List<Json.Edge>();

@@ -9,7 +9,7 @@ namespace UnitTests
     public class TraversalTest
     {
         [TestMethod]
-        public void CheckTraversal()
+        public void CheckTraversalRun()
         {
             long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
             int[] adjncy = { 1, 7, 3,
@@ -36,6 +36,58 @@ namespace UnitTests
             tInBreadth.NewVertex += (sender, e) => vertices.Add(e);
             tInBreadth.Run();
             CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7, 3, 2, 6, 4, 5 });
+        }
+
+        [TestMethod]
+        public void CheckTraversalStop()
+        {
+            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
+            int[] adjncy = { 1, 7, 3,
+                            0, 2, 6,
+                            1, 5, 3,
+                            2, 4, 0,
+                            5, 3, 7,
+                            4, 2, 6,
+                            7, 1, 5,
+                            0, 4, 6 };
+            Graph g = new Graph(xadj, adjncy);
+
+            List<int> vertices = new List<int>();
+            var tInDepth = new Traversal(g);
+
+            tInDepth.NewVertex += (sender, e) =>
+            {
+                if (e == 3)
+                {
+                    // Stop traverse graph
+                    tInDepth.Stop();
+                    return;
+                }
+                vertices.Add(e);
+            };
+            tInDepth.Run();
+            CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7 });
+        }
+
+
+        [TestMethod]
+        public void CheckGetTraversalVertices()
+        {
+            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
+            int[] adjncy = { 1, 7, 3,
+                            0, 2, 6,
+                            1, 5, 3,
+                            2, 4, 0,
+                            5, 3, 7,
+                            4, 2, 6,
+                            7, 1, 5,
+                            0, 4, 6 };
+            Graph g = new Graph(xadj, adjncy);
+
+            var tInDepth = new Traversal(g);
+            tInDepth.NewVertex += (sender, e) => { if (e == 3) tInDepth.Stop(); };
+            tInDepth.Run();
+            CollectionAssert.AreEqual(tInDepth.GetTraversedVertices(), new List<int> { 0, 1, 7 });
         }
     }
 }

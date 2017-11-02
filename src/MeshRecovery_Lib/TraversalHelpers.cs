@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeshRecovery_Lib
 {
@@ -11,9 +8,9 @@ namespace MeshRecovery_Lib
         public interface IContainer
         {
             void Add(int element);
-            int Get();
-            void Remove();
+            int Peek();
             int Count();
+            void Remove();
             void Clear();
         }
 
@@ -31,7 +28,7 @@ namespace MeshRecovery_Lib
                 stack.Push(element);
             }
 
-            public int Get()
+            public int Peek()
             {
                 return stack.Peek();
             }
@@ -65,7 +62,7 @@ namespace MeshRecovery_Lib
                 queue.Enqueue(element);
             }
 
-            public int Get()
+            public int Peek()
             {
                 return queue.Peek();
             }
