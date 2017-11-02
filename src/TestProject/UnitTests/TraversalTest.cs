@@ -8,20 +8,20 @@ namespace UnitTests
     [TestClass]
     public class TraversalTest
     {
-        [TestMethod]
-        public void CheckTraversalRun()
-        {
-            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
-            int[] adjncy = { 1, 7, 3,
+        Graph g = new Graph(new long[] { 0, 3, 6, 9, 12, 15, 18, 21, 24 },
+                            new int[]
+                           { 1, 7, 3,
                             0, 2, 6,
                             1, 5, 3,
                             2, 4, 0,
                             5, 3, 7,
                             4, 2, 6,
                             7, 1, 5,
-                            0, 4, 6 };
-            Graph g = new Graph(xadj, adjncy);
+                            0, 4, 6 });
 
+        [TestMethod]
+        public void CheckTraversalRun()
+        {
             List<int> vertices = new List<int>();
             // Traversal(g) is equvalent to the  Traversal<DFS>(g)
             var tInDepth = new Traversal(g);
@@ -41,17 +41,6 @@ namespace UnitTests
         [TestMethod]
         public void CheckTraversalStop()
         {
-            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
-            int[] adjncy = { 1, 7, 3,
-                            0, 2, 6,
-                            1, 5, 3,
-                            2, 4, 0,
-                            5, 3, 7,
-                            4, 2, 6,
-                            7, 1, 5,
-                            0, 4, 6 };
-            Graph g = new Graph(xadj, adjncy);
-
             List<int> vertices = new List<int>();
             var tInDepth = new Traversal(g);
 
@@ -73,21 +62,10 @@ namespace UnitTests
         [TestMethod]
         public void CheckGetTraversalVertices()
         {
-            long[] xadj = { 0, 3, 6, 9, 12, 15, 18, 21, 24 };
-            int[] adjncy = { 1, 7, 3,
-                            0, 2, 6,
-                            1, 5, 3,
-                            2, 4, 0,
-                            5, 3, 7,
-                            4, 2, 6,
-                            7, 1, 5,
-                            0, 4, 6 };
-            Graph g = new Graph(xadj, adjncy);
-
             var tInDepth = new Traversal(g);
-            tInDepth.NewVertex += (sender, e) => { if (e == 3) tInDepth.Stop(); };
+            tInDepth.NewVertex += (sender, e) => { if (e == 6) tInDepth.Stop(); };
             tInDepth.Run();
-            CollectionAssert.AreEqual(tInDepth.GetTraversedVertices(), new List<int> { 0, 1, 7 });
+            CollectionAssert.AreEqual(tInDepth.GetTraversedVertices(), new List<int> { 0, 1, 7, 3, 2, 4, 5 });
         }
     }
 }
