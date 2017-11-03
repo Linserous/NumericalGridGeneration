@@ -46,6 +46,7 @@ function GraphView() {
 
   function _createSigma(container, graph, settings) {
     graph = graph != undefined ? graph : { nodes: [], edges: [] };
+    settings = settings != undefined ? settings : {};
     var s = new sigma({
       graph: graph,
       container: container,
@@ -66,6 +67,7 @@ function GraphView() {
       el.x = 'x' in el ? el.x : Math.random();
       el.y = 'y' in el ? el.y : Math.random();
       el.size = 1;
+
     }, this);
     return graph;
   }
@@ -84,10 +86,10 @@ function GraphView() {
     var graph1 = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
     if (_sigma1 == null) {
       _sigma1 = _createSigma('graph1',
-        _preprocess(graph1, function (el) { el.label = el.id; }),
+        _preprocess(graph1),
         { defaultNodeColor: '#006699' });
     } else {
-      _sigma1.graph.read(_preprocess(graph1, function (el) { el.label = el.id; }));
+      _sigma1.graph.read(_preprocess(graph1));
     }
 
     var graph2 = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
@@ -127,7 +129,7 @@ function GraphView() {
   }
 
   this.isRendered = function () {
-    return _sigma.isForceAtlas2Running();
+    return _sigma1.isForceAtlas2Running();
   }
 };
 
