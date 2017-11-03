@@ -40,28 +40,32 @@ function notify(message, type) {
 
 function GraphView() {
   // private
-  var _sigma = null;
+  var _sigma1 = null;
+  var _sigma2 = null;
   var _isTemplate = true;
 
-  function _createSigma() {
-    _sigma = new sigma({
-      graph: { nodes: [], edges: [] },
-      container: 'graph-container',
-      settings: {
-        defaultNodeColor: '#006699',
-        skipErrors: true
-      }
+  function _createSigma(container, graph, settings) {
+    graph = graph != undefined ? graph : { nodes: [], edges: [] };
+    var s = new sigma({
+      graph: graph,
+      container: container,
+      settings: Object.assign({
+        skipErrors: true,
+        labelThreshold: 1
+      }, settings)
     });
-
     // Initialize the dragNodes plugin
-    var dragListener = new sigma.plugins.dragNodes(_sigma, _sigma.renderers[0]);
+    var dragListener = new sigma.plugins.dragNodes(s, s.renderers[0]);
+    return s;
   }
 
-  function _preprocess(graph) {
+  function _preprocess(graph, callback) {
+    callback = callback != undefined ? callback : function () { };
     graph.nodes.forEach(function (el) {
-      el.x = Math.random();
-      el.y = Math.random();
-      el.size = 15;
+      callback(el);
+      el.x = 'x' in el ? el.x : Math.random();
+      el.y = 'y' in el ? el.y : Math.random();
+      el.size = 1;
     }, this);
     return graph;
   }
@@ -72,13 +76,31 @@ function GraphView() {
   };
 
   this.loadGraph = function () {
-    if (_sigma === null) _createSigma();
-    _sigma.graph.clear();
+    if (_sigma1 != null && _sigma2 != null) {
+      _sigma1.graph.clear();
+      _sigma2.graph.clear();
+    }
 
-    var graph = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
-    _sigma.graph.read(_preprocess(graph));
+    var graph1 = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
+    if (_sigma1 == null) {
+      _sigma1 = _createSigma('graph1',
+        _preprocess(graph1, function (el) { el.label = el.id; }),
+        { defaultNodeColor: '#006699' });
+    } else {
+      _sigma1.graph.read(_preprocess(graph1, function (el) { el.label = el.id; }));
+    }
 
-    _sigma.refresh();
+    var graph2 = _isTemplate ? templateGraphJson : JSON.parse(arguments[0]);
+    if (_sigma2 == null) {
+      _sigma2 = _createSigma('graph2',
+        _preprocess(graph2));
+    } else {
+      _sigma2.graph.read(_preprocess(graph2));
+    }
+
+    _sigma1.refresh();
+    _sigma2.refresh();
+
     render(true);
     setTimeout(function () { render(false); }, 500);
   };
@@ -88,19 +110,19 @@ function GraphView() {
   }
 
   this.render = function (isRender) {
-    if (_sigma === null) return;
+    if (_sigma1 == null) return;
 
     if (isRender) {
-      if (_sigma.isForceAtlas2Running()) _sigma.killForceAtlas2();
+      if (_sigma1.isForceAtlas2Running()) _sigma1.killForceAtlas2();
       // Start the layout algorithm
-      _sigma.startForceAtlas2({
+      _sigma1.startForceAtlas2({
         linLogMode: false,
         slowDown: 1,
         worker: false,
         barnesHutOptimize: false
       });
-    } else if (_sigma.isForceAtlas2Running()) {
-      _sigma.killForceAtlas2();
+    } else if (_sigma1.isForceAtlas2Running()) {
+      _sigma1.killForceAtlas2();
     }
   }
 

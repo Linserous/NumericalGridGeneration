@@ -1,8 +1,26 @@
-#graph-container{
+.label {
+    width: 100%;
+    font-family: Arial Unicode MS;
+    font-size: 12px;
+    text-align: center;
+}
+#graph-container1, #graph-container2 {
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: 50%;
+    color: #000;
+    background: #eee;
     position: absolute;
-    width: 90%
-}
+  }
+
+  #graph-container2 {
+    left: 50%;
+    right: 0;
+    background: #fff;
+  }
+
+  #graph1, #graph2 {
+    width: 100%;
+    height: 90%;
+  }

@@ -18,6 +18,17 @@ namespace MeshRecovery_Visualizer
             public string label { set; get; }
         }
 
+        class NodeWithCoord : Node
+        {
+            public NodeWithCoord(string id, string label, double x = 0, double y = 0): base(id, label)
+            {
+                this.x = x;
+                this.y = y;
+            }
+            public double x { set; get; }
+            public double y { set; get; }
+        }
+
         class Edge
         {
             public Edge(string id, string target, string source)
@@ -67,12 +78,13 @@ namespace MeshRecovery_Visualizer
                 for (var i = 0; i < xadj.Length - 1; ++i)
                 {
                     var index = Convert.ToString(i);
-                    var label = index;
-                    if (graphNumeration != null)
-                    {
-                        label += graphNumeration[i] == null ? ":fail" : ": (" + string.Join(",", graphNumeration[i]) + ")";
-                    }
-                    nodes.Add(new Json.Node(index, label));
+                       var validNumeration = graphNumeration != null && graphNumeration[i] != null;
+                       var label = index + (!validNumeration ? ": fail" : ": (" + string.Join(",", graphNumeration[i]) + ")");
+                        var yExists = validNumeration && graphNumeration[i].Length > 1;
+                        var node = validNumeration ?
+                            new Json.NodeWithCoord(index, label, graphNumeration[i][0], (yExists ? graphNumeration[i][1] : 0)) :
+                            new Json.Node(index, label);
+                        nodes.Add(node);
                 }
                 var edges = new List<Json.Edge>();
                 for (var i = 0; i < xadj.Length - 1; ++i)
