@@ -16,7 +16,7 @@ namespace MeshRecovery_Test
         static string PathToExcelResults = @"tests/resultsExcel";
         static string result_type = @".txt";
         static string excel_type = @".xlsx";
-        static string[] head_columns = { "Name of file", "Valid", "Numerable", "Time", "Result" };
+        static string[] head_columns = { "Name of file", "Vertices count", "Edges count", "Valid", "Numerable", "Time", "Result" };
         static int Padding = 20;
 
         static void WriteRow(StreamWriter file, params string[] strings)
@@ -125,7 +125,16 @@ namespace MeshRecovery_Test
                 numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
-                WriteRowExcel(workSheet, i + 2, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
+                Graph graph = new Graph(xadj, adjncy);
+                WriteRowExcel(workSheet, i + 2,
+                    current_file_name,
+                    graph.GetVerticesCount().ToString(),
+                    graph.GetEdgeCount().ToString(),
+                    valid.ToString(),
+                    numerate.ToString(),
+                    timer.ElapsedTicks.ToString(),
+                    IntArrayToList(graphNumeration));
+
                 timer.Reset();
             }
             for (int i = 0; i < head_columns.Length; ++i)
