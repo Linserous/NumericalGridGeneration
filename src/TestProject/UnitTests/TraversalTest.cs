@@ -57,15 +57,5 @@ namespace UnitTests
             tInDepth.Run();
             CollectionAssert.AreEqual(vertices, new List<int> { 0, 1, 7 });
         }
-
-
-        [TestMethod]
-        public void CheckGetTraversalVertices()
-        {
-            var tInDepth = new Traversal(g);
-            tInDepth.NewVertex += (sender, e) => { if (e == 6) tInDepth.Stop(); };
-            tInDepth.Run();
-            CollectionAssert.AreEqual(tInDepth.GetTraversedVertices(), new List<int> { 0, 1, 7, 3, 2, 4, 5 });
-        }
     }
 }

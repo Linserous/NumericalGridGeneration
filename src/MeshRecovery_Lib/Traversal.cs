@@ -46,7 +46,6 @@ namespace MeshRecovery_Lib
     {
         private Graph graph;
         private IFS fs = null;
-        List<int> traversedVertices = null;
         bool stopped = false;
 
         private enum HandleStatus
@@ -63,7 +62,6 @@ namespace MeshRecovery_Lib
             fs = new T();
             fs.Init(graph);
             statuses = new HandleStatus[graph.GetVerticesCount()];
-            traversedVertices = new List<int>();
         }
 
         //events, which trigger when vertex is handled with correspond HandleStatus
@@ -86,9 +84,6 @@ namespace MeshRecovery_Lib
             container.Clear();
             container.Add(vertex);
 
-            traversedVertices.Clear();
-            traversedVertices.Add(vertex);
-
             statuses[vertex] = HandleStatus.IN_PROGRESS;
 
             while (container.Count() != 0)
@@ -108,7 +103,6 @@ namespace MeshRecovery_Lib
                     {
                         statuses[el] = HandleStatus.IN_PROGRESS;
                         container.Add(el);
-                        traversedVertices.Add(el);
                     }
                 }
                 statuses[v] = HandleStatus.COMPLETED;
@@ -118,11 +112,6 @@ namespace MeshRecovery_Lib
         public void Stop()
         {
             stopped = true;
-        }
-
-        public List<int> GetTraversedVertices()
-        {
-            return traversedVertices;
         }
 
         private void HandleVertexNotify(int vertex)
