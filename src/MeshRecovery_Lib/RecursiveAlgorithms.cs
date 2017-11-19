@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MeshRecovery_Lib.Helpers;
 
 namespace MeshRecovery_Lib
 {
@@ -54,7 +51,7 @@ namespace MeshRecovery_Lib
                     graph.GetAdjVertices(vertex, out vertices);
 
                     bool execute = true;
-                    int times = 3;
+                    int times = vertices.Count() - 1;
                     while (execute && times > 0)
                     {
                         execute = false;
@@ -69,7 +66,7 @@ namespace MeshRecovery_Lib
                             if (error != ERROR.OK)
                             {
                                 NumerationHelpers.Clear(ref graphNumeration);
-                                MathHelpers.Swap(ref vertices[0], ref vertices[4 - times]);
+                                Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
                                 execute = true;
                                 times--;
                                 break;
@@ -92,7 +89,7 @@ namespace MeshRecovery_Lib
                                     if (error != ERROR.OK)
                                     {
                                         NumerationHelpers.Clear(ref graphNumeration);
-                                        MathHelpers.Swap(ref vertices[0], ref vertices[4 - times]);
+                                        Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
                                         execute = true;
                                         times--;
                                         break;
@@ -119,7 +116,7 @@ namespace MeshRecovery_Lib
                 for (int i = 0; i < vertices.Count(); ++i)
                 {
                     graphNumeration[vertices[i]] = new int[] { x, y };
-                    MathHelpers.Swap(ref x, ref y);
+                    Helpers.Swap(ref x, ref y);
                     x *= i > 0 ? x : 1;
                     y *= i > 0 ? y : 1;
                 }

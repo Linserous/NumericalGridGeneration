@@ -6,36 +6,35 @@ using System.Threading.Tasks;
 
 namespace MeshRecovery_Lib
 {
-    namespace Helpers
+    class Helpers
     {
-        class MathHelpers
+        public static void Swap<T>(ref T a, ref T b)
         {
-            public static void Swap(ref int a, ref int b)
+            T temp = a;
+            a = b;
+            b = temp;
+        }
+    }
+
+    class NumerationHelpers
+    {
+        public static void Clear(ref int[][] numeration)
+        {
+            for (int i = 0; i < numeration.Count(); ++i)
             {
-                a ^= b; b ^= a; a ^= b;
+                numeration[i] = null;
             }
         }
 
-        class NumerationHelpers
+        public static bool IndexExists(int[] index, ref int[][] numeration)
         {
-            public static void Clear(ref int[][] numeration)
+            for (int i = 0; i < numeration.Count(); ++i)
             {
-                for (int i = 0; i < numeration.Count(); ++i)
-                {
-                    numeration[i] = null;
-                }
+                if (numeration[i] != null &&
+                    numeration[i][0] == index[0] &&
+                    numeration[i][1] == index[1]) return true;
             }
-
-            public static bool IndexExists(int[] index, ref int[][] numeration)
-            {
-                for (int i = 0; i < numeration.Count(); ++i)
-                {
-                    if (numeration[i] != null &&
-                        numeration[i][0] == index[0] &&
-                        numeration[i][1] == index[1]) return true;
-                }
-                return false;
-            }
+            return false;
         }
     }
 }
