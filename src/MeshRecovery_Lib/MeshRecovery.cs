@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace MeshRecovery_Lib
 {
-    
-    public static class MeshRecovery
+    public static partial class MeshRecovery
     {
         /// <summary>
         /// Method checks that input graph corresponds to a regular grid
@@ -114,7 +111,7 @@ namespace MeshRecovery_Lib
             {
                 case 1: return OneDimensionNumerate(graph, out graphNumeration);
                 //TODO: implement this part
-                case 2: return TwoDimensionNumerate(graph, out graphNumeration); 
+                case 2: return TwoDimensionNumerate(graph, out graphNumeration); //new RecursiveAlgorithm().TwoDimNumerate(graph, out graphNumeration);
                 case 3: break;
                 default: return -1;
             }
