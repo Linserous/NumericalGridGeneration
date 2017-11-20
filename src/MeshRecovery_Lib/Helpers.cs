@@ -1,8 +1,5 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeshRecovery_Lib
 {
@@ -23,6 +20,14 @@ namespace MeshRecovery_Lib
             for (int i = 0; i < numeration.Count(); ++i)
             {
                 numeration[i] = null;
+            }
+        }
+
+        public static void Clear(ref int[][] numeration, List<int> vertices)
+        {
+            foreach (var v in vertices)
+            {
+                numeration[v] = null;
             }
         }
 

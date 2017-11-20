@@ -10,11 +10,20 @@ namespace MeshRecovery_Lib
         {
             const int INVALID_INDEX = -1;
 
-            enum ERROR
+            enum Error
             {
                 OK = 0,
                 INVALID_DIM = 1,
                 IMPOSSIBLE_NUM = 2
+            }
+
+            enum Direction
+            {
+                PositiveX = 0,
+                PositiiveY,
+                NegativeX,
+                NegativeY,
+                Last
             }
 
             private Graph graph = null;
@@ -43,7 +52,7 @@ namespace MeshRecovery_Lib
                 };
                 traversal.Run();
 
-                ERROR error = ERROR.OK;
+                Error error = Error.OK;
                 if (vertex4 != INVALID_INDEX || vertex3 != INVALID_INDEX)
                 {
                     var vertex = vertex4 != INVALID_INDEX ? vertex4 : vertex3;
@@ -62,48 +71,26 @@ namespace MeshRecovery_Lib
                         // Step 3. Try to numerate neighbors vertices of the each vertex in first quad
                         foreach (var v in vertices)
                         {
-                            error = NumerateNeighborVertices(v);
-                            if (error != ERROR.OK)
-                            {
-                                NumerationHelpers.Clear(ref graphNumeration);
-                                Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
-                                execute = true;
-                                times--;
-                                break;
-                            }
+                            List<int> numerated = new List<int>();
+                            error = NumerateNeighborVertices(v, ref numerated);
+                            if (error != Error.OK) break;
                         }
-                        if (error != ERROR.OK) continue;
 
-                        // Step 4. Try to numerate other ambiguous vertices
-                        for (int i = 0; i < this.graphNumeration.Count(); ++i)
+                        if (error == Error.OK)
                         {
-                            if (this.graphNumeration[i] == null)
-                            {
-                                int[] directions = new int[] { 0, 0, 0, 0 };
-                                ERROR numerateError = ERROR.IMPOSSIBLE_NUM;
-                                while (numerateError != ERROR.OK)
-                                {
-                                    // directions array has the following values:
-                                    // [-x, -y, x, y]
-                                    error = TryToNumerateVertex(i, ref directions);
-                                    if (error != ERROR.OK)
-                                    {
-                                        NumerationHelpers.Clear(ref graphNumeration);
-                                        Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
-                                        execute = true;
-                                        times--;
-                                        break;
-                                    }
-                                    //TO DO: clear vertices if fail
-                                    numerateError = NumerateNeighborVertices(i);
-                                }
-                            }
-                            if (error != ERROR.OK) break;
+                            // Step 4. Try to numerate other ambiguous vertices
+                            error = TryToNumerateOtherVertices();
+                        }
+                        if (error != Error.OK)
+                        {
+                            Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
+                            execute = true;
+                            if(--times > 0) NumerationHelpers.Clear(ref graphNumeration);
                         }
                     }
                     return (int)error;
                 }
-                return (int)ERROR.INVALID_DIM;
+                return (int)Error.INVALID_DIM;
             }
 
             private int[] NumerateFirstQuad(int rootVertex, int[] vertices)
@@ -123,66 +110,47 @@ namespace MeshRecovery_Lib
                 return vertices;
             }
 
-            private ERROR NumerateNeighborVertices(int vertex)
+            private Error NumerateNeighborVertices(int vertex, ref List<int> numerated)
             {
-                ERROR error = ERROR.OK;
+                var error = Error.OK;
                 int[] enumVertices;
                 graph.GetAdjVertices(vertex, out enumVertices);
                 foreach (var v in enumVertices)
                 {
+                    if (graphNumeration[v] != null) continue;
                     error = NumerateVertex(v);
-                    if (error != ERROR.OK)
+                    if (error != Error.OK)
                     {
                         return error;
                     }
+                    numerated.Add(v);
                 }
                 return error;
             }
 
             // Unambiguously numerate the vertex
-            private ERROR NumerateVertex(int vertex)
+            private Error NumerateVertex(int vertex)
             {
-                if (graphNumeration[vertex] != null) return ERROR.OK;
+                if (graphNumeration[vertex] != null) return Error.OK;
 
-                List<int> numVertices = new List<int>();
                 int[] vertices;
                 var verticesCount = graph.GetAdjVertices(vertex, out vertices);
-
-                foreach (var v in vertices)
+                // Checking whether 2 or more neighbors are numbered or not at the current vertex
+                var currVertexNeighbors = GetNumeratedVertices(vertex);
+                if (currVertexNeighbors.Count() >= 2)
                 {
-                    if (graphNumeration[v] != null)
+                    if (!CalcVertexIndex(out graphNumeration[vertex], currVertexNeighbors))
                     {
-                        numVertices.Add(v);
-                    }
-                    else
-                    {
-                        // Checking whether all neighbors are numbered or not at the current vertex
-                        List<int> currVertexNeighbors;
-                        if (AllVerticesNumerated(v, out currVertexNeighbors))
-                        {
-                            if (!CalcVertexIndex(out graphNumeration[v], currVertexNeighbors))
-                            {
-                                return ERROR.INVALID_DIM;
-                            }
-                        }
+                        return Error.IMPOSSIBLE_NUM;
                     }
                 }
-
-                // Checking if two or more neighbors are numbered at the current vertex
-                if (numVertices.Count() >= 2)
-                {
-                    if (!CalcVertexIndex(out graphNumeration[vertex], numVertices))
-                    {
-                        return ERROR.INVALID_DIM;
-                    }
-                }
-                return ERROR.OK;
+                return Error.OK;
             }
 
-            // Try to number the vertex, which can not have an unambiguous index
-            private ERROR TryToNumerateVertex(int vertex, ref int[] directions)
+            // Try to numerate the vertex, which can not have an unambiguous index
+            private Error TryToNumerateVertex(int vertex, ref Direction direction)
             {
-                if (directions[3] != 0) return ERROR.IMPOSSIBLE_NUM;
+                if (direction == Direction.Last) return Error.IMPOSSIBLE_NUM;
 
                 int[] index = null;
                 int[] vertices;
@@ -193,29 +161,69 @@ namespace MeshRecovery_Lib
                 {
                     if (graphNumeration[v] != null)
                     {
-                        int x = 0, y = 0, i = 0;
-                        while (!newIndexFound && directions[3] == 0)
+                        while (!newIndexFound && direction != Direction.Last)
                         {
-                            while (directions[i] != 0) ++i;
-                            directions[i] = (int)Math.Pow(-1, i / 2);
-                            if (i % 2 == 0)
-                            {
-                                x = directions[i];
-                            }
-                            else
-                            {
-                                y = directions[i];
-                            }
+                            var directionValue = (int)Math.Pow(-1, (int)direction / 2);
+                            int x = (int)direction % 2 == 0 ? directionValue : 0;
+                            int y = (int)direction % 2 != 0 ? directionValue : 0;
+                            ++direction;
 
                             index = new int[] { graphNumeration[v][0] + x, graphNumeration[v][1] + y };
-
                             newIndexFound = !NumerationHelpers.IndexExists(index, ref graphNumeration);
                             if (newIndexFound) graphNumeration[vertex] = index;
                         }
                         break;
                     }
                 }
-                return newIndexFound ? ERROR.OK : ERROR.IMPOSSIBLE_NUM;
+                return newIndexFound ? Error.OK : Error.IMPOSSIBLE_NUM;
+            }
+
+            private Error TryToNumerateOtherVertices()
+            {
+                var error = Error.OK;
+                var enumerated = GetEnumeratedVertices();
+                List<int>[] numerated = new List<int> [enumerated.Count()];
+                int i = 0;
+                while(i < enumerated.Count() && i > - 1)
+                {
+                    var vertex = enumerated[i];
+
+                    var numVertices = numerated[i];
+                    if (numVertices != null)
+                    {
+                       if(error != Error.OK) numVertices.Clear();
+                    }
+                    else
+                    {
+                        numVertices = new List<int>();
+                    }
+                    if (graphNumeration[vertex] == null)
+                    {
+                        var direction = Direction.PositiveX;
+                        var numerateError = Error.IMPOSSIBLE_NUM;
+
+                        while (numerateError != Error.OK)
+                        {
+                            if (numVertices.Count() != 0)
+                            {
+                                NumerationHelpers.Clear(ref graphNumeration, numVertices);
+                                numVertices.Clear();
+                            }
+
+                            error = TryToNumerateVertex(enumerated[i], ref direction);
+                            if (error != Error.OK) break;
+
+                            numVertices.Add(vertex);
+                            numerateError = NumerateNeighborVertices(vertex, ref numVertices);
+                        }
+                        i += error != Error.OK ? -1 : 1;
+                    }
+                    else
+                    {
+                        ++i;
+                    }
+                }
+                return error;
             }
 
             private bool CalcVertexIndex(out int[] index, List<int> vertices)
@@ -241,9 +249,9 @@ namespace MeshRecovery_Lib
                 return true;
             }
 
-            private bool AllVerticesNumerated(int vertex, out List<int> numVertices)
+            private List<int> GetNumeratedVertices(int vertex)
             {
-                numVertices = new List<int>();
+                List<int> numVertices = new List<int>();
                 int[] vertices;
                 var verticesCount = graph.GetAdjVertices(vertex, out vertices);
                 foreach (var v in vertices)
@@ -253,7 +261,27 @@ namespace MeshRecovery_Lib
                         numVertices.Add(v);
                     }
                 }
-                return vertices.Count() == numVertices.Count();
+                return numVertices;
+            }
+
+            private List<int> GetEnumeratedVertices()
+            {
+                List<int> enumerated = new List<int>();
+                for (int i = 0; i < graphNumeration.Count(); ++i)
+                {
+                    if (graphNumeration[i] == null)
+                    {
+                        if (GetNumeratedVertices(i).Count() > 0)
+                        {
+                            enumerated.Insert(0, i);
+                        }
+                        else
+                        {
+                            enumerated.Add(i);
+                        }
+                    }
+                }
+                return enumerated;
             }
         }
     }
