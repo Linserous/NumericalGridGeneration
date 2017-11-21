@@ -14,7 +14,8 @@ namespace MeshRecovery_Lib
             {
                 OK = 0,
                 INVALID_DIM,
-                IMPOSSIBLE_NUM
+                IMPOSSIBLE_NUM,
+                NEED_MORE_DATA
             }
 
             enum Direction
@@ -71,8 +72,8 @@ namespace MeshRecovery_Lib
                         // Step 3. Try to numerate neighbors vertices of the each vertex in first quad
                         foreach (var v in vertices)
                         {
-                            List<int> numeratedToClear = new List<int>();
-                            error = NumerateNeighborVertices(v, ref numeratedToClear);
+                            List<int> numerated = new List<int>();
+                            error = NumerateNeighborVertices(v, ref numerated);
                             if (error != Error.OK) break;
                         }
 
@@ -85,7 +86,7 @@ namespace MeshRecovery_Lib
                         {
                             Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
                             execute = true;
-                            if(--times > 0) NumerationHelpers.Clear(ref graphNumeration);
+                            if (--times > 0) NumerationHelpers.Clear(ref graphNumeration);
                         }
                     }
                     return (int)error;
@@ -110,7 +111,7 @@ namespace MeshRecovery_Lib
                 return vertices;
             }
 
-            private Error NumerateNeighborVertices(int vertex, ref List<int> numeratedToClear)
+            private Error NumerateNeighborVertices(int vertex, ref List<int> numerated)
             {
                 var error = Error.OK;
                 int[] enumVertices;
@@ -123,7 +124,7 @@ namespace MeshRecovery_Lib
                     {
                         return error;
                     }
-                    numeratedToClear.Add(v);
+                    numerated.Add(v);
                 }
                 return error;
             }
@@ -137,7 +138,7 @@ namespace MeshRecovery_Lib
                 var verticesCount = graph.GetAdjVertices(vertex, out vertices);
                 // Checking whether 2 or more neighbors are numbered or not at the current vertex
                 var currVertexNeighbors = GetNumeratedVertices(vertex);
-                if (currVertexNeighbors.Count() >= 2)
+                if (currVertexNeighbors.Count() > 1)
                 {
                     if (!CalcVertexIndex(out graphNumeration[vertex], currVertexNeighbors))
                     {
@@ -148,31 +149,43 @@ namespace MeshRecovery_Lib
             }
 
             // Try to numerate the vertex, which can not have an unambiguous index
-            private Error TryToNumerateVertex(int vertex, ref Direction direction)
+            private Error TryToNumerateVertex(int vertex, ref Direction direction, ref List<int[]> usedAlternatives)
             {
                 if (direction == Direction.Last) return Error.IMPOSSIBLE_NUM;
 
-                int[] index = null;
-                int[] vertices;
-                graph.GetAdjVertices(vertex, out vertices);
-                bool newIndexFound = false;
-
-                foreach (var v in vertices)
+                var vertices = GetNumeratedVertices(vertex);
+                if(vertices.Count == 0)
                 {
-                    if (graphNumeration[v] != null)
+                    return Error.NEED_MORE_DATA;
+                }
+                if (vertices.Count() > 1)
+                {
+                    if (CalcVertexIndex(out graphNumeration[vertex], vertices))
                     {
-                        while (!newIndexFound && direction != Direction.Last)
+                        //TO DO: fix WA
+                        if (usedAlternatives.Count() > 0)
                         {
-                            var directionValue = (int)Math.Pow(-1, (int)direction / 2);
-                            int x = (int)direction % 2 == 0 ? directionValue : 0;
-                            int y = (int)direction % 2 != 0 ? directionValue : 0;
-                            ++direction;
-
-                            index = new int[] { graphNumeration[v][0] + x, graphNumeration[v][1] + y };
-                            newIndexFound = !NumerationHelpers.IndexExists(index, ref graphNumeration);
-                            if (newIndexFound) graphNumeration[vertex] = index;
+                            return Error.IMPOSSIBLE_NUM;
                         }
-                        break;
+                        usedAlternatives.Add(graphNumeration[vertex]);
+                        return Error.OK;
+                    }
+                    return Error.IMPOSSIBLE_NUM;
+                }
+                int[] index = null;
+                bool newIndexFound = false;
+                if (graphNumeration[vertices[0]] != null)
+                {
+                    while (!newIndexFound && direction != Direction.Last)
+                    {
+                        var directionValue = (int)Math.Pow(-1, (int)direction / 2);
+                        int x = (int)direction % 2 == 0 ? directionValue : 0;
+                        int y = (int)direction % 2 != 0 ? directionValue : 0;
+                        ++direction;
+
+                        index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y };
+                        newIndexFound = !NumerationHelpers.IndexExists(index, ref graphNumeration);
+                        if (newIndexFound) graphNumeration[vertex] = index;
                     }
                 }
                 return newIndexFound ? Error.OK : Error.IMPOSSIBLE_NUM;
@@ -182,49 +195,53 @@ namespace MeshRecovery_Lib
             {
                 var error = Error.OK;
                 var enumerated = GetEnumeratedVertices();
-                List<int>[] numeratedToClear = new List<int> [enumerated.Count()];
+                var numerated = new List<int>[enumerated.Count()];
                 var directions = new Direction[enumerated.Count()];
+                var usedAliternatives = new List<int[]>[enumerated.Count];
                 int i = 0;
-                while(i < enumerated.Count() && i > - 1)
+                while (i < enumerated.Count() && i > -1)
                 {
-                    if (numeratedToClear[i] != null)
+                    if (numerated[i] != null)
                     {
                         if (error != Error.OK)
                         {
-                            NumerationHelpers.Clear(ref graphNumeration, numeratedToClear[i]);
-                            numeratedToClear[i].Clear();
+                            NumerationHelpers.Clear(ref graphNumeration, numerated[i]);
+                            numerated[i].Clear();
+                            graphNumeration[enumerated[i]] = null;
                         }
                     }
                     else
                     {
-                        numeratedToClear[i] = new List<int>();
+                        numerated[i] = new List<int>();
+                        usedAliternatives[i] = new List<int[]>();
                     }
                     if (graphNumeration[enumerated[i]] == null)
                     {
-                        var numerateError = Error.IMPOSSIBLE_NUM;      
+                        var numerateError = Error.IMPOSSIBLE_NUM;
                         while (numerateError != Error.OK)
                         {
-                            if (numeratedToClear[i].Count() != 0)
+                            if (numerated[i].Count() != 0)
                             {
-                                NumerationHelpers.Clear(ref graphNumeration, numeratedToClear[i]);
-                                numeratedToClear[i].Clear();
+                                NumerationHelpers.Clear(ref graphNumeration, numerated[i]);
+                                numerated[i].Clear();
+                                graphNumeration[enumerated[i]] = null;
                             }
 
-                            error = TryToNumerateVertex(enumerated[i], ref directions[i]);
+                            error = TryToNumerateVertex(enumerated[i], ref directions[i], ref usedAliternatives[i]);
                             if (error != Error.OK) break;
 
-                            numeratedToClear[i].Add(enumerated[i]);
+                            numerated[i].Add(enumerated[i]);
                             if (GetNumeratedVertices(enumerated[i]).Count() == 0)
                             {
                                 numerateError = Error.OK;
                             }
                             else
                             {
-                                numerateError = NumerateNeighborVertices(enumerated[i], ref numeratedToClear[i]);
+                                numerateError = NumerateNeighborVertices(enumerated[i], ref numerated[i]);
                             }
                         }
                         if (error != Error.OK) directions[i] = Direction.PositiveX;
-                        i += error == Error.OK ? 1 : -1;
+                        i += (error == Error.OK || error == Error.NEED_MORE_DATA) ? 1 : -1;
                     }
                     else
                     {
