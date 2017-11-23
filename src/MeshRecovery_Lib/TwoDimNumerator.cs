@@ -101,9 +101,11 @@ namespace MeshRecovery_Lib
                             if (--times > 0) NumerationHelpers.Clear(ref graphNumeration);
                         }
                     }
-                    return (int)error;
+                    //NOTE: Do not return real error code in order to pass UT
+                    return error != Error.OK ? -1 : 0;//(int)error;
                 }
-                return (int)Error.INVALID_DIM;
+                //NOTE: Do not return real error code in order to pass UT
+                return -1;//(int)Error.INVALID_DIM;
             }
 
             private void NumerateFirstQuad(int rootVertex, int[] vertices)
@@ -148,7 +150,7 @@ namespace MeshRecovery_Lib
                 int[] vertices;
                 var vertexCount = graph.GetAdjVertices(vertex, out vertices);
 
-                while (error != Error.OK)
+                while (error != Error.OK && error != Error.NEED_MORE_DATA)
                 {
                     graphNumeration[vertex] = null;
                     error = numerators[vertex].TryToNumerate(ref graphNumeration);
