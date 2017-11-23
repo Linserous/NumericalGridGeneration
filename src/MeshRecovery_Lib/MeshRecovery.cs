@@ -83,7 +83,6 @@ namespace MeshRecovery_Lib
             }
 
             return 0;
-
         }
         /// <summary>
         /// Method restores geometry information for each graph node

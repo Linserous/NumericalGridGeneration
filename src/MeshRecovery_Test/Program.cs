@@ -174,7 +174,7 @@ namespace MeshRecovery_Test
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
                 //TODO: Dinar: check memory usage ? 
-                WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
+                WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.Elapsed.Milliseconds.ToString(), IntArrayToList(graphNumeration));
                 timer.Reset();
             }
 
@@ -186,7 +186,7 @@ namespace MeshRecovery_Test
         {
             List<string> files = new List<string>();
 
-            List<string> dirs = new List<string> ( Directory.GetDirectories(PathToTests,"sources*"));
+            List<string> dirs = new List<string> ( Directory.GetDirectories(PathToTests, "sources*"));
 
             foreach (string d in dirs)
             {

@@ -18,12 +18,14 @@ namespace UnitTests
             timer.Start();
             bool valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out int meshDimension);
             timer.Stop();
-            if (timer.Elapsed.Seconds > 5) Assert.Fail("Validate more than 5 sec");
+            Assert.IsTrue(valid, "Test graph is not valid");
+            Assert.IsTrue(timer.Elapsed.Seconds <= 5, "Validate takes more than 5 seconds");
             timer.Reset();
             timer.Start();
             int numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
             timer.Stop();
-            if (timer.Elapsed.Minutes > 5) Assert.Fail("Numerate more than 5 min");
+            Assert.AreEqual(0, numerate, "Test graph can not be numerated");
+            Assert.IsTrue(timer.Elapsed.Minutes <= 5, "Numerate takes more than 5 minutes");
         }
     }
 }
