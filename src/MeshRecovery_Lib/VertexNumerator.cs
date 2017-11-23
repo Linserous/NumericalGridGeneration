@@ -109,17 +109,28 @@ namespace MeshRecovery_Lib
 
                 public List<int> GetNumeratedAdjVertices(int[][] graphNumeration)
                 {
-                    List<int> numVertices = new List<int>();
+                    return GetAdjVertices(graphNumeration, e => { return e != null; });
+                }
+
+                public List<int> GetENumeratedAdjVertices(int[][] graphNumeration)
+                {
+                    return GetAdjVertices(graphNumeration, e => { return e == null; });
+                }
+
+                delegate bool Callback(int[] index);
+                private List<int> GetAdjVertices(int[][] graphNumeration, Callback callback)
+                {
+                    List<int> result = new List<int>();
                     int[] vertices;
                     var verticesCount = graph.GetAdjVertices(vertex, out vertices);
                     foreach (var v in vertices)
                     {
-                        if (graphNumeration[v] != null)
+                        if (callback(graphNumeration[v]))
                         {
-                            numVertices.Add(v);
+                            result.Add(v);
                         }
                     }
-                    return numVertices;
+                    return result;
                 }
 
                 private bool CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)

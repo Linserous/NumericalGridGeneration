@@ -144,41 +144,30 @@ namespace MeshRecovery_Lib
             private Error TryToNumerateVertices(int vertex)
             {
                 if (graphNumeration[vertex] != null) return Error.OK;
-
                 Error error = Error.IMPOSSIBLE_NUM;
-
-                int[] vertices;
-                var vertexCount = graph.GetAdjVertices(vertex, out vertices);
 
                 while (error != Error.OK && error != Error.NEED_MORE_DATA)
                 {
                     graphNumeration[vertex] = null;
                     error = numerators[vertex].TryToNumerate(ref graphNumeration);
+
                     if (error != Error.OK)
                     {
                         numerators[vertex].Clear();
                         graphNumeration[vertex] = null;
                         return error;
                     }
-                    int prevI = 0;
-                    for (int i = 0; i < vertexCount;)
+
+                    var vertices = numerators[vertex].GetENumeratedAdjVertices(graphNumeration);
+                    for (int i = 0; i < vertices.Count();)
                     {
-                        if (graphNumeration[vertices[i]] != null)
-                        {
-                            var temp = i;
-                            i += i < prevI ? -1 : 1;
-                            prevI = temp;
-                            if (i <= 0) break;
-                            continue;
-                        }
                         error = TryToNumerateVertices(vertices[i]);
                         if (error != Error.OK)
                         {
                             numerators[vertices[i]].Clear();
                             graphNumeration[vertices[i]] = null;
-                            if (i == 0) break;
+                            break;
                         }
-                        prevI = i;
                         i += (error == Error.OK || error == Error.NEED_MORE_DATA) ? 1 : -1;
                     }
                 }
