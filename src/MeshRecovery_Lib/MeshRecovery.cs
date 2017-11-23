@@ -111,7 +111,7 @@ namespace MeshRecovery_Lib
             {
                 case 1: return OneDimensionNumerate(graph, out graphNumeration);
                 //TODO: implement this part
-                case 2: return TwoDimensionNumerate(graph, out graphNumeration); //new RecursiveAlgorithm().TwoDimNumerate(graph, out graphNumeration);
+                case 2: return new TwoDimNumerator().Run(graph, out graphNumeration);//TwoDimensionNumerate(graph, out graphNumeration);
                 case 3: break;
                 default: return -1;
             }

@@ -31,7 +31,7 @@ namespace MeshRecovery_Lib
             }
         }
 
-        public static bool IndexExists(int[] index, ref int[][] numeration)
+        public static bool IndexExists(int[] index, int[][] numeration)
         {
             for (int i = 0; i < numeration.Count(); ++i)
             {
