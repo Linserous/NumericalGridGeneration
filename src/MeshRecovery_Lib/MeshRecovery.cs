@@ -83,7 +83,6 @@ namespace MeshRecovery_Lib
             }
 
             return 0;
-
         }
         /// <summary>
         /// Method restores geometry information for each graph node
@@ -197,34 +196,6 @@ namespace MeshRecovery_Lib
                 return -1;
             else
                 return 0;
-        }
-
-        // CompareVertex - will find a difference btw vertex
-        // Output:
-        // i  - [0,..,meshDimension-1] index of difference
-        // -1 - same numerate of indexes
-        // -2 - length of vertex numerating is different
-        // -3 - there are two or more difference
-        // -4 - there is difference with step more than 1,  like [0,0] [0,2] 
-        private static int CompareVertex(int[] v1, int[] v2, int meshDimension)
-        {
-            if ((v1.Length != meshDimension) || (v2.Length != meshDimension)) return -2;
-            int diff_count = 0;
-            int diff_index = -1;
-            for (int i = 0; i < meshDimension; ++i)
-            {
-                if (Math.Abs(v1[i] - v2[i]) == 1)
-                {
-                    diff_index = i;
-                    ++diff_count;
-                }
-                if (Math.Abs(v1[i] - v2[i]) > 1)
-                {
-                    return -4;
-                }
-            }
-            if (diff_count > 1) return -3;
-            else return diff_index;
         }
 
         /// <summary>
@@ -405,7 +376,7 @@ namespace MeshRecovery_Lib
                 count_around_start = graph.GetAdjVertices( history_guess[i][0] , out buf);
                 for (int j = 0; j < count_around_start; ++j)
                 {
-                    if (CompareVertex(res_graphNumeration[history_guess[i][0]], res_graphNumeration[buf[j]], 2) < 0)
+                    if (NumerationHelper.CompareVertex(res_graphNumeration[history_guess[i][0]], res_graphNumeration[buf[j]], 2) < 0)
                     {
                         //try to repair vertex
                         res_graphNumeration[history_guess[index_guess - 1][0]] = new int[] { res_graphNumeration[history_guess[index_guess - 1][0]][0] - history_guess[index_guess - 1][1], res_graphNumeration[history_guess[index_guess - 1][0]][1] + history_guess[index_guess - 1][2] };

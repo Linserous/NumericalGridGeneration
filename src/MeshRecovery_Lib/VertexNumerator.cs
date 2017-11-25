@@ -155,8 +155,8 @@ namespace MeshRecovery_Lib
                     int alt1Count = 0, alt2Count = 0;
                     foreach (var v in vertices)
                     {
-                        if (!alt1Exists && CompareVertex(graphNumeration[v], alternative1, 2) >= 0) ++alt1Count;
-                        if (!alt2Exists && CompareVertex(graphNumeration[v], alternative2, 2) >= 0) ++alt2Count;
+                        if (!alt1Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative1, 2) >= 0) ++alt1Count;
+                        if (!alt2Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative2, 2) >= 0) ++alt2Count;
                     }
                     if (alt1Count != vertices.Count() && alt2Count != vertices.Count()) return false;
                     graphNumeration[vertex] = alt1Count == vertices.Count() ? alternative1 : alternative2;

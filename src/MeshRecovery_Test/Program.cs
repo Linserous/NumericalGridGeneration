@@ -16,7 +16,17 @@ namespace MeshRecovery_Test
         static string PathToExcelResults = @"tests/resultsExcel";
         static string result_type = @".txt";
         static string excel_type = @".xlsx";
-        static string[] head_columns = { "Name of file", "Vertices count", "Edges count", "Valid", "Numerable", "Time", "Result" };
+        static string testSourcePattern = @"sources*";
+        static string[] head_columns = {
+            "Name of file"
+                , "Vertices count"
+                , "Edges count"
+                , "Valid"
+                , "Numerable"
+                , "Time"
+                , "Result"
+                , "Validation status"
+        };
         static int Padding = 20;
 
         static void WriteRow(StreamWriter file, params string[] strings)
@@ -34,22 +44,22 @@ namespace MeshRecovery_Test
         }
         static string PrepareRow(params string[] strings)
         {
-            string result="";
-            for (int i = 0; i<strings.Length; ++i)
+            string result = "";
+            for (int i = 0; i < strings.Length; ++i)
             {
-                result += "|"+strings[i].PadLeft(Padding) +"\t";
+                result += "|" + strings[i].PadLeft(Padding) + "\t";
             }
-            return result+"|";
+            return result + "|";
         }
 
         static int GetNumerate(string file, out int[][] graphNumeration)
         {
             //TODO: Dinar: implement correct version
-            long [] index = { };
+            long[] index = { };
             int indexSize = 0;
             int[] graphData = { };
             //int[] graphNumeration = { };
-            return MeshRecovery_Lib.MeshRecovery.Numerate(index,indexSize,graphData, out graphNumeration);
+            return MeshRecovery_Lib.MeshRecovery.Numerate(index, indexSize, graphData, out graphNumeration);
         }
 
         static string IntArrayToList(int[][] arr)
@@ -126,14 +136,24 @@ namespace MeshRecovery_Test
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
                 Graph graph = new Graph(xadj, adjncy);
-                WriteRowExcel(workSheet, i + 2,
+                string validationResult = "";
+                if (valid && numerate == 0)
+                {
+                    int validationCode = NumerationHelper.ValidateNumeration(xadj, adjncy, meshDimension, graphNumeration);
+                    validationResult = validationCode >= 0 ? "Верно" : "Неверно";
+                }
+                WriteRowExcel(
+                    workSheet,
+                    i + 2,
                     current_file_name,
                     graph.GetVerticesCount().ToString(),
                     graph.GetEdgeCount().ToString(),
                     valid.ToString(),
                     numerate.ToString(),
                     timer.ElapsedTicks.ToString(),
-                    IntArrayToList(graphNumeration));
+                    IntArrayToList(graphNumeration),
+                    validationResult
+                    );
 
                 timer.Reset();
             }
@@ -159,8 +179,8 @@ namespace MeshRecovery_Test
             PrepareResultsHead(result, files.ToArray());
             for (int i = 0; i < files.Count; ++i)
             {
-                string current_file_name = files[i].Split('\\').Last<string>(); 
-                Console.WriteLine("Working on "+current_file_name);
+                string current_file_name = files[i].Split('\\').Last<string>();
+                Console.WriteLine("Working on " + current_file_name);
                 int meshDimension = 0;
                 long[] xadj;
                 int[] adjncy;
@@ -172,9 +192,21 @@ namespace MeshRecovery_Test
                 valid = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDimension);
                 numerate = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
                 timer.Stop();
+                string validationResult = "";
+                if (valid && numerate == 0)
+                {
+                    int validationCode = NumerationHelper.ValidateNumeration(xadj, adjncy, meshDimension, graphNumeration);
+                    validationResult = validationCode >= 0 ? "Верно" : "Неверно";
+                }
                 //TODO: Dinar: check memory usage ? 
                 //TODO: Dinar: check memory usage ? 
-                WriteRow(result, current_file_name, valid.ToString(), numerate.ToString(), timer.ElapsedTicks.ToString(), IntArrayToList(graphNumeration));
+                WriteRow(result
+                    , current_file_name
+                    , valid.ToString()
+                    , numerate.ToString()
+                    , timer.Elapsed.Milliseconds.ToString()
+                    , IntArrayToList(graphNumeration)
+                    , validationResult);
                 timer.Reset();
             }
 
@@ -186,19 +218,19 @@ namespace MeshRecovery_Test
         {
             List<string> files = new List<string>();
 
-            List<string> dirs = new List<string> ( Directory.GetDirectories(PathToTests,"sources*"));
+            List<string> dirs = new List<string>(Directory.GetDirectories(PathToTests, testSourcePattern));
 
             foreach (string d in dirs)
             {
                 foreach (string f in Directory.GetFiles(d))
-                files.Add(f);
+                    files.Add(f);
             }
             return files;
         }
         static void PrintHelp()
         {
             Console.WriteLine("This program will prepare result for all"
-                              +"graph files in /test/sources*/ and save them into /tests/results*/ ");
+                              + "graph files in /test/sources*/ and save them into /tests/results*/ ");
 
             Console.WriteLine("Possible arguments:");
             Console.WriteLine("\t'without arguments' - will prepare excel and ttxt files");
@@ -211,7 +243,7 @@ namespace MeshRecovery_Test
         }
         static void Main(string[] args)
         {
-            if (args.Length==0)
+            if (args.Length == 0)
             {
                 PrintResultInRT();
                 PrintResultInExcel();
@@ -220,13 +252,13 @@ namespace MeshRecovery_Test
             {
                 switch (args[0])
                 {
-                    case "excel":   PrintResultInExcel(); break;
-                    case "text":    PrintResultInRT();    break;
-                    case "help":    PrintHelp();          break;
-                    default:        PrintWrongArg();      break;
+                    case "excel": PrintResultInExcel(); break;
+                    case "text": PrintResultInRT(); break;
+                    case "help": PrintHelp(); break;
+                    default: PrintWrongArg(); break;
                 }
             }
-            
+
         }
     }
 }
