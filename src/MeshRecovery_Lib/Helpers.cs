@@ -61,33 +61,12 @@ namespace MeshRecovery_Lib
             if (diff_count > 1) return -3;
             return diff_index;
         }
-    }
 
-    static class Helpers
-    {
-        public static void Swap<T>(ref T a, ref T b)
-        {
-            T temp = a;
-            a = b;
-            b = temp;
-        }
-    }
-
-    static class NumerationHelpers
-    {
         public static void Clear(ref int[][] numeration)
         {
             for (int i = 0; i < numeration.Count(); ++i)
             {
                 numeration[i] = null;
-            }
-        }
-
-        public static void Clear(ref int[][] numeration, List<int> vertices)
-        {
-            foreach (var v in vertices)
-            {
-                numeration[v] = null;
             }
         }
 
@@ -100,6 +79,16 @@ namespace MeshRecovery_Lib
                     numeration[i][1] == index[1]) return true;
             }
             return false;
+        }
+    }
+
+    static class Helpers
+    {
+        public static void Swap<T>(ref T a, ref T b)
+        {
+            T temp = a;
+            a = b;
+            b = temp;
         }
     }
 }

@@ -83,7 +83,7 @@ namespace MeshRecovery_Lib
                         // Step 4. Try to numerate other ambiguous vertices
                         if (error == Error.OK)
                         {
-                            var enumerated = GetFirstEnumeratedVertices();
+                            var enumerated = GetEnumeratedVertices();
                             for (int i = 0; i < enumerated.Count(); ++i)
                             {
                                 error = TryToNumerateVertices(enumerated[i]);
@@ -95,7 +95,7 @@ namespace MeshRecovery_Lib
                         {
                             Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
                             execute = true;
-                            if (--times > 0) NumerationHelpers.Clear(ref graphNumeration);
+                            if (--times > 0) NumerationHelper.Clear(ref graphNumeration);
                         }
                     }
                     return (int)error;
@@ -106,7 +106,6 @@ namespace MeshRecovery_Lib
             private void NumerateFirstQuad(int rootVertex, int[] vertices)
             {
                 graphNumeration[rootVertex] = new int[] { 0, 0 };
-
                 int x = 0, y = -1;
                 for (int i = 0; i < vertices.Count(); ++i)
                 {
@@ -126,10 +125,7 @@ namespace MeshRecovery_Lib
                 {
                     if (graphNumeration[v] != null) continue;
                     error = numerators[v].Numerate(ref graphNumeration);
-                    if (error != Error.OK)
-                    {
-                        return error;
-                    }
+                    if (error != Error.OK) return error;
                 }
                 return error;
             }
@@ -157,9 +153,9 @@ namespace MeshRecovery_Lib
                         error = TryToNumerateVertices(vertices[i]);
                         if (error != Error.OK)
                         {
-                            while (--i != -1)
+                            while (i != 0)
                             {
-                                numerators[vertices[i]].Clear();
+                                numerators[vertices[--i]].Clear();
                                 graphNumeration[vertices[i]] = null;
                             }
                             break;
@@ -169,7 +165,7 @@ namespace MeshRecovery_Lib
                 return error;
             }
 
-            private List<int> GetFirstEnumeratedVertices()
+            private List<int> GetEnumeratedVertices()
             {
                 List<int> enumerated = new List<int>();
                 for (int i = 0; i < graphNumeration.Count(); ++i)
@@ -180,10 +176,10 @@ namespace MeshRecovery_Lib
                         {
                             enumerated.Insert(0, i);
                         }
-                        else
-                        {
-                            enumerated.Add(i);
-                        }
+                        //else
+                        //{
+                        //    enumerated.Add(i);
+                        //}
                     }
                 }
                 return enumerated;

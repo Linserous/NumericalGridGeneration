@@ -90,7 +90,7 @@ namespace MeshRecovery_Lib
                             ++direction;
 
                             index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y };
-                            newIndexFound = !NumerationHelpers.IndexExists(index, graphNumeration);
+                            newIndexFound = !NumerationHelper.IndexExists(index, graphNumeration);
                             if (newIndexFound)
                             {
                                 graphNumeration[vertex] = index;
@@ -147,8 +147,8 @@ namespace MeshRecovery_Lib
                     var alternative1 = new int[] { graphNumeration[vertices[0]][0], graphNumeration[vertices[1]][1] };
                     var alternative2 = new int[] { graphNumeration[vertices[1]][0], graphNumeration[vertices[0]][1] };
 
-                    var alt1Exists = NumerationHelpers.IndexExists(alternative1, graphNumeration);
-                    var alt2Exists = NumerationHelpers.IndexExists(alternative2, graphNumeration);
+                    var alt1Exists = NumerationHelper.IndexExists(alternative1, graphNumeration);
+                    var alt2Exists = NumerationHelper.IndexExists(alternative2, graphNumeration);
 
                     if (alt1Exists && alt2Exists) return false;
 
@@ -167,7 +167,13 @@ namespace MeshRecovery_Lib
                 {
                     foreach (var alt in alternatives)
                     {
-                        if (alt[0] == alternative[0] && alt[1] == alternative[1]) return true;
+                        int numberOfCoincidences = 0;
+                        var altCount = alt.Count();
+                        for(int i = 0; i < altCount; ++i)
+                        {
+                            if (alt[i] == alternative[i]) ++numberOfCoincidences;
+                        }
+                        if (numberOfCoincidences == altCount) return true;
                     }
                     return false;
                 }
