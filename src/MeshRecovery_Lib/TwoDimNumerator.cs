@@ -14,9 +14,9 @@ namespace MeshRecovery_Lib
             enum Error
             {
                 OK = 0,
-                INVALID_DIM,
-                IMPOSSIBLE_NUM,
-                NEED_MORE_DATA
+                IMPOSSIBLE_NUM = -1,
+                INVALID_DIM = -2,
+                NEED_MORE_DATA = -3
             }
 
             private Graph graph = null;
@@ -83,14 +83,11 @@ namespace MeshRecovery_Lib
                         // Step 4. Try to numerate other ambiguous vertices
                         if (error == Error.OK)
                         {
-                            var enumerated = GetEnumeratedVertices();
-                            for (int i = 0; i < enumerated.Count();)
+                            var enumerated = GetFirstEnumeratedVertices();
+                            for (int i = 0; i < enumerated.Count(); ++i)
                             {
                                 error = TryToNumerateVertices(enumerated[i]);
-                                if (error != Error.OK && i == 0)
-                                {
-                                    break;
-                                }
+                                if (error != Error.OK && i == 0) break;
                                 i += error != Error.OK ? -1 : 1;
                             }
                         }
@@ -101,19 +98,15 @@ namespace MeshRecovery_Lib
                             if (--times > 0) NumerationHelpers.Clear(ref graphNumeration);
                         }
                     }
-                    //NOTE: Do not return real error code in order to pass UT
-                    return error != Error.OK ? -1 : 0;//(int)error;
+                    return (int)error;
                 }
-                //NOTE: Do not return real error code in order to pass UT
-                return -1;//(int)Error.INVALID_DIM;
+                return (int)Error.INVALID_DIM;
             }
 
             private void NumerateFirstQuad(int rootVertex, int[] vertices)
             {
                 graphNumeration[rootVertex] = new int[] { 0, 0 };
 
-                // Fill adj vertices with the following values:
-                //-1 0, 0 -1, 1 0, 0 1
                 int x = 0, y = -1;
                 for (int i = 0; i < vertices.Count(); ++i)
                 {
@@ -158,23 +151,25 @@ namespace MeshRecovery_Lib
                         return error;
                     }
 
-                    var vertices = numerators[vertex].GetENumeratedAdjVertices(graphNumeration);
-                    for (int i = 0; i < vertices.Count();)
+                    var vertices = numerators[vertex].GetEnumeratedAdjVertices(graphNumeration);
+                    for (int i = 0; i < vertices.Count(); ++i)
                     {
                         error = TryToNumerateVertices(vertices[i]);
                         if (error != Error.OK)
                         {
-                            numerators[vertices[i]].Clear();
-                            graphNumeration[vertices[i]] = null;
+                            while (--i != -1)
+                            {
+                                numerators[vertices[i]].Clear();
+                                graphNumeration[vertices[i]] = null;
+                            }
                             break;
                         }
-                        i += (error == Error.OK || error == Error.NEED_MORE_DATA) ? 1 : -1;
                     }
                 }
                 return error;
             }
 
-            private List<int> GetEnumeratedVertices()
+            private List<int> GetFirstEnumeratedVertices()
             {
                 List<int> enumerated = new List<int>();
                 for (int i = 0; i < graphNumeration.Count(); ++i)
