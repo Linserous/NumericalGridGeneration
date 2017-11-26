@@ -10,9 +10,9 @@ namespace MeshRecovery_Lib
     {
         OK = 0,
         IMPOSSIBLE_NUM = -1,
-        INVALID_DIM = -2,
-        NEED_MORE_DATA = -3,
-        STACKOVERFLOW = -4
+        STACKOVERFLOW = -2,
+        INVALID_DIM = -3,
+        NEED_MORE_DATA = -4
     }
 
     public interface IVertexNumerator
