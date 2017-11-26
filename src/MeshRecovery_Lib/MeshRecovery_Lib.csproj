@@ -41,12 +41,14 @@
   <ItemGroup>
     <Compile Include="Graph.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IVertexNumerator.cs" />
+    <Compile Include="ANumerator.cs" />
     <Compile Include="TwoDimNumerator.cs" />
     <Compile Include="MeshRecovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Traversal.cs" />
     <Compile Include="TraversalHelpers.cs" />
-    <Compile Include="VertexNumerator.cs" />
+    <Compile Include="TwoDimVertexNumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
