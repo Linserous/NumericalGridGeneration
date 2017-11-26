@@ -37,17 +37,17 @@ namespace MeshRecovery_Lib
                 {
                     if (graphNumeration[vertex] != null) return Error.OK;
 
-                    int[] vertices;
-                    graph.GetAdjVertices(vertex, out vertices);
-
-                    // Checking whether 2 or more adj vertices are numbered or not at the current vertex
+                   // Checking whether 2 or more adj vertices are numbered or not at the current vertex
                     var adjVertices = GetNumeratedAdjVertices(graphNumeration);
                     if (adjVertices.Count() > 1)
                     {
-                        if (!CalcVertexIndex(vertex, adjVertices, ref graphNumeration))
+                        var alts = CalcVertexIndex(vertex, adjVertices, ref graphNumeration);
+                        if (alts == null)
                         {
                             return Error.IMPOSSIBLE_NUM;
                         }
+                        // tmp
+                        graphNumeration[vertex] = alts.First();
                     }
                     return Error.OK;
                 }
@@ -64,17 +64,18 @@ namespace MeshRecovery_Lib
                     }
                     if (vertices.Count() > 1)
                     {
-                        if (CalcVertexIndex(vertex, vertices, ref graphNumeration))
+                        var alts = CalcVertexIndex(vertex, vertices, ref graphNumeration);
+                        if (alts != null)
                         {
-                            if (ContainsAlternative(graphNumeration[vertex]))
+                            foreach(var alternative in alts)
                             {
-                                return Error.IMPOSSIBLE_NUM;
+                                if (!ContainsAlternative(alternative))
+                                {
+                                    graphNumeration[vertex] = alternative;
+                                    alternatives.Add(alternative);
+                                    return Error.OK;
+                                }
                             }
-                            else
-                            {
-                                alternatives.Add(graphNumeration[vertex]);
-                            }
-                            return Error.OK;
                         }
                         return Error.IMPOSSIBLE_NUM;
                     }
@@ -141,8 +142,9 @@ namespace MeshRecovery_Lib
                     return result;
                 }
 
-                private bool CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
+                private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
                 {
+                    List<int[]> alts = new List<int[]>();
                     // Create 2 alternatives, for example:  [1, -1], [1, -2] from: [0, -1], [1, -2] 
                     var alternative1 = new int[] { graphNumeration[vertices[0]][0], graphNumeration[vertices[1]][1] };
                     var alternative2 = new int[] { graphNumeration[vertices[1]][0], graphNumeration[vertices[0]][1] };
@@ -150,7 +152,7 @@ namespace MeshRecovery_Lib
                     var alt1Exists = NumerationHelper.IndexExists(alternative1, graphNumeration);
                     var alt2Exists = NumerationHelper.IndexExists(alternative2, graphNumeration);
 
-                    if (alt1Exists && alt2Exists) return false;
+                    if (alt1Exists && alt2Exists) return null;
 
                     int alt1Count = 0, alt2Count = 0;
                     foreach (var v in vertices)
@@ -158,9 +160,16 @@ namespace MeshRecovery_Lib
                         if (!alt1Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative1, 2) >= 0) ++alt1Count;
                         if (!alt2Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative2, 2) >= 0) ++alt2Count;
                     }
-                    if (alt1Count != vertices.Count() && alt2Count != vertices.Count()) return false;
-                    graphNumeration[vertex] = alt1Count == vertices.Count() ? alternative1 : alternative2;
-                    return true;
+                    if (alt1Count != vertices.Count() && alt2Count != vertices.Count()) return null;
+                    if (alt1Count == vertices.Count())
+                    {
+                        alts.Add(alternative1);
+                    }
+                    if(alt2Count == vertices.Count())
+                    {
+                        alts.Add(alternative2);
+                    }
+                    return alts;
                 }
 
                 private bool ContainsAlternative(int[] alternative)
