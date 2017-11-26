@@ -87,6 +87,7 @@ namespace MeshRecovery_Lib
                         for (int i = 0; i < enumerated.Count();)
                         {
                             error = TryToNumerateVertices(enumerated[i]);
+                            if (error == Error.STACKOVERFLOW) return (int)error;
                             if (error != Error.OK && i == 0) break;
                             i += error != Error.OK ? -1 : 1;
                         }
@@ -102,7 +103,7 @@ namespace MeshRecovery_Lib
             }
             return (int)Error.INVALID_DIM;
         }
-      
+
         private Error NumerateAdjVertices(int vertex)
         {
             var error = Error.OK;
@@ -120,12 +121,11 @@ namespace MeshRecovery_Lib
         private Error TryToNumerateVertices(int vertex)
         {
             //Workaround to prevent StackOverflow exception
-            if (TryToNumStackCounter > stackSize) return Error.STACKOVERFLOW;
+            if (TryToNumStackCounter >= stackSize) return Error.STACKOVERFLOW;
+            if (graphNumeration[vertex] != null) return Error.OK;
             ++TryToNumStackCounter;
 
-            if (graphNumeration[vertex] != null) return Error.OK;
             Error error = Error.IMPOSSIBLE_NUM;
-
             while (error != Error.OK && error != Error.NEED_MORE_DATA)
             {
                 graphNumeration[vertex] = null;
@@ -133,8 +133,7 @@ namespace MeshRecovery_Lib
 
                 if (error != Error.OK)
                 {
-                    numerators[vertex].Clear();
-                    graphNumeration[vertex] = null;
+                    ClearVertex(vertex);
                     --TryToNumStackCounter;
                     return error;
                 }
@@ -143,19 +142,26 @@ namespace MeshRecovery_Lib
                 for (int i = 0; i < vertices.Count(); ++i)
                 {
                     error = TryToNumerateVertices(vertices[i]);
+                    if (error == Error.STACKOVERFLOW)
+                    {
+                        --TryToNumStackCounter;
+                        return error;
+                    }
                     if (error != Error.OK)
                     {
-                        while (i != 0)
-                        {
-                            numerators[vertices[--i]].Clear();
-                            graphNumeration[vertices[i]] = null;
-                        }
+                        while (i-- != 0) ClearVertex(i);
                         break;
                     }
                 }
             }
             --TryToNumStackCounter;
             return error;
+        }
+
+        private void ClearVertex(int vertex)
+        {
+            numerators[vertex].Clear();
+            graphNumeration[vertex] = null;
         }
 
         private List<int> GetEnumeratedVertices()
