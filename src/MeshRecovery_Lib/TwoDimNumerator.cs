@@ -174,12 +174,8 @@ namespace MeshRecovery_Lib
                     {
                         if (numerators[i].GetNumeratedAdjVertices(graphNumeration).Count() > 0)
                         {
-                            enumerated.Insert(0, i);
+                            enumerated.Add(i);
                         }
-                        //else
-                        //{
-                        //    enumerated.Add(i);
-                        //}
                     }
                 }
                 return enumerated;
