@@ -11,6 +11,8 @@ namespace MeshRecovery_Lib
         protected Graph graph = null;
         protected int[][] graphNumeration = null;
         protected IVertexNumerator[] numerators = null;
+        int TryToNumStackCounter = 0;
+        const int stackSize = 2000;
 
         // abstract members
         protected abstract int GetMaxVertexDegree();
@@ -82,7 +84,7 @@ namespace MeshRecovery_Lib
                     if (error == Error.OK)
                     {
                         var enumerated = GetEnumeratedVertices();
-                        for (int i = 0; i < enumerated.Count(); ++i)
+                        for (int i = 0; i < enumerated.Count();)
                         {
                             error = TryToNumerateVertices(enumerated[i]);
                             if (error != Error.OK && i == 0) break;
@@ -117,6 +119,10 @@ namespace MeshRecovery_Lib
 
         private Error TryToNumerateVertices(int vertex)
         {
+            //Workaround to prevent StackOverflow exception
+            if (TryToNumStackCounter > stackSize) return Error.STACKOVERFLOW;
+            ++TryToNumStackCounter;
+
             if (graphNumeration[vertex] != null) return Error.OK;
             Error error = Error.IMPOSSIBLE_NUM;
 
@@ -129,6 +135,7 @@ namespace MeshRecovery_Lib
                 {
                     numerators[vertex].Clear();
                     graphNumeration[vertex] = null;
+                    --TryToNumStackCounter;
                     return error;
                 }
 
@@ -147,6 +154,7 @@ namespace MeshRecovery_Lib
                     }
                 }
             }
+            --TryToNumStackCounter;
             return error;
         }
 
