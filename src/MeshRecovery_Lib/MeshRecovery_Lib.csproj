@@ -43,6 +43,8 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="IVertexNumerator.cs" />
     <Compile Include="ANumerator.cs" />
+    <Compile Include="ThreeDimNumerator.cs" />
+    <Compile Include="ThreeDimVertexNumerator.cs" />
     <Compile Include="TwoDimNumerator.cs" />
     <Compile Include="MeshRecovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

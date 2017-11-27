@@ -90,5 +90,13 @@ namespace MeshRecovery_Lib
             a = b;
             b = temp;
         }
+
+        public static void Swap3<T>(ref T a, ref T b, ref T c)
+        {
+            T temp = a;
+            a = b;
+            b = c;
+            c = temp;
+        }
     }
 }

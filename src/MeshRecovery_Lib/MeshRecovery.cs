@@ -74,7 +74,7 @@ namespace MeshRecovery_Lib
 
             if (max_adj <= 4)
             {
-                return 2;
+                return 3;
             }
 
             if (max_adj <= 6)
@@ -111,7 +111,7 @@ namespace MeshRecovery_Lib
                 case 1: return OneDimensionNumerate(graph, out graphNumeration);
                 //TODO: implement this part
                 case 2: return new TwoDimNumerator().Run(graph, out graphNumeration);//TwoDimensionNumerate(graph, out graphNumeration);
-                case 3: break;
+                case 3: return new ThreeDimNumerator().Run(graph, out graphNumeration);
                 default: return -1;
             }
 
