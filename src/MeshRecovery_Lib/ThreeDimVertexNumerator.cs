@@ -16,7 +16,7 @@ namespace MeshRecovery_Lib
                 PositiveZ,
                 NegativeX,
                 NegativeY,
-                NegatibeZ,
+                NegativeZ,
                 Last
             }
 
@@ -83,9 +83,10 @@ namespace MeshRecovery_Lib
                 {
                     while (!newIndexFound && direction != Direction.Last)
                     {
-                        var directionValue = (int)Math.Pow(-1, (int)direction / 2);
-                        int x = (int)direction % 2 == 0 ? directionValue : 0;
-                        int y = (int)direction % 2 != 0 ? directionValue : 0;
+                        var directionValue = (int)Math.Pow(-1, (int)direction / 3);
+                        int x = (int)direction % 3 == 0 ? directionValue : 0;
+                        int y = (int)direction % 3 == 1 ? directionValue : 0;
+                        int z = (int)direction % 3 == 2 ? directionValue : 0;
                         ++direction;
 
                         index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y };
@@ -143,9 +144,10 @@ namespace MeshRecovery_Lib
             private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
             {
                 List<int[]> alts = new List<int[]>();
-                // Create 2 alternatives, for example:  [1, -1], [1, -2] from: [0, -1], [1, -2] 
+                // Create 2 alternatives, for example:  [1, -1], [0, -2] from: [0, -1], [1, -2] 
                 var alternative1 = new int[] { graphNumeration[vertices[0]][0], graphNumeration[vertices[1]][1] };
                 var alternative2 = new int[] { graphNumeration[vertices[1]][0], graphNumeration[vertices[0]][1] };
+
 
                 var alt1Exists = NumerationHelper.IndexExists(alternative1, graphNumeration);
                 var alt2Exists = NumerationHelper.IndexExists(alternative2, graphNumeration);
