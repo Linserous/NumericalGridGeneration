@@ -17,6 +17,7 @@ namespace MeshRecovery_Lib
         // abstract members
         protected abstract int GetMaxVertexDegree();
         protected abstract void NumerateFirstVertices(int rootVertex, int[] vertices);
+        protected abstract bool Swap(ref int[] vertices);
 
         private void InitMembers(Graph graph, out int[][] graphNumeration)
         {
@@ -59,8 +60,7 @@ namespace MeshRecovery_Lib
                 graph.GetAdjVertices(vertexWithMaxDegree, out vertices);
 
                 bool execute = true;
-                int times = vertices.Count() - 1;
-                while (execute && times > 0)
+                while (execute)
                 {
                     execute = false;
 
@@ -88,9 +88,8 @@ namespace MeshRecovery_Lib
                     }
                     if (error != Error.OK)
                     {
-                        Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
-                        execute = true;
-                        if (--times > 0) NumerationHelper.Clear(ref graphNumeration);
+                        execute = Swap(ref vertices);
+                        if (execute) NumerationHelper.Clear(ref graphNumeration);
                     }
                 }
                 return (int)error;

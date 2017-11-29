@@ -9,6 +9,7 @@ namespace MeshRecovery_Lib
         // recursive version of the two-dimensional numbering algorithm
         public class TwoDimNumerator: ANumerator<TwoDimVertexNumerator>
         {
+            private int SwapCounter = 0;
             protected override int GetMaxVertexDegree()
             {
                 return 4;
@@ -24,6 +25,13 @@ namespace MeshRecovery_Lib
                     x *= i > 0 ? x : 1;
                     y *= i > 0 ? y : 1;
                 }
+            }
+
+            protected override bool Swap(ref int[] vertices)
+            {
+                if (SwapCounter++ > 1) return false;
+                Helpers.Swap(ref vertices[0], ref vertices[1]);
+                return true;
             }
         }
     }
