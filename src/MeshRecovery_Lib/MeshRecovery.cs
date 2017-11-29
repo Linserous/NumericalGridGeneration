@@ -114,6 +114,7 @@ namespace MeshRecovery_Lib
                     error = new TwoDimNumerator().Run(graph, out graphNumeration);
                     if (error != 0)
                     {
+                        NumerationHelper.Clear(ref graphNumeration);
                         error = new ThreeDimNumerator().Run(graph, out graphNumeration);
                     }
                     break;

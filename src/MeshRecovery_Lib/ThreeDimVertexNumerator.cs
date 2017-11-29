@@ -89,7 +89,7 @@ namespace MeshRecovery_Lib
                         int z = (int)direction % 3 == 2 ? directionValue : 0;
                         ++direction;
 
-                        index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y };
+                        index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y, graphNumeration[vertices[0]][2] + z };
                         newIndexFound = !NumerationHelper.IndexExists(index, graphNumeration);
                         if (newIndexFound)
                         {
