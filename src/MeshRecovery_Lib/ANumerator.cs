@@ -170,6 +170,12 @@ namespace MeshRecovery_Lib
                     }
                 }
             }
+            enumerated.Sort((a, b) =>
+            {
+                var aAdjNumvertexCount = graph.GetAdjVerticesCount(a);
+                var bAdjNumvertexCount = graph.GetAdjVerticesCount(b);
+                return bAdjNumvertexCount.CompareTo(aAdjNumvertexCount);
+            });
             return enumerated;
         }
     }

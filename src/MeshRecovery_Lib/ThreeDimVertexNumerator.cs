@@ -117,10 +117,17 @@ namespace MeshRecovery_Lib
                 var vertices = GetAdjVertices(graphNumeration, vertex, e => { return e == null; });
                 vertices.Sort((a, b) =>
                 {
-                    var aAdjNumvertices = GetAdjVertices(graphNumeration, a, e => { return e != null; });
-                    var bAdjNumvertices = GetAdjVertices(graphNumeration, b, e => { return e != null; });
+                    List<int[]> aNumerated = new List<int[]>();
+                    List<int[]> bNumerated = new List<int[]>();
+                    var aAdjVertices = GetAdjVertices(graphNumeration, a, e => { if (e != null) { aNumerated.Add(e); } return true; });
+                    var bAdjVertices = GetAdjVertices(graphNumeration, b, e => { if (e != null) { bNumerated.Add(e); } return true; });
 
-                    return bAdjNumvertices.Count().CompareTo(aAdjNumvertices.Count());
+                    var result = bNumerated.Count().CompareTo(aNumerated.Count());
+                    if (result == 0)
+                    {
+                        result = bAdjVertices.Count().CompareTo(aAdjVertices.Count());
+                    }
+                    return result;
                 });
                 return vertices;
             }
