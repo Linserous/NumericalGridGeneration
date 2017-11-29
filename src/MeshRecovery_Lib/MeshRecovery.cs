@@ -51,14 +51,25 @@ namespace MeshRecovery_Lib
             int V = graph.GetVerticesCount();
             int E = graph.GetEdgeCount();
             long max_adj = 0;
+            long min_adj = 6;
 
             Traversal t = new Traversal(graph);
 
             List<long> vertices = new List<long>();
+            int min_adj_count = 0;
             t.NewVertex += (sender, e) =>
             {
                 if (max_adj < graph.GetAdjVerticesCount(e))
+                {
                     max_adj = graph.GetAdjVerticesCount(e);
+                }
+                if (min_adj > graph.GetAdjVerticesCount(e))
+                {
+                    min_adj_count = 0;
+                    min_adj = graph.GetAdjVerticesCount(e);
+                }
+                if (min_adj == graph.GetAdjVerticesCount(e))
+                    min_adj_count++;
                 vertices.Add(e);
             };
             t.Run();
@@ -66,7 +77,7 @@ namespace MeshRecovery_Lib
             if (vertices.Count() != graph.GetVerticesCount())
                 return 0;
 
-            if (V - E + 1 == 2) // should be one dimension graph ( chain )
+            if (max_adj <= 2 && min_adj_count==2) // should be one dimension graph ( chain )
             {
 
                 return 1;
@@ -108,7 +119,19 @@ namespace MeshRecovery_Lib
             int error = 0;
             switch (GetDimension(graph))
             {
-                case 1: return OneDimensionNumerate(graph, out graphNumeration);
+                case 1:
+                    error = OneDimensionNumerate(graph, out graphNumeration);
+                    if (error !=0)
+                    {
+                        NumerationHelper.Clear(ref graphNumeration);
+                        error = new TwoDimNumerator().Run(graph, out graphNumeration);
+                    }
+                    if (error != 0)
+                    {
+                        NumerationHelper.Clear(ref graphNumeration);
+                        error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                    }
+                    break;
                 //TODO: implement this part
                 case 2:
                     error = new TwoDimNumerator().Run(graph, out graphNumeration);
