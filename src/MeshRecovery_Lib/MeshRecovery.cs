@@ -100,22 +100,31 @@ namespace MeshRecovery_Lib
         {
             // TODO: Implement
             // TODO: graphNumeration may be 1-3 dimensional array
-             
+
             Graph graph = new Graph(xadj, adjncy);
 
             graphNumeration = null;
             int V = graph.GetVerticesCount();
-
+            int error = 0;
             switch (GetDimension(graph))
             {
                 case 1: return OneDimensionNumerate(graph, out graphNumeration);
                 //TODO: implement this part
-                case 2: return new TwoDimNumerator().Run(graph, out graphNumeration);//TwoDimensionNumerate(graph, out graphNumeration);
-                case 3: break;
+                case 2:
+                    error = new TwoDimNumerator().Run(graph, out graphNumeration);
+                    if (error != 0)
+                    {
+                        error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                    }
+                    break;
+                //TwoDimensionNumerate(graph, out graphNumeration);
+                case 3:
+                    error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                    break;
                 default: return -1;
             }
 
-            return -1;
+            return error;
         }
 
         /// <summary>
@@ -138,7 +147,7 @@ namespace MeshRecovery_Lib
             Traversal traversal = new Traversal(graph);
 
             int V = graph.GetVerticesCount();
-            bool[] union = new bool[V]; 
+            bool[] union = new bool[V];
 
             for (int i = 0; i < V; ++i)
             {
@@ -155,7 +164,7 @@ namespace MeshRecovery_Lib
             {
                 if (union[i] == false) return false;
             }
-            return true;    
+            return true;
         }
         /// <summary>
         /// Method restores geometry information for graph
@@ -184,7 +193,7 @@ namespace MeshRecovery_Lib
             traversal.Run();
 
             if (start == -1)
-                    return -1;
+                return -1;
 
             traversal.NewVertex = (sender, e) =>
             {
@@ -192,7 +201,7 @@ namespace MeshRecovery_Lib
             };
             traversal.Run(start);
             graphNumeration = res_graphNumeration;
-            if (V!=0) 
+            if (V != 0)
                 return -1;
             else
                 return 0;
@@ -225,7 +234,7 @@ namespace MeshRecovery_Lib
                 if ((graph.GetAdjVerticesCount(e) == 3))
                     another_start_vertex = e;
                 if ((graph.GetAdjVerticesCount(e) == 4))
-                    start_vertex = e;  
+                    start_vertex = e;
             };
             traversal.Run();
             if (another_start_vertex == -1 && start_vertex == -1)
@@ -234,10 +243,10 @@ namespace MeshRecovery_Lib
                 start_vertex = another_start_vertex;
             bool fixed_first = false; //
             //set start information
-            res_graphNumeration[start_vertex] =new int[] {0,0};
+            res_graphNumeration[start_vertex] = new int[] { 0, 0 };
             int[] buf;
-            long count_around_start = graph.GetAdjVertices(start_vertex,  out buf);
-            int x_start=1, y_start=0; 
+            long count_around_start = graph.GetAdjVertices(start_vertex, out buf);
+            int x_start = 1, y_start = 0;
             for (int i = 0; i < count_around_start; ++i)
             {
                 res_graphNumeration[buf[i]] = new int[] { x_start, y_start }; // NB: make it easy
@@ -246,13 +255,13 @@ namespace MeshRecovery_Lib
             }
             traversal.NewVertex = (sender, e) =>
             {
-                if (res_graphNumeration[e]==null)
+                if (res_graphNumeration[e] == null)
                 {
                     int[] buff;
                     long adj_count = graph.GetAdjVertices(e, out buff);
                     //try to determine with al least 2 numerated vertex
-                    int v1=-1, v2=-1;
-                    for (int i = 0; i<adj_count;++i)
+                    int v1 = -1, v2 = -1;
+                    for (int i = 0; i < adj_count; ++i)
                     {
                         if (res_graphNumeration[buff[i]] != null)
                         {
@@ -288,7 +297,7 @@ namespace MeshRecovery_Lib
                                 else
                                 {
                                     int x_direction = direction ? ((res_graphNumeration[v1][0] * 4 - 1 > 0) ? 1 : -1) : 0;
-                                    int y_direction = !direction? ((res_graphNumeration[v1][1] * 4 - 1 > 0) ? 1 : -1):0;
+                                    int y_direction = !direction ? ((res_graphNumeration[v1][1] * 4 - 1 > 0) ? 1 : -1) : 0;
                                     res_graphNumeration[e] = new int[] { res_graphNumeration[v1][0] + x_direction, res_graphNumeration[v1][1] + y_direction };
                                     history_guess[index_guess++] = new int[] { e, x_direction, y_direction };
                                 }
@@ -312,13 +321,13 @@ namespace MeshRecovery_Lib
                         }
                         else
                             result = -1;
-                            
+
                     }
                     else
                     {
                         //special case of start vertex
                         //swap v1 and reversed from start vertex neighbours
-                        if ((res_graphNumeration[v1][0] == res_graphNumeration[v2][0])|| (res_graphNumeration[v1][1] == res_graphNumeration[v2][1]))
+                        if ((res_graphNumeration[v1][0] == res_graphNumeration[v2][0]) || (res_graphNumeration[v1][1] == res_graphNumeration[v2][1]))
                         {
                             if (!fixed_first)
                             {
@@ -336,27 +345,27 @@ namespace MeshRecovery_Lib
                             }
                             else
                             {
-                                if (index_guess>0)
-                                res_graphNumeration[history_guess[index_guess - 1][0]] = new int[] { res_graphNumeration[history_guess[index_guess - 1][0]][0] - history_guess[index_guess - 1][1], res_graphNumeration[history_guess[index_guess - 1][0]][1] + history_guess[index_guess - 1][2] };
+                                if (index_guess > 0)
+                                    res_graphNumeration[history_guess[index_guess - 1][0]] = new int[] { res_graphNumeration[history_guess[index_guess - 1][0]][0] - history_guess[index_guess - 1][1], res_graphNumeration[history_guess[index_guess - 1][0]][1] + history_guess[index_guess - 1][2] };
                                 --index_guess;
                             }
                         }
 
                         int[] bufv1;
                         int[] bufv2;
-                        long couunt_bufv1=graph.GetAdjVertices(v1, out bufv1);
+                        long couunt_bufv1 = graph.GetAdjVertices(v1, out bufv1);
                         long couunt_bufv2 = graph.GetAdjVertices(v2, out bufv2);
                         int opposite_vertex = -1;
                         for (int i = 0; i < couunt_bufv1; ++i)
                             for (int j = 0; j < couunt_bufv2; ++j)
                                 if (bufv1[i] == bufv2[j] && bufv1[i] != e)
                                     opposite_vertex = bufv1[i];
-                        if ((opposite_vertex != -1)&&(res_graphNumeration[opposite_vertex]!=null))
+                        if ((opposite_vertex != -1) && (res_graphNumeration[opposite_vertex] != null))
                         {
                             int x = res_graphNumeration[v1][0] + res_graphNumeration[v2][0] - res_graphNumeration[opposite_vertex][0];
                             int y = res_graphNumeration[v1][1] + res_graphNumeration[v2][1] - res_graphNumeration[opposite_vertex][1];
-                            if ((x == res_graphNumeration[opposite_vertex][0])&& y == res_graphNumeration[opposite_vertex][1])
-                                result =- 1;
+                            if ((x == res_graphNumeration[opposite_vertex][0]) && y == res_graphNumeration[opposite_vertex][1])
+                                result = -1;
                             res_graphNumeration[e] = new int[] { x, y };
                         }
                         else
@@ -368,12 +377,12 @@ namespace MeshRecovery_Lib
                     //but we will do it again!!
                 }
             };
-            
+
             traversal.Run(start_vertex);
 
-            for (int i=0; i<index_guess;++i)
+            for (int i = 0; i < index_guess; ++i)
             {
-                count_around_start = graph.GetAdjVertices( history_guess[i][0] , out buf);
+                count_around_start = graph.GetAdjVertices(history_guess[i][0], out buf);
                 for (int j = 0; j < count_around_start; ++j)
                 {
                     if (NumerationHelper.CompareVertex(res_graphNumeration[history_guess[i][0]], res_graphNumeration[buf[j]], 2) < 0)

@@ -80,6 +80,18 @@ namespace MeshRecovery_Lib
             }
             return false;
         }
+
+        public static bool IndexExists3(int[] index, int[][] numeration)
+        {
+            for (int i = 0; i < numeration.Count(); ++i)
+            {
+                if (numeration[i] != null &&
+                    numeration[i][0] == index[0] &&
+                    numeration[i][1] == index[1] &&
+                    numeration[i][2] == index[2]) return true;
+            }
+            return false;
+        }
     }
 
     static class Helpers
@@ -89,6 +101,14 @@ namespace MeshRecovery_Lib
             T temp = a;
             a = b;
             b = temp;
+        }
+
+        public static void Swap3<T>(ref T a, ref T b, ref T c)
+        {
+            T temp = a;
+            a = b;
+            b = c;
+            c = temp;
         }
     }
 }

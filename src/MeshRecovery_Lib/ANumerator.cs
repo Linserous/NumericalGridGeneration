@@ -17,6 +17,7 @@ namespace MeshRecovery_Lib
         // abstract members
         protected abstract int GetMaxVertexDegree();
         protected abstract void NumerateFirstVertices(int rootVertex, int[] vertices);
+        protected abstract bool Swap(ref int[] vertices);
 
         private void InitMembers(Graph graph, out int[][] graphNumeration)
         {
@@ -36,42 +37,35 @@ namespace MeshRecovery_Lib
         {
             InitMembers(graph, out graphNumeration);
 
-            int vertexWithMax1Degree = INVALID_INDEX;
-            int vertexWithMax2Degree = INVALID_INDEX;
-
-            var maxDegree = GetMaxVertexDegree();
+            int vertexWithMaxDegree = INVALID_INDEX;
+            long maxDegree = 0;
 
             var traversal = new Traversal<BFS>(graph);
             //Step 1. Find start vertex with max degree
             traversal.NewVertex = (sender, e) =>
             {
-                if (graph.GetAdjVerticesCount(e) == maxDegree)
+                long currDegree = graph.GetAdjVerticesCount(e);
+                if (currDegree > maxDegree)
                 {
-                    vertexWithMax1Degree = e;
-                    traversal.Stop();
-                }
-                else if (graph.GetAdjVerticesCount(e) == maxDegree - 1)
-                {
-                    vertexWithMax2Degree = e;
+                    vertexWithMaxDegree = e;
+                    maxDegree = currDegree;
                 }
             };
             traversal.Run();
 
             Error error = Error.OK;
-            if (vertexWithMax1Degree != INVALID_INDEX || vertexWithMax2Degree != INVALID_INDEX)
+            if (vertexWithMaxDegree != INVALID_INDEX)
             {
-                var vertex = vertexWithMax1Degree != INVALID_INDEX ? vertexWithMax1Degree : vertexWithMax2Degree;
                 int[] vertices;
-                graph.GetAdjVertices(vertex, out vertices);
+                graph.GetAdjVertices(vertexWithMaxDegree, out vertices);
 
                 bool execute = true;
-                int times = vertices.Count() - 1;
-                while (execute && times > 0)
+                while (execute)
                 {
                     execute = false;
 
                     // Step 2. Numerate first vertices
-                    NumerateFirstVertices(vertex, vertices);
+                    NumerateFirstVertices(vertexWithMaxDegree, vertices);
 
                     // Step 3. Try to numerate adj vertices of the each vertex in the first vertices
                     foreach (var v in vertices)
@@ -94,9 +88,8 @@ namespace MeshRecovery_Lib
                     }
                     if (error != Error.OK)
                     {
-                        Helpers.Swap(ref vertices[0], ref vertices[vertices.Count() - times]);
-                        execute = true;
-                        if (--times > 0) NumerationHelper.Clear(ref graphNumeration);
+                        execute = Swap(ref vertices);
+                        if (execute) NumerationHelper.Clear(ref graphNumeration);
                     }
                 }
                 return (int)error;
