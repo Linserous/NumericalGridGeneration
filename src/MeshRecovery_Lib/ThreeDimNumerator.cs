@@ -34,16 +34,18 @@ namespace MeshRecovery_Lib
             protected override bool Swap(ref int[] vertices)
             {
                 if (SwapCounter > 2) return false;
+                if (SwapCounter > 0 && vertices.Count() < 3) return false;
+
                 if (SwapCounter == 0)
                 {
                     Helpers.Swap(ref vertices[0], ref vertices[1]);
                 }
-                if (SwapCounter == 1)
+                else if (SwapCounter == 1)
                 {
                     Helpers.Swap(ref vertices[0], ref vertices[1]);
                     Helpers.Swap(ref vertices[0], ref vertices[2]);
                 }
-                if (SwapCounter == 2)
+                else if (SwapCounter == 2)
                 {
                     Helpers.Swap(ref vertices[0], ref vertices[2]);
                     Helpers.Swap(ref vertices[1], ref vertices[2]);

@@ -81,12 +81,9 @@ namespace MeshRecovery_Lib
                 {
                     while (!newIndexFound && direction != Direction.Last)
                     {
-                        var directionValue = (int)Math.Pow(-1, (int)direction / 2);
-                        int x = (int)direction % 2 == 0 ? directionValue : 0;
-                        int y = (int)direction % 2 != 0 ? directionValue : 0;
+                        var offset = GetOffsetByDirection(direction);
                         ++direction;
-
-                        index = new int[] { graphNumeration[vertices[0]][0] + x, graphNumeration[vertices[0]][1] + y };
+                        index = new int[] { graphNumeration[vertices[0]][0] + offset[0], graphNumeration[vertices[0]][1] + offset[1] };
                         newIndexFound = !NumerationHelper.IndexExists(index, graphNumeration);
                         if (newIndexFound)
                         {
@@ -148,31 +145,24 @@ namespace MeshRecovery_Lib
             private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
             {
                 List<int[]> alts = new List<int[]>();
-                // Create 2 alternatives, for example:  [1, -1], [1, -2] from: [0, -1], [1, -2] 
-                var alternative1 = new int[] { graphNumeration[vertices[0]][0], graphNumeration[vertices[1]][1] };
-                var alternative2 = new int[] { graphNumeration[vertices[1]][0], graphNumeration[vertices[0]][1] };
-
-                var alt1Exists = NumerationHelper.IndexExists(alternative1, graphNumeration);
-                var alt2Exists = NumerationHelper.IndexExists(alternative2, graphNumeration);
-
-                if (alt1Exists && alt2Exists) return null;
-
-                int alt1Count = 0, alt2Count = 0;
-                foreach (var v in vertices)
+                var localDirection = Direction.PositiveX;
+                int v_0 = vertices[0];
+                while (localDirection !=  Direction.Last)
                 {
-                    if (!alt1Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative1, 2) >= 0) ++alt1Count;
-                    if (!alt2Exists && NumerationHelper.CompareVertex(graphNumeration[v], alternative2, 2) >= 0) ++alt2Count;
+                    var offset = GetOffsetByDirection(localDirection);              
+                    var alternative = new int[] { graphNumeration[v_0][0] + offset[0], graphNumeration[v_0][1] + offset[1] };
+                    int altCount = 0;
+                    if (!NumerationHelper.IndexExists(alternative, graphNumeration))
+                    {
+                        foreach (var v in vertices)
+                        {
+                            if (NumerationHelper.CompareVertex(graphNumeration[v], alternative, 2) >= 0) ++altCount;
+                        }
+                        if (altCount == vertices.Count()) alts.Add(alternative);
+                    }
+                    ++localDirection;
                 }
-                if (alt1Count != vertices.Count() && alt2Count != vertices.Count()) return null;
-                if (alt1Count == vertices.Count())
-                {
-                    alts.Add(alternative1);
-                }
-                if (alt2Count == vertices.Count())
-                {
-                    alts.Add(alternative2);
-                }
-                return alts;
+                return alts.Count() == 0 ? null : alts;
             }
 
             private bool ContainsAlternative(int[] alternative)
@@ -188,6 +178,14 @@ namespace MeshRecovery_Lib
                     if (numberOfCoincidences == altCount) return true;
                 }
                 return false;
+            }
+
+            private int[] GetOffsetByDirection(Direction d)
+            {
+                var directionValue = (int)Math.Pow(-1, (int)d / 2);
+                int x = (int)d % 2 == 0 ? directionValue : 0;
+                int y = (int)d % 2 != 0 ? directionValue : 0;
+                return new int[] { x, y };
             }
         }
     }

@@ -25,7 +25,7 @@ namespace UnitTests
                 for (int j = 0; j < graphNumeration[i].Length; ++j)
                 {
                     result += graphNumeration[i][j].ToString();
-                    if ((j > 0) && (j< graphNumeration[i].Length -1)) result += ",";
+                    if (j < graphNumeration[i].Length -1) result += ",";
                 }
                 result += "]";
             }

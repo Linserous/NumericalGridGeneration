@@ -78,12 +78,11 @@ namespace MeshRecovery_Lib
                     if (error == Error.OK)
                     {
                         var enumerated = GetEnumeratedVertices();
-                        for (int i = 0; i < enumerated.Count();)
+                        for (int i = 0; i < enumerated.Count(); ++i)
                         {
                             error = TryToNumerateVertices(enumerated[i]);
                             if (error == Error.STACKOVERFLOW) return (int)error;
-                            if (error != Error.OK && i == 0) break;
-                            i += error != Error.OK ? -1 : 1;
+                            if (error != Error.OK) break;
                         }
                     }
                     if (error != Error.OK)
@@ -142,7 +141,7 @@ namespace MeshRecovery_Lib
                     }
                     if (error != Error.OK)
                     {
-                        while (i-- != 0) ClearVertex(i);
+                        while (i-- != 0) ClearVertex(vertices[i]);
                         break;
                     }
                 }
