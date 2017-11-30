@@ -84,10 +84,6 @@ namespace MeshRecovery_Lib
                     while (!newIndexFound && direction != Direction.Last)
                     {
                         var offset = GetOffsetByDirection(direction);
-                        var directionValue = (int)Math.Pow(-1, (int)direction / 3);
-                        int x = (int)direction % 3 == 0 ? directionValue : 0;
-                        int y = (int)direction % 3 == 1 ? directionValue : 0;
-                        int z = (int)direction % 3 == 2 ? directionValue : 0;
                         ++direction;
 
                         index = new int[] { graphNumeration[vertices[0]][0] + offset[0],
