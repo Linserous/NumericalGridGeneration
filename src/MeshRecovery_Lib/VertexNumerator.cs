@@ -1,32 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
 
 namespace MeshRecovery_Lib
 {
     public static partial class MeshRecovery
-    {
-        public class ThreeDimVertexNumerator : IVertexNumerator
-        {
-            enum Direction
-            {
-                PositiveX = 0,
-                PositiveY,
-                PositiveZ,
-                NegativeX,
-                NegativeY,
-                NegativeZ,
-                Last
-            }
 
+    {
+        public class VertexNumerator<T> : IVertexNumerator where T : IDirection, new()
+        {
             int vertex = -1;
-            Direction direction;
+            T direction;
             List<int[]> alternatives = null;
             Graph graph = null;
 
             public virtual void Init(int vertex, Graph graph)
             {
+                direction = new T();
                 this.vertex = vertex;
                 alternatives = new List<int[]>();
                 this.graph = graph;
@@ -45,7 +34,6 @@ namespace MeshRecovery_Lib
                     {
                         return Error.IMPOSSIBLE_NUM;
                     }
-                    // tmp
                     graphNumeration[vertex] = alts.First();
                 }
                 return Error.OK;
@@ -53,7 +41,7 @@ namespace MeshRecovery_Lib
 
             public virtual Error TryToNumerate(ref int[][] graphNumeration)
             {
-                if (direction == Direction.Last) return Error.IMPOSSIBLE_NUM;
+                if (!direction.Valid()) return Error.IMPOSSIBLE_NUM;
 
                 var vertices = GetNumeratedAdjVertices(graphNumeration);
                 if (vertices.Count == 0)
@@ -81,15 +69,14 @@ namespace MeshRecovery_Lib
                 bool newIndexFound = false;
                 if (graphNumeration[vertices[0]] != null)
                 {
-                    while (!newIndexFound && direction != Direction.Last)
+                    while (!newIndexFound && direction.Valid())
                     {
-                        var offset = GetOffsetByDirection(direction);
-                        ++direction;
-
-                        index = new int[] { graphNumeration[vertices[0]][0] + offset[0],
-                            graphNumeration[vertices[0]][1] + offset[1],
-                            graphNumeration[vertices[0]][2] + offset[2] };
-
+                        var offset = direction.GetNextOffset();
+                        index = new int[offset.Count()];
+                        for (int i = 0; i < offset.Count(); ++i)
+                        {
+                            index[i] = graphNumeration[vertices[0]][i] + offset[i];
+                        }
                         newIndexFound = !NumerationHelper.IndexExists(index, graphNumeration);
                         if (newIndexFound)
                         {
@@ -104,7 +91,7 @@ namespace MeshRecovery_Lib
             public virtual void Clear()
             {
                 alternatives.Clear();
-                direction = Direction.PositiveX;
+                direction.Clear();
             }
 
             public virtual List<int> GetNumeratedAdjVertices(int[][] graphNumeration)
@@ -151,24 +138,25 @@ namespace MeshRecovery_Lib
             private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
             {
                 List<int[]> alts = new List<int[]>();
-                var localDirection = Direction.PositiveX;
+                var localDirection = new T();
                 int v_0 = vertices[0];
-                while (localDirection != Direction.Last)
+                while (localDirection.Valid())
                 {
-                    var offset = GetOffsetByDirection(localDirection);
-                    var alternative = new int[] { graphNumeration[v_0][0] + offset[0],
-                        graphNumeration[v_0][1] + offset[1],
-                        graphNumeration[v_0][2] + offset[2] };
+                    var offset = localDirection.GetNextOffset();
+                    var alternative = new int[offset.Count()];
+                    for (int i = 0; i < alternative.Count(); ++i)
+                    {
+                        alternative[i] = graphNumeration[v_0][i] + offset[i];
+                    }
                     int altCount = 0;
                     if (!NumerationHelper.IndexExists(alternative, graphNumeration))
                     {
                         foreach (var v in vertices)
                         {
-                            if (NumerationHelper.CompareVertex(graphNumeration[v], alternative, 3) >= 0) ++altCount;
+                            if (NumerationHelper.CompareVertex(graphNumeration[v], alternative, alternative.Count()) >= 0) ++altCount;
                         }
                         if (altCount == vertices.Count()) alts.Add(alternative);
                     }
-                    ++localDirection;
                 }
                 return alts.Count() == 0 ? null : alts;
             }
@@ -187,15 +175,13 @@ namespace MeshRecovery_Lib
                 }
                 return false;
             }
+        }
 
-            private int[] GetOffsetByDirection(Direction d)
-            {
-                var directionValue = (int)Math.Pow(-1, (int)d / 3);
-                int x = (int)d % 3 == 0 ? directionValue : 0;
-                int y = (int)d % 3 == 1 ? directionValue : 0;
-                int z = (int)d % 3 == 2 ? directionValue : 0;
-                return new int[] { x, y, z };
-            }
+        public class VertexNumerator2D : VertexNumerator<Direction2D>
+        {
+        }
+        public class VertexNumerator3D : VertexNumerator<Direction3D>
+        {
         }
     }
 }

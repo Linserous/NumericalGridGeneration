@@ -39,18 +39,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VertexNumerator.cs" />
+    <Compile Include="Direction2D.cs" />
+    <Compile Include="Direction3D.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IDirection.cs" />
     <Compile Include="IVertexNumerator.cs" />
     <Compile Include="ANumerator.cs" />
-    <Compile Include="ThreeDimNumerator.cs" />
-    <Compile Include="ThreeDimVertexNumerator.cs" />
-    <Compile Include="TwoDimNumerator.cs" />
+    <Compile Include="Numerator3D.cs" />
+    <Compile Include="Numerator2D.cs" />
     <Compile Include="MeshRecovery.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Traversal.cs" />
     <Compile Include="TraversalHelpers.cs" />
-    <Compile Include="TwoDimVertexNumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

@@ -6,8 +6,8 @@ namespace MeshRecovery_Lib
 {
     public static partial class MeshRecovery
     {
-        // recursive version of the two-dimensional numbering algorithm
-        public class ThreeDimNumerator : ANumerator<ThreeDimVertexNumerator>
+        // recursive version of the three-dimensional numbering algorithm
+        public class Numerator3D : ANumerator<VertexNumerator3D>
         {
             private int SwapCounter = 0;
             protected override int GetMaxVertexDegree()

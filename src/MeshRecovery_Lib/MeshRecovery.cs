@@ -121,33 +121,32 @@ namespace MeshRecovery_Lib
             {
                 case 1:
                     error = OneDimensionNumerate(graph, out graphNumeration);
-                    if (error !=0)
+                    if (error != 0)
                     {
                         NumerationHelper.Clear(ref graphNumeration);
-                        error = new TwoDimNumerator().Run(graph, out graphNumeration);
+                        error = new Numerator2D().Run(graph, out graphNumeration);
                     }
                     if (error != 0)
                     {
                         NumerationHelper.Clear(ref graphNumeration);
-                        error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                        error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;
                 //TODO: implement this part
                 case 2:
-                    error = new TwoDimNumerator().Run(graph, out graphNumeration);
+                    error = new Numerator2D().Run(graph, out graphNumeration);
                     if (error != 0)
                     {
                         NumerationHelper.Clear(ref graphNumeration);
-                        error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                        error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;
                 //TwoDimensionNumerate(graph, out graphNumeration);
                 case 3:
-                    error = new ThreeDimNumerator().Run(graph, out graphNumeration);
+                    error = new Numerator3D().Run(graph, out graphNumeration);
                     break;
                 default: return -1;
             }
-
             return error;
         }
 

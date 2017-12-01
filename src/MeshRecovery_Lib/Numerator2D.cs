@@ -7,7 +7,7 @@ namespace MeshRecovery_Lib
     public static partial class MeshRecovery
     {
         // recursive version of the two-dimensional numbering algorithm
-        public class TwoDimNumerator: ANumerator<TwoDimVertexNumerator>
+        public class Numerator2D: ANumerator<VertexNumerator2D>
         {
             private int SwapCounter = 0;
             protected override int GetMaxVertexDegree()

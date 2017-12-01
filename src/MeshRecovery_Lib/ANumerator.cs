@@ -4,7 +4,12 @@ using System.Linq;
 
 namespace MeshRecovery_Lib
 {
-    public abstract class ANumerator<T> where T : IVertexNumerator, new()
+    public interface INumerator
+    {
+        int Run(Graph graph, out int[][] graphNumeration);
+    }
+
+    public abstract class ANumerator<T> : INumerator where T : IVertexNumerator, new()
     {
         public const int INVALID_INDEX = -1;
 
