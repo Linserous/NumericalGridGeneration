@@ -90,7 +90,7 @@ namespace MeshRecovery_Lib
                             graphNumeration[vertices[0]][1] + offset[1],
                             graphNumeration[vertices[0]][2] + offset[2] };
 
-                        newIndexFound = !NumerationHelper.IndexExists3(index, graphNumeration);
+                        newIndexFound = !NumerationHelper.IndexExists(index, graphNumeration);
                         if (newIndexFound)
                         {
                             graphNumeration[vertex] = index;
@@ -160,7 +160,7 @@ namespace MeshRecovery_Lib
                         graphNumeration[v_0][1] + offset[1],
                         graphNumeration[v_0][2] + offset[2] };
                     int altCount = 0;
-                    if (!NumerationHelper.IndexExists3(alternative, graphNumeration))
+                    if (!NumerationHelper.IndexExists(alternative, graphNumeration))
                     {
                         foreach (var v in vertices)
                         {

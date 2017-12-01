@@ -74,21 +74,15 @@ namespace MeshRecovery_Lib
         {
             for (int i = 0; i < numeration.Count(); ++i)
             {
-                if (numeration[i] != null &&
-                    numeration[i][0] == index[0] &&
-                    numeration[i][1] == index[1]) return true;
-            }
-            return false;
-        }
-
-        public static bool IndexExists3(int[] index, int[][] numeration)
-        {
-            for (int i = 0; i < numeration.Count(); ++i)
-            {
-                if (numeration[i] != null &&
-                    numeration[i][0] == index[0] &&
-                    numeration[i][1] == index[1] &&
-                    numeration[i][2] == index[2]) return true;
+                if (numeration[i] != null)
+                {
+                    var numElementCount = 0;
+                    for (int j = 0; j < index.Count(); ++j)
+                    {
+                        if (numeration[i][j] == index[j]) ++numElementCount;
+                    }
+                    if (numElementCount == index.Count()) return true;
+                }
             }
             return false;
         }
