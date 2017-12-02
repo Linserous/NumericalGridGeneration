@@ -15,7 +15,7 @@ namespace MeshRecovery_Lib
 
         protected Graph graph = null;
         protected int[][] graphNumeration = null;
-        protected IVertexNumerator[] numerators = null;
+        protected T[] numerators = null;
         int TryToNumStackCounter = 0;
         const int stackSize = 2000;
 
@@ -31,7 +31,7 @@ namespace MeshRecovery_Lib
             this.graphNumeration = new int[vertexCount][];
             graphNumeration = this.graphNumeration;
 
-            numerators = new IVertexNumerator[vertexCount];
+            numerators = new T[vertexCount];
             for (int i = 0; i < numerators.Count(); ++i)
             {
                 (numerators[i] = new T()).Init(i, graph);
@@ -64,10 +64,10 @@ namespace MeshRecovery_Lib
                 int[] vertices;
                 graph.GetAdjVertices(vertexWithMaxDegree, out vertices);
 
-                bool execute = true;
-                while (execute)
+                bool possibleToSwap = true;
+                while (possibleToSwap)
                 {
-                    execute = false;
+                    possibleToSwap = false;
 
                     // Step 2. Numerate first vertices
                     NumerateFirstVertices(vertexWithMaxDegree, vertices);
@@ -92,8 +92,8 @@ namespace MeshRecovery_Lib
                     }
                     if (error != Error.OK)
                     {
-                        execute = Swap(ref vertices);
-                        if (execute) NumerationHelper.Clear(ref graphNumeration);
+                        possibleToSwap = Swap(ref vertices);
+                        if (possibleToSwap) NumerationHelper.Clear(ref graphNumeration);
                     }
                 }
                 return (int)error;
