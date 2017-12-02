@@ -36,7 +36,7 @@ namespace UnitTests
         public void CheckAllFilesWithBaseAlgorithm()
         {
             string[] files = Directory.GetFiles(PathToSources);
-            Assert.AreNotEqual(files.Length, 0);
+            Assert.AreNotEqual(files.Length, 0, "There are no test files");
             Dictionary<Exception, string> exceptions = new Dictionary<Exception, string>();
             for (int i = 0; i < files.Length; ++i)
             {
@@ -55,7 +55,7 @@ namespace UnitTests
                     string answer = read.ReadLine();
                     read.Close();
                     
-                    //checking expected validation and numerating resrults
+                    //checking expected validation and numerating results
                     StringAssert.Contains(answer, valid.ToString()+" "+numerate.ToString());
                     
                     //checking created graph numeration 

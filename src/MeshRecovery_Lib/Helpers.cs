@@ -43,10 +43,11 @@ namespace MeshRecovery_Lib
         // -4 - there is difference with step more than 1,  like [0,0] [0,2] 
         internal static int CompareVertex(int[] v1, int[] v2, int meshDimension)
         {
-            if ((v1.Length != meshDimension) || (v2.Length != meshDimension)) return -2;
+            if (v1.Length != v2.Length || v1.Length < meshDimension) return -2;
+
             int diff_count = 0;
             int diff_index = -1;
-            for (int i = 0; i < meshDimension; ++i)
+            for (int i = 0; i < v1.Length; ++i)
             {
                 if (Math.Abs(v1[i] - v2[i]) == 1)
                 {
