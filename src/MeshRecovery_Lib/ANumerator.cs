@@ -70,6 +70,8 @@ namespace MeshRecovery_Lib
                 bool possibleToSwap = true;
                 while (possibleToSwap)
                 {
+                    NumerationHelper.Clear(ref graphNumeration);
+                    foreach (var numerator in numerators) numerator.Clear();
                     possibleToSwap = false;
 
                     // Step 2. Numerate first vertices
@@ -93,15 +95,8 @@ namespace MeshRecovery_Lib
                             if (error != Error.OK) break;
                         }
                     }
-                    if (error != Error.OK)
-                    {
-                        possibleToSwap = Swap(ref vertices);
-                        if (possibleToSwap)
-                        {
-                            NumerationHelper.Clear(ref graphNumeration);
-                            foreach (var numerator in numerators) numerator.Clear();
-                        }
-                    }
+                    possibleToSwap = error != Error.OK && Swap(ref vertices);
+
                 }
                 return (int)error;
             }

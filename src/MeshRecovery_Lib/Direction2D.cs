@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MeshRecovery_Lib
 {
@@ -16,7 +12,7 @@ namespace MeshRecovery_Lib
             NegativeY,
             Last
         }
-        Direction direction;
+        Direction direction = Direction.PositiveX;
 
         public int[] GetNextOffset()
         {
