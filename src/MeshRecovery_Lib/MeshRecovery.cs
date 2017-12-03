@@ -141,7 +141,6 @@ namespace MeshRecovery_Lib
                         error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;
-                //TwoDimensionNumerate(graph, out graphNumeration);
                 case 3:
                     error = new Numerator3D().Run(graph, out graphNumeration);
                     break;

@@ -10,10 +10,7 @@ namespace MeshRecovery_Lib
         public class Numerator3D : ANumerator<VertexNumerator3D>
         {
             private int SwapCounter = 0;
-            protected override int GetMaxVertexDegree()
-            {
-                return 6;
-            }
+
             protected override void NumerateFirstVertices(int rootVertex, int[] vertices)
             {
                 graphNumeration[rootVertex] = new int[] { 0, 0, 0 };

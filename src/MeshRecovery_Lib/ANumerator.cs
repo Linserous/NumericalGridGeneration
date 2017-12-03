@@ -16,11 +16,12 @@ namespace MeshRecovery_Lib
         protected Graph graph = null;
         protected int[][] graphNumeration = null;
         protected T[] numerators = null;
+        protected List<int>[] vertexChildren = null;
+
         int TryToNumStackCounter = 0;
         const int stackSize = 2000;
 
         // abstract members
-        protected abstract int GetMaxVertexDegree();
         protected abstract void NumerateFirstVertices(int rootVertex, int[] vertices);
         protected abstract bool Swap(ref int[] vertices);
 
@@ -32,9 +33,11 @@ namespace MeshRecovery_Lib
             graphNumeration = this.graphNumeration;
 
             numerators = new T[vertexCount];
+            vertexChildren = new List<int>[vertexCount];
             for (int i = 0; i < numerators.Count(); ++i)
             {
                 (numerators[i] = new T()).Init(i, graph);
+                vertexChildren[i] = new List<int>();
             }
         }
 
@@ -93,7 +96,11 @@ namespace MeshRecovery_Lib
                     if (error != Error.OK)
                     {
                         possibleToSwap = Swap(ref vertices);
-                        if (possibleToSwap) NumerationHelper.Clear(ref graphNumeration);
+                        if (possibleToSwap)
+                        {
+                            NumerationHelper.Clear(ref graphNumeration);
+                            foreach (var numerator in numerators) numerator.Clear();
+                        }
                     }
                 }
                 return (int)error;
@@ -146,9 +153,10 @@ namespace MeshRecovery_Lib
                     }
                     if (error != Error.OK)
                     {
-                        while (i-- != 0) ClearVertex(vertices[i]);
+                        while (i-- != 0) ClearVertexBranch(vertices[i]);
                         break;
                     }
+                    vertexChildren[vertex].Add(vertices[i]);
                 }
             }
             --TryToNumStackCounter;
@@ -159,6 +167,17 @@ namespace MeshRecovery_Lib
         {
             numerators[vertex].Clear();
             graphNumeration[vertex] = null;
+        }
+
+        private void ClearVertexBranch(int vertex)
+        {
+            var children = vertexChildren[vertex];
+            foreach (var child in children)
+            {
+                ClearVertexBranch(child);
+            }
+            vertexChildren[vertex].Clear();
+            ClearVertex(vertex);
         }
 
         private List<int> GetEnumeratedVertices()
