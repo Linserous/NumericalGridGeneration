@@ -19,13 +19,13 @@ namespace MeshRecovery_Test
         static string testSourcePattern = @"sources*";
         static string[] head_columns = {
             "Name of file"
-                , "Vertices count"
-                , "Edges count"
-                , "Valid"
-                , "Numerable"
-                , "Time"
-                , "Result"
-                , "Validation status"
+                , "Vertices Count"
+                , "Edges Count"
+                , "Validate Return Code"
+                , "Numerate Return Code"
+                , "Numeration Validation Status"
+                , "Dimension"
+                , "Time (ms)"
         };
         static int Padding = 20;
 
@@ -136,8 +136,9 @@ namespace MeshRecovery_Test
                 timer.Stop();
                 //TODO: Dinar: check memory usage ? 
                 Graph graph = new Graph(xadj, adjncy);
+                bool success = valid && numerate == 0;
                 string validationResult = "";
-                if (valid && numerate == 0)
+                if (success)
                 {
                     int validationCode = NumerationHelper.ValidateNumeration(xadj, adjncy, meshDimension, graphNumeration);
                     validationResult = validationCode >= 0 ? "Верно" : "Неверно";
@@ -150,9 +151,9 @@ namespace MeshRecovery_Test
                     graph.GetEdgeCount().ToString(),
                     valid.ToString(),
                     numerate.ToString(),
-                    timer.ElapsedTicks.ToString(),
-                    IntArrayToList(graphNumeration),
-                    validationResult
+                    validationResult,
+                    success ? graphNumeration[0].Length.ToString() : "X",
+                    timer.ElapsedTicks.ToString()
                     );
 
                 timer.Reset();
