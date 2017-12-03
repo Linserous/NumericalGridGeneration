@@ -171,8 +171,7 @@ namespace MeshRecovery_Lib
 
         private void ClearVertexBranch(int vertex)
         {
-            var children = vertexChildren[vertex];
-            foreach (var child in children)
+            foreach (var child in vertexChildren[vertex])
             {
                 ClearVertexBranch(child);
             }
