@@ -16,10 +16,26 @@ namespace MeshRecovery_Lib
         protected Graph graph = null;
         protected int[][] graphNumeration = null;
         protected T[] numerators = null;
-        protected List<int>[] vertexChildren = null;
 
-        int TryToNumStackCounter = 0;
-        const int stackSize = 2000;
+        protected class VertexData
+        {
+            public int Parent { get; set; }
+            public List<int> Children { get; set; }
+
+            public VertexData()
+            {
+                Parent = INVALID_INDEX;
+                Children = new List<int>();
+            }
+
+            public void Clear()
+            {
+                Parent = INVALID_INDEX;
+                Children.Clear();
+            }
+        }
+        protected VertexData[] verticesData = null;
+
 
         // abstract members
         protected abstract void NumerateFirstVertices(int rootVertex, int[] vertices);
@@ -33,12 +49,14 @@ namespace MeshRecovery_Lib
             graphNumeration = this.graphNumeration;
 
             numerators = new T[vertexCount];
-            vertexChildren = new List<int>[vertexCount];
+            verticesData = new VertexData[vertexCount];
+
             for (int i = 0; i < numerators.Count(); ++i)
             {
                 (numerators[i] = new T()).Init(i, graph);
-                vertexChildren[i] = new List<int>();
+                verticesData[i] = new VertexData();
             }
+
         }
 
         public int Run(Graph graph, out int[][] graphNumeration)
@@ -72,6 +90,7 @@ namespace MeshRecovery_Lib
                 {
                     NumerationHelper.Clear(ref graphNumeration);
                     foreach (var numerator in numerators) numerator.Clear();
+                    foreach (var data in verticesData) data.Clear();
                     possibleToSwap = false;
 
                     // Step 2. Numerate first vertices
@@ -91,7 +110,6 @@ namespace MeshRecovery_Lib
                         for (int i = 0; i < enumerated.Count(); ++i)
                         {
                             error = TryToNumerateVertices(enumerated[i]);
-                            if (error == Error.STACKOVERFLOW) return (int)error;
                             if (error != Error.OK) break;
                         }
                     }
@@ -117,61 +135,63 @@ namespace MeshRecovery_Lib
             return error;
         }
 
+  
         private Error TryToNumerateVertices(int vertex)
         {
-            //Workaround to prevent StackOverflow exception
-            if (TryToNumStackCounter >= stackSize) return Error.STACKOVERFLOW;
             if (graphNumeration[vertex] != null) return Error.OK;
-            ++TryToNumStackCounter;
+            var error = Error.OK;
+            var list = new List<int>();
+            list.Add(vertex);
 
-            Error error = Error.IMPOSSIBLE_NUM;
-            while (error != Error.OK && error != Error.NEED_MORE_DATA)
+            while (list.Count() != 0)
             {
-                graphNumeration[vertex] = null;
-                error = numerators[vertex].TryToNumerate(ref graphNumeration);
+                var v = list.Last();
+                list.RemoveAt(list.Count() - 1);
+                if (graphNumeration[v] != null) continue;
+                error = numerators[v].TryToNumerate(ref graphNumeration);
 
                 if (error != Error.OK)
                 {
-                    ClearVertex(vertex);
-                    --TryToNumStackCounter;
-                    return error;
+                    var parent = verticesData[v].Parent;
+                    if (parent == INVALID_INDEX) return Error.IMPOSSIBLE_NUM;
+
+                    list.Add(parent);
+                    ClearVertexChildren(parent);
+                    graphNumeration[parent] = null;
+                    continue;
                 }
 
-                var vertices = numerators[vertex].GetEnumeratedAdjVertices(graphNumeration);
-                for (int i = 0; i < vertices.Count(); ++i)
+                var vertices = numerators[v].GetEnumeratedAdjVertices(graphNumeration);
+                verticesData[v].Children = vertices;
+
+                for (int i = vertices.Count() - 1; i > -1; --i)
                 {
-                    error = TryToNumerateVertices(vertices[i]);
-                    if (error == Error.STACKOVERFLOW)
+                    if (list.Contains(vertices[i]))
                     {
-                        --TryToNumStackCounter;
-                        return error;
+                        list.Remove(vertices[i]);
                     }
-                    if (error != Error.OK)
-                    {
-                        while (i-- != 0) ClearVertexBranch(vertices[i]);
-                        break;
-                    }
-                    vertexChildren[vertex].Add(vertices[i]);
+                    list.Add(vertices[i]);
+                    verticesData[vertices[i]].Parent = v;
                 }
             }
-            --TryToNumStackCounter;
             return error;
         }
 
         private void ClearVertex(int vertex)
         {
             numerators[vertex].Clear();
+            verticesData[vertex].Parent = INVALID_INDEX;
             graphNumeration[vertex] = null;
         }
 
-        private void ClearVertexBranch(int vertex)
+        private void ClearVertexChildren(int vertex)
         {
-            foreach (var child in vertexChildren[vertex])
+            foreach (var child in verticesData[vertex].Children)
             {
-                ClearVertexBranch(child);
+                ClearVertexChildren(child);
+                ClearVertex(child);
             }
-            vertexChildren[vertex].Clear();
-            ClearVertex(vertex);
+            verticesData[vertex].Children.Clear();
         }
 
         private List<int> GetEnumeratedVertices()
