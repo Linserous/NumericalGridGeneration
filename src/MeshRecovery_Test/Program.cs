@@ -153,7 +153,7 @@ namespace MeshRecovery_Test
                     numerate.ToString(),
                     validationResult,
                     success ? graphNumeration[0].Length.ToString() : "X",
-                    timer.ElapsedTicks.ToString()
+                    timer.Elapsed.Milliseconds.ToString()
                     );
 
                 timer.Reset();
