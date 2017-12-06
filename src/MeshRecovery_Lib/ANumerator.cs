@@ -104,15 +104,7 @@ namespace MeshRecovery_Lib
                     }
 
                     // Step 4. Try to numerate other ambiguous vertices
-                    if (error == Error.OK)
-                    {
-                        var enumerated = GetEnumeratedVertices();
-                        for (int i = 0; i < enumerated.Count(); ++i)
-                        {
-                            error = TryToNumerateVertices(enumerated[i]);
-                            if (error != Error.OK) break;
-                        }
-                    }
+                    if (error == Error.OK) error = TryToNumerateVertices(GetEnumeratedVertices());
                     possibleToSwap = error != Error.OK && Swap(ref vertices);
 
                 }
@@ -136,17 +128,13 @@ namespace MeshRecovery_Lib
         }
 
   
-        private Error TryToNumerateVertices(int vertex)
+        private Error TryToNumerateVertices(List<int> vertices)
         {
-            if (graphNumeration[vertex] != null) return Error.OK;
             var error = Error.OK;
-            var list = new List<int>();
-            list.Add(vertex);
-
-            while (list.Count() != 0)
+            while (vertices.Count() != 0)
             {
-                var v = list.Last();
-                list.RemoveAt(list.Count() - 1);
+                var v = vertices.Last();
+                vertices.RemoveAt(vertices.Count() - 1);
                 if (graphNumeration[v] != null) continue;
                 error = numerators[v].TryToNumerate(ref graphNumeration);
 
@@ -155,23 +143,20 @@ namespace MeshRecovery_Lib
                     var parent = verticesData[v].Parent;
                     if (parent == INVALID_INDEX) return Error.IMPOSSIBLE_NUM;
 
-                    list.Add(parent);
+                    vertices.Add(parent);
                     ClearVertexChildren(parent);
                     graphNumeration[parent] = null;
                     continue;
                 }
 
-                var vertices = numerators[v].GetEnumeratedAdjVertices(graphNumeration);
-                verticesData[v].Children = vertices;
+                var adjVertices = numerators[v].GetEnumeratedAdjVertices(graphNumeration);
+                verticesData[v].Children = adjVertices;
 
-                for (int i = vertices.Count() - 1; i > -1; --i)
+                foreach (var adj in adjVertices)
                 {
-                    if (list.Contains(vertices[i]))
-                    {
-                        list.Remove(vertices[i]);
-                    }
-                    list.Add(vertices[i]);
-                    verticesData[vertices[i]].Parent = v;
+                    if (vertices.Contains(adj)) vertices.Remove(adj);
+                    vertices.Add(adj);
+                    verticesData[adj].Parent = v;
                 }
             }
             return error;
@@ -211,7 +196,7 @@ namespace MeshRecovery_Lib
             {
                 var aAdjNumvertexCount = graph.GetAdjVerticesCount(a);
                 var bAdjNumvertexCount = graph.GetAdjVerticesCount(b);
-                return bAdjNumvertexCount.CompareTo(aAdjNumvertexCount);
+                return aAdjNumvertexCount.CompareTo(bAdjNumvertexCount);
             });
             return enumerated;
         }

@@ -106,10 +106,10 @@ namespace MeshRecovery_Lib
                 var aAdjVertices = GetAdjVertices(graphNumeration, a, e => { if (e != null) { aNumerated.Add(e); } return true; });
                 var bAdjVertices = GetAdjVertices(graphNumeration, b, e => { if (e != null) { bNumerated.Add(e); } return true; });
 
-                var result = bNumerated.Count().CompareTo(aNumerated.Count());
+                var result = aNumerated.Count().CompareTo(bNumerated.Count());
                 if (result == 0)
                 {
-                    result = bAdjVertices.Count().CompareTo(aAdjVertices.Count());
+                    result = aAdjVertices.Count().CompareTo(bAdjVertices.Count());
                 }
                 return result;
             });
