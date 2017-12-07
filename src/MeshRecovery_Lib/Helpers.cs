@@ -112,7 +112,7 @@ namespace MeshRecovery_Lib
             var count = elements.Length;
 
             // Indicates whether this is the last lexicographic permutation
-            var done = true;
+            var done = false;
 
             // Go through the array from last to first
             for (var i = count - 1; i > 0; i--)
@@ -127,7 +127,7 @@ namespace MeshRecovery_Lib
 
                 // An element bigger than the one before it has been found,
                 // so this isn't the last lexicographic permutation.
-                done = false;
+                done = true;
 
                 // Save the previous (bigger) element in a variable for more efficiency.
                 var prev = elements[i - 1];

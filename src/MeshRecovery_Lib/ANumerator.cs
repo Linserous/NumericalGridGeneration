@@ -39,7 +39,6 @@ namespace MeshRecovery_Lib
 
         // abstract members
         protected abstract void NumerateFirstVertices(int rootVertex, int[] vertices);
-        protected abstract bool Swap(ref int[] vertices);
 
         private void InitMembers(Graph graph, out int[][] graphNumeration)
         {
@@ -85,13 +84,12 @@ namespace MeshRecovery_Lib
                 int[] vertices;
                 graph.GetAdjVertices(vertexWithMaxDegree, out vertices);
 
-                bool possibleToSwap = true;
-                while (possibleToSwap)
+                bool permutationExists = true;
+                while (permutationExists)
                 {
                     NumerationHelper.Clear(ref graphNumeration);
                     foreach (var numerator in numerators) numerator.Clear();
                     foreach (var data in verticesData) data.Clear();
-                    possibleToSwap = false;
 
                     // Step 2. Numerate first vertices
                     NumerateFirstVertices(vertexWithMaxDegree, vertices);
@@ -105,7 +103,7 @@ namespace MeshRecovery_Lib
 
                     // Step 4. Try to numerate other ambiguous vertices
                     if (error == Error.OK) error = TryToNumerateVertices(GetEnumeratedVertices());
-                    possibleToSwap = error != Error.OK && Swap(ref vertices);
+                    permutationExists = error != Error.OK && Helpers.NextPermutation(vertices);
 
                 }
                 return (int)error;
