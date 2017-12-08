@@ -23,11 +23,6 @@ namespace MeshRecovery_Lib
                     }
                 }
             }
-
-            protected override bool Swap(ref int[] vertices)
-            {
-                return !Helpers.NextPermutation(vertices);
-            }
         }
     }
 }
