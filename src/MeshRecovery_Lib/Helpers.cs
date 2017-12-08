@@ -106,77 +106,50 @@ namespace MeshRecovery_Lib
             c = temp;
         }
 
-        public static bool NextPermutation<T>(T[] elements) where T : IComparable<T>
+        public static bool GetNextPermutation<T>(T[] numList) where T : IComparable<T>
         {
-            // More efficient to have a variable instead of accessing a property
-            var count = elements.Length;
+            /*
+             Knuths
+             1. Find the largest index j such that a[j] < a[j + 1]. If no such index exists, the permutation is the last permutation.
+             2. Find the largest index l such that a[j] < a[l]. Since j + 1 is such an index, l is well defined and satisfies j < l.
+             3. Swap a[j] with a[l].
+             4. Reverse the sequence from a[j + 1] up to and including the final element a[n].
 
-            // Indicates whether this is the last lexicographic permutation
-            var done = false;
-
-            // Go through the array from last to first
-            for (var i = count - 1; i > 0; i--)
+             */
+            var largestIndex = -1;
+            for (var i = numList.Length - 2; i >= 0; i--)
             {
-                var curr = elements[i];
-
-                // Check if the current element is less than the one before it
-                if (curr.CompareTo(elements[i - 1]) < 0)
+                if (numList[i].CompareTo(numList[i + 1]) < 0)
                 {
-                    continue;
+                    largestIndex = i;
+                    break;
                 }
-
-                // An element bigger than the one before it has been found,
-                // so this isn't the last lexicographic permutation.
-                done = true;
-
-                // Save the previous (bigger) element in a variable for more efficiency.
-                var prev = elements[i - 1];
-
-                // Have a variable to hold the index of the element to swap
-                // with the previous element (the to-swap element would be
-                // the smallest element that comes after the previous element
-                // and is bigger than the previous element), initializing it
-                // as the current index of the current item (curr).
-                var currIndex = i;
-
-                // Go through the array from the element after the current one to last
-                for (var j = i + 1; j < count; j++)
-                {
-                    // Save into variable for more efficiency
-                    var tmp = elements[j];
-
-                    // Check if tmp suits the "next swap" conditions:
-                    // Smallest, but bigger than the "prev" element
-                    if (tmp.CompareTo(curr) < 0 && tmp.CompareTo(prev) > 0)
-                    {
-                        curr = tmp;
-                        currIndex = j;
-                    }
-                }
-
-                // Swap the "prev" with the new "curr" (the swap-with element)
-                elements[currIndex] = prev;
-                elements[i - 1] = curr;
-
-                // Reverse the order of the tail, in order to reset it's lexicographic order
-                for (var j = count - 1; j > i; j--, i++)
-                {
-                    var tmp = elements[j];
-                    elements[j] = elements[i];
-                    elements[i] = tmp;
-                }
-
-                // Break since we have got the next permutation
-                // The reason to have all the logic inside the loop is
-                // to prevent the need of an extra variable indicating "i" when
-                // the next needed swap is found (moving "i" outside the loop is a
-                // bad practice, and isn't very readable, so I preferred not doing
-                // that as well).
-                break;
             }
 
-            // Return whether this has been the last lexicographic permutation.
-            return done;
+            if (largestIndex < 0) return false;
+
+            var largestIndex2 = -1;
+            for (var i = numList.Length - 1; i >= 0; i--)
+            {
+                if (numList[largestIndex].CompareTo(numList[i]) < 0)
+                {
+                    largestIndex2 = i;
+                    break;
+                }
+            }
+
+            var tmp = numList[largestIndex];
+            numList[largestIndex] = numList[largestIndex2];
+            numList[largestIndex2] = tmp;
+
+            for (int i = largestIndex + 1, j = numList.Length - 1; i < j; i++, j--)
+            {
+                tmp = numList[i];
+                numList[i] = numList[j];
+                numList[j] = tmp;
+            }
+
+            return true;
         }
     }
 }

@@ -83,6 +83,7 @@ namespace MeshRecovery_Lib
             {
                 int[] vertices;
                 graph.GetAdjVertices(vertexWithMaxDegree, out vertices);
+                Array.Sort(vertices);
 
                 bool permutationExists = true;
                 while (permutationExists)
@@ -103,8 +104,7 @@ namespace MeshRecovery_Lib
 
                     // Step 4. Try to numerate other ambiguous vertices
                     if (error == Error.OK) error = TryToNumerateVertices(GetEnumeratedVertices());
-                    permutationExists = error != Error.OK && Helpers.NextPermutation(vertices);
-
+                    permutationExists = error != Error.OK && Helpers.GetNextPermutation(vertices);
                 }
                 return (int)error;
             }
@@ -125,7 +125,6 @@ namespace MeshRecovery_Lib
             return error;
         }
 
-  
         private Error TryToNumerateVertices(List<int> vertices)
         {
             var error = Error.OK;

@@ -109,11 +109,7 @@ namespace MeshRecovery_Lib
         /// </returns>
         public static int Numerate(long[] xadj, int size, int[] adjncy, out int[][] graphNumeration)
         {
-            // TODO: Implement
-            // TODO: graphNumeration may be 1-3 dimensional array
-
             Graph graph = new Graph(xadj, adjncy);
-
             graphNumeration = null;
             int V = graph.GetVerticesCount();
             int error = 0;
@@ -132,7 +128,6 @@ namespace MeshRecovery_Lib
                         error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;
-                //TODO: implement this part
                 case 2:
                     error = new Numerator2D().Run(graph, out graphNumeration);
                     if (error != 0)
