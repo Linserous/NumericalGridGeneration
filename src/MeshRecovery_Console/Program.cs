@@ -13,12 +13,12 @@ namespace MeshRecovery_Console
     {
         static void Main(string[] args)
         {
+             
             if (args.Length == 0)
             {
                 Console.WriteLine("No path to source file");
                 return;
             }
-
             long[] xadj = null;
             int[] adjncy = null;
             Loader.LoadGraphFromMETISFormat(args[0], out xadj, out adjncy);

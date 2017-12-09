@@ -24,6 +24,7 @@ namespace MeshRecovery_Visualizer
             var location = System.IO.Path.GetDirectoryName(assembly.Location);
 
             browser.Navigate(System.IO.Path.Combine(location, "../../src/index.html"));
+            
         }
 
         public void Init()
