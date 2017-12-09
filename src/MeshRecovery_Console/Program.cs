@@ -13,14 +13,42 @@ namespace MeshRecovery_Console
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            string sourceFile = null;
+            string outputPath = null;
+
+            ArgParser parser = new ArgParser();
+
+            parser.AddArgument("i|input=", "Path to the graph file", v => sourceFile = v);
+            parser.AddArgument("o|out=", "Path to the output file (.json)", v => outputPath = v);
+
+            if (!parser.ParseArguments(args))
+                return;
+
+            if (sourceFile == null)
             {
-                Console.WriteLine("Usage: MeshRecovery_Console.exe <path to .graph file> <path to save result>");
+                Console.WriteLine("Please specify the path to graph file");
                 return;
             }
+            else if (!File.Exists(sourceFile))
+            {
+                Console.WriteLine($"File is not exist: {sourceFile}");
+                return;
+            }
+
+            if (outputPath == null)
+            {
+                outputPath = Path.Combine(new FileInfo(sourceFile).Directory.FullName,
+                    Path.GetFileNameWithoutExtension(sourceFile) + ".json");
+            }
+            else if (Path.GetExtension(outputPath) != ".json")
+            {
+                Console.WriteLine("Output file must have .json extension");
+                return;
+            }
+
             long[] xadj = null;
             int[] adjncy = null;
-            Loader.LoadGraphFromMETISFormat(args[0], out xadj, out adjncy);
+            Loader.LoadGraphFromMETISFormat(sourceFile, out xadj, out adjncy);
             Stopwatch timer = new Stopwatch();
             timer.Start();
             int meshDemention;
@@ -48,7 +76,7 @@ namespace MeshRecovery_Console
 
             try
             {
-                File.WriteAllText(args[1], jsonString);
+                File.WriteAllText(outputPath, jsonString);
             }
             catch (Exception e)
             {
