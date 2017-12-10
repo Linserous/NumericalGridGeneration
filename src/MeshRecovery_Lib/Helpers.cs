@@ -138,15 +138,11 @@ namespace MeshRecovery_Lib
                 }
             }
 
-            var tmp = numList[largestIndex];
-            numList[largestIndex] = numList[largestIndex2];
-            numList[largestIndex2] = tmp;
+            Swap(ref numList[largestIndex], ref numList[largestIndex2]);
 
             for (int i = largestIndex + 1, j = numList.Length - 1; i < j; i++, j--)
             {
-                tmp = numList[i];
-                numList[i] = numList[j];
-                numList[j] = tmp;
+                Swap(ref numList[i], ref numList[j]);
             }
 
             return true;
