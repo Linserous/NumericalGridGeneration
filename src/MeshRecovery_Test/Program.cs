@@ -16,7 +16,7 @@ namespace MeshRecovery_Test
         static string PathToExcelResults = @"tests/resultsExcel";
         static string result_type = @".txt";
         static string excel_type = @".xlsx";
-        static string testSourcePattern = @"sources*";
+        static string testSourcePattern = @"sources";
         static string[] head_columns = {
             "Name of file"
                 , "Vertices Count"
@@ -223,7 +223,7 @@ namespace MeshRecovery_Test
 
             foreach (string d in dirs)
             {
-                foreach (string f in Directory.GetFiles(d))
+                foreach (string f in Directory.GetFiles(d, "*.graph", SearchOption.AllDirectories))
                     files.Add(f);
             }
             return files;
