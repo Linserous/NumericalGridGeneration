@@ -18,14 +18,14 @@ namespace MeshRecovery_Test
         static string excel_type = @".xlsx";
         static string testSourcePattern = @"sources";
         static string[] head_columns = {
-            "Name of file"
-                , "Vertices Count"
-                , "Edges Count"
-                , "Validate Return Code"
-                , "Numerate Return Code"
-                , "Numeration Validation Status"
-                , "Dimension"
-                , "Time (ms)"
+                  "Имя файла"
+                , "Кол-во вершин"
+                , "Кол-во ребер"
+                , "Результат Validate"
+                , "Результат Numerate"
+                , "Корректность нумерации"
+                , "Размерность"
+                , "Время выполнения (ms)"
         };
         static int Padding = 20;
 
@@ -149,11 +149,11 @@ namespace MeshRecovery_Test
                     current_file_name,
                     graph.GetVerticesCount().ToString(),
                     graph.GetEdgeCount().ToString(),
-                    valid.ToString(),
+                    valid ? "ИСТИНА" : "ЛОЖЬ",
                     numerate.ToString(),
                     validationResult,
                     success ? graphNumeration[0].Length.ToString() : "X",
-                    timer.Elapsed.Milliseconds.ToString()
+                    timer.ElapsedMilliseconds.ToString()
                     );
 
                 timer.Reset();
@@ -205,7 +205,7 @@ namespace MeshRecovery_Test
                     , current_file_name
                     , valid.ToString()
                     , numerate.ToString()
-                    , timer.Elapsed.Milliseconds.ToString()
+                    , timer.ElapsedMilliseconds.ToString()
                     , IntArrayToList(graphNumeration)
                     , validationResult);
                 timer.Reset();
