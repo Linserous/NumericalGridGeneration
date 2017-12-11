@@ -54,13 +54,13 @@ namespace MeshRecovery_Console
             int meshDemention;
             MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDemention);
             timer.Stop();
-            Console.WriteLine("Function Validate finished work. Elapsed: " + timer.Elapsed);
+            Console.WriteLine("Function Validate finished work. Elapsed: " + timer.ElapsedMilliseconds);
             timer.Reset();
             timer.Start();
             int[][] graphNumeration;
             MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
             timer.Stop();
-            Console.WriteLine("Function Numerate finished work. Elapsed: " + timer.Elapsed);
+            Console.WriteLine("Function Numerate finished work. Elapsed: " + timer.ElapsedMilliseconds);
 
             //Save graphNumeration to file
             string jsonString = null;
