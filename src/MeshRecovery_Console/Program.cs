@@ -77,6 +77,7 @@ namespace MeshRecovery_Console
             try
             {
                 File.WriteAllText(outputPath, jsonString);
+                Console.WriteLine($"Result is saved into file: {outputPath}");
             }
             catch (Exception e)
             {
