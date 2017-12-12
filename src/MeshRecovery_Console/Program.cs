@@ -54,7 +54,10 @@ namespace MeshRecovery_Console
             int meshDemention;
             bool validateResult = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDemention);
             timer.Stop();
-            Console.WriteLine($"Function Validate finished and returned {validateResult}. Elapsed: {timer.ElapsedMilliseconds} ms");
+            Console.WriteLine("Function Validate finished {0}. Elapsed: {1} ms"
+                , validateResult ? "successfully" : "unsuccessfully"
+                , timer.ElapsedMilliseconds);
+
             if (!validateResult)
             {
                 Console.WriteLine("Graph can not be numerated");
@@ -66,7 +69,10 @@ namespace MeshRecovery_Console
             int[][] graphNumeration;
             int numerateResult = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
             timer.Stop();
-            Console.WriteLine($"Function Numerate finished and returned {numerateResult}. Elapsed: {timer.ElapsedMilliseconds} ms");
+
+            Console.WriteLine("Function Numerate finished {0}. Elapsed: {1} ms"
+                , numerateResult == 0 ? "successfully" : "unsuccessfully"
+                , timer.ElapsedMilliseconds);
 
             if (numerateResult != 0)
             {
