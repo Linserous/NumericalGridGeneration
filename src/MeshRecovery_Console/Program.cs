@@ -52,15 +52,27 @@ namespace MeshRecovery_Console
             Stopwatch timer = new Stopwatch();
             timer.Start();
             int meshDemention;
-            MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDemention);
+            bool validateResult = MeshRecovery.Validate(xadj, xadj.Length, adjncy, out meshDemention);
             timer.Stop();
-            Console.WriteLine($"Function Validate finished work. Elapsed: {timer.ElapsedMilliseconds} ms");
+            Console.WriteLine($"Function Validate finished and returned {validateResult}. Elapsed: {timer.ElapsedMilliseconds} ms");
+            if (!validateResult)
+            {
+                Console.WriteLine("Graph can not be numerated");
+                return;
+            }
+
             timer.Reset();
             timer.Start();
             int[][] graphNumeration;
-            MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
+            int numerateResult = MeshRecovery.Numerate(xadj, xadj.Length, adjncy, out graphNumeration);
             timer.Stop();
-            Console.WriteLine($"Function Numerate finished work. Elapsed: {timer.ElapsedMilliseconds} ms");
+            Console.WriteLine($"Function Numerate finished and returned {numerateResult}. Elapsed: {timer.ElapsedMilliseconds} ms");
+
+            if (numerateResult != 0)
+            {
+                Console.WriteLine("Graph can not be numerated");
+                return;
+            }
 
             //Save graphNumeration to file
             string jsonString = null;
