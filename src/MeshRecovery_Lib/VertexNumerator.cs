@@ -5,9 +5,9 @@ namespace MeshRecovery_Lib
 {
     public class VertexNumerator<T> : IVertexNumerator where T : IDirection, new()
     {
-        const int INVALID_VERTEX = -1;
+        const int INVALID_INDEX = -1;
 
-        int vertex = INVALID_VERTEX;
+        int vertex = INVALID_INDEX;
         T direction;
         List<int[]> alternatives = null;
         Graph graph = null;
