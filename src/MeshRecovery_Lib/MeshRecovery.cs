@@ -119,12 +119,12 @@ namespace MeshRecovery_Lib
                     error = OneDimensionNumerate(graph, out graphNumeration);
                     if (error != 0)
                     {
-                        NumerationHelper.Clear(ref graphNumeration);
+                        NumerationHelper.Clear(graphNumeration);
                         error = new Numerator2D().Run(graph, out graphNumeration);
                     }
                     if (error != 0)
                     {
-                        NumerationHelper.Clear(ref graphNumeration);
+                        NumerationHelper.Clear(graphNumeration);
                         error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;
@@ -132,7 +132,7 @@ namespace MeshRecovery_Lib
                     error = new Numerator2D().Run(graph, out graphNumeration);
                     if (error != 0)
                     {
-                        NumerationHelper.Clear(ref graphNumeration);
+                        NumerationHelper.Clear(graphNumeration);
                         error = new Numerator3D().Run(graph, out graphNumeration);
                     }
                     break;

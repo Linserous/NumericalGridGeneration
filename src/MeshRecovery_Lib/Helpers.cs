@@ -63,7 +63,7 @@ namespace MeshRecovery_Lib
             return diff_index;
         }
 
-        public static void Clear(ref int[][] numeration)
+        public static void Clear(int[][] numeration)
         {
             for (int i = 0; i < numeration.Count(); ++i)
             {

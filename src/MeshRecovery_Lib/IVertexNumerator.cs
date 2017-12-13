@@ -19,9 +19,9 @@ namespace MeshRecovery_Lib
     {
         void Init(int vertex, Graph graph);
         /// Unambiguously numerate the vertex
-        Error Numerate(ref int[][] graphNumeration);
+        Error Numerate(int[][] graphNumeration);
         /// Try to numerate the vertex, which can not have an unambiguous index
-        Error TryToNumerate(ref int[][] graphNumeration);
+        Error TryToNumerate(int[][] graphNumeration);
         void Clear();
         List<int> GetNumeratedAdjVertices(int[][] graphNumeration);
         List<int> GetEnumeratedAdjVertices(int[][] graphNumeration);

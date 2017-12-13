@@ -5,7 +5,9 @@ namespace MeshRecovery_Lib
 {
     public class VertexNumerator<T> : IVertexNumerator where T : IDirection, new()
     {
-        int vertex = -1;
+        const int INVALID_VERTEX = -1;
+
+        int vertex = INVALID_VERTEX;
         T direction;
         List<int[]> alternatives = null;
         Graph graph = null;
@@ -18,7 +20,7 @@ namespace MeshRecovery_Lib
             this.graph = graph;
         }
 
-        public virtual Error Numerate(ref int[][] graphNumeration)
+        public virtual Error Numerate(int[][] graphNumeration)
         {
             if (graphNumeration[vertex] != null) return Error.OK;
 
@@ -26,7 +28,7 @@ namespace MeshRecovery_Lib
             var adjVertices = GetNumeratedAdjVertices(graphNumeration);
             if (adjVertices.Count() > 1)
             {
-                var alts = CalcVertexIndex(vertex, adjVertices, ref graphNumeration);
+                var alts = CalcVertexIndex(vertex, adjVertices, graphNumeration);
                 if (alts == null)
                 {
                     return Error.IMPOSSIBLE_NUM;
@@ -36,7 +38,7 @@ namespace MeshRecovery_Lib
             return Error.OK;
         }
 
-        public virtual Error TryToNumerate(ref int[][] graphNumeration)
+        public virtual Error TryToNumerate(int[][] graphNumeration)
         {
             if (!direction.Valid()) return Error.IMPOSSIBLE_NUM;
 
@@ -47,7 +49,7 @@ namespace MeshRecovery_Lib
             }
             if (vertices.Count() > 1)
             {
-                var alts = CalcVertexIndex(vertex, vertices, ref graphNumeration);
+                var alts = CalcVertexIndex(vertex, vertices, graphNumeration);
                 if (alts != null)
                 {
                     foreach (var alternative in alts)
@@ -132,7 +134,7 @@ namespace MeshRecovery_Lib
             return result;
         }
 
-        private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, ref int[][] graphNumeration)
+        private List<int[]> CalcVertexIndex(int vertex, List<int> vertices, int[][] graphNumeration)
         {
             List<int[]> alts = new List<int[]>();
             var localDirection = new T();

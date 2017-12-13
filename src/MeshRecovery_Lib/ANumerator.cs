@@ -88,7 +88,7 @@ namespace MeshRecovery_Lib
                 bool permutationExists = true;
                 while (permutationExists)
                 {
-                    NumerationHelper.Clear(ref graphNumeration);
+                    NumerationHelper.Clear(graphNumeration);
                     foreach (var numerator in numerators) numerator.Clear();
                     foreach (var data in verticesData) data.Clear();
 
@@ -119,7 +119,7 @@ namespace MeshRecovery_Lib
             foreach (var v in enumVertices)
             {
                 if (graphNumeration[v] != null) continue;
-                error = numerators[v].Numerate(ref graphNumeration);
+                error = numerators[v].Numerate(graphNumeration);
                 if (error != Error.OK) return error;
             }
             return error;
@@ -133,7 +133,7 @@ namespace MeshRecovery_Lib
                 var v = vertices.Last();
                 vertices.RemoveAt(vertices.Count() - 1);
                 if (graphNumeration[v] != null) continue;
-                error = numerators[v].TryToNumerate(ref graphNumeration);
+                error = numerators[v].TryToNumerate(graphNumeration);
 
                 if (error != Error.OK)
                 {
