@@ -237,6 +237,7 @@ namespace MeshRecovery_Test
             Console.WriteLine("\t'without arguments' - will prepare excel and ttxt files");
             Console.WriteLine("\texcel - will prepare only excel file");
             Console.WriteLine("\ttext - will prepare only text file");
+            Console.WriteLine("\tnew <file_name> <n1> <n2> <n3> - will prepare new graph file in GOOD tests with\n\tn* - means thickness of one side ( examples: 4 1 1 - chain from 4 vertex; 4 1 20 - plain graph; 4 5 6 - cubic graph ) ");
         }
         static void PrintWrongArg()
         {
@@ -255,10 +256,52 @@ namespace MeshRecovery_Test
                 {
                     case "excel": PrintResultInExcel(); break;
                     case "text": PrintResultInRT(); break;
+                    case "new": GenerateNewGraph(args); break;
                     case "help": PrintHelp(); break;
                     default: PrintWrongArg(); break;
                 }
             }
+
+        }
+
+        private static void GenerateNewGraph(string[] args)
+        {
+            if (args.Count<string>() < 5)
+            {
+                Console.WriteLine("Not enought parameters, Go Away!");
+                return;
+            }
+
+            StreamWriter graph_file = new StreamWriter(PathToTests+"/"+ testSourcePattern + "/good/"+ args[1]+".graph");
+            //wiil generate good graphs
+           
+            if (args.Count<string>() == 5)
+            {
+                int n = Int32.Parse(args[2]);
+                int m = Int32.Parse(args[3]);
+                int k = Int32.Parse(args[4]);
+                graph_file.WriteLine((n * m * k).ToString() + " " + ( k*(n*(m-1)+m*(n-1))+n*m*(k-1) ).ToString());
+                for (int i = 1; i <= n; ++i)
+                    for (int j = 1; j <= m; ++j)
+                        for (int l = 1; l <= k; ++l)
+                        {
+                            // current vertex number l + (j-1)*k + (i-1)*k*m
+                             // graph_file.Write((l + (j - 1) * k + (i - 1) * k * m).ToString() + " "); // dbg outp
+                            if (l != 1) graph_file.Write((l + (j - 1) * k + (i - 1) * k * m -1 ).ToString() + " ");
+                            if (l != k) graph_file.Write((l + (j - 1) * k + (i - 1) * k * m + 1).ToString() + " ");
+                            if (j != 1) graph_file.Write((l + (j - 2) * k + (i - 1) * k * m).ToString() + " ");
+                            if (j != m) graph_file.Write((l + j * k + (i - 1) * k * m).ToString() + " ");
+                            if (i != 1) graph_file.Write((l + (j - 1) * k + (i - 2) * k * m).ToString() + " ");
+                            if (i != n) graph_file.Write((l + (j - 1) * k + i * k * m).ToString() + " ");
+                            graph_file.Write("\n");
+                    }
+
+            }
+
+            graph_file.Close();
+            StreamWriter answer_file = new StreamWriter(PathToTests + "/" + "answers/"+ args[1] + ".num");
+            answer_file.WriteLine("True 0");
+            answer_file.Close();
 
         }
     }

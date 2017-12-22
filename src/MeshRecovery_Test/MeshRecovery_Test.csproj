@@ -70,6 +70,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if not exist "$(SolutionDir)..\tests\sources" mkdir "$(SolutionDir)..\tests\sources"
+\if not exist "$(SolutionDir)..\tests\sources\bad" mkdir "$(SolutionDir)..\tests\sources\bad"
+if not exist "$(SolutionDir)..\tests\sources\good" mkdir "$(SolutionDir)..\tests\sources\good"
 if not exist "$(SolutionDir)..\tests\resultsExcel" mkdir "$(SolutionDir)..\tests\resultsExcel"
 if not exist "$(SolutionDir)..\tests\results" mkdir "$(SolutionDir)..\tests\results"
 rmdir "$(TargetDir)tests" 
