@@ -299,10 +299,6 @@ namespace MeshRecovery_Test
             }
 
             graph_file.Close();
-            StreamWriter answer_file = new StreamWriter(PathToTests + "/" + "answers/"+ args[1] + ".num");
-            answer_file.WriteLine("True 0");
-            answer_file.Close();
-
         }
     }
 }
