@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Numerator1D.cs" />
     <Compile Include="VertexNumerator.cs" />
     <Compile Include="Direction2D.cs" />
     <Compile Include="Direction3D.cs" />
